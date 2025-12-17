@@ -15,7 +15,7 @@ uint8_t ServoCount = 0;                                     // the total number 
 #define SERVO_MAX this->max  // maximum value in ticks for this servo
 
 /************ static functions common to all instances ***********************/
-
+//o tempo de ciclo é 20ms, 4ms de um modo e 16ms do outro
 static inline void handle_interrupts()
 {
   uint8_t menorPulso = 255;
@@ -73,15 +73,6 @@ ISR(TIMER2_COMPA_vect)
 {
   handle_interrupts();
 }
-
-// static void initISR()
-// {
-//   TCCR3A = 0;             // normal counting mode
-//   TCCR3B = _BV(CS31);     // set prescaler of 8
-//   TCNT3 = 0;              // clear the timer count
-//   TIFR3 = _BV(OCF3A);     // clear any pending interrupts
-//   //TIMSK3 =  _BV(OCIE3A) ; // enable the output compare interrupt
-// }
 
 static void initISR()
 {
@@ -165,6 +156,8 @@ void Servo::write(int value) //somente angulo
   if(value < 0) value = 0;
   if(value > 180) value = 180;
   value = map(value, 0, 180, this->min,  this->max); //mapeando para ticks
+  Serial.print(F("Valor mapeado para ticks: "));
+  Serial.println(value);
   this->writeTicks(value);
 }
 
@@ -182,7 +175,9 @@ void Servo::writeTicks(uint8_t value)
 
     uint8_t oldSREG = SREG;
     cli();
-    servos[Canal].ticks = value;   
+    servos[Canal].ticks = value;
+    Serial.print(F("Valor escrito no servo: "));
+    Serial.println(value);      
     SREG = oldSREG;
   }
 }

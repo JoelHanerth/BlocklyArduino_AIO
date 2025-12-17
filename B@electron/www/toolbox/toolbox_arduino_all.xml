@@ -1,6 +1,50 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <toolbox>
 	<parametre id="defaultCategories">CAT_LOGIC,CAT_LOOPS,CAT_VARIABLES,CAT_FUNCTIONS,CAT_MATH,CAT_ARDUINO</parametre>
+	<category name="CAT_BRICK" colour="#FF6680">
+		<block type="brick_atualizabrick"></block>
+		<block type="brick_imprimir_terminal"></block>
+	</category>
+
+	<category name="CAT_BRICK_MOTORS" colour="#1cd343ff">
+		<block type="brick_motor_criar"></block>
+		<block type="brick_motores_movimento"></block>
+		<block type="brick_motor_potencia">
+			<value name="POTENCIA">
+				<shadow type="math_number">
+					<field name="NUM">0</field>
+				</shadow>
+			</value>
+		</block>
+		<block type="brick_potencia_motores">
+			<value name="MOTOR1">
+				<shadow type="math_number">
+					<field name="NUM">0</field>
+				</shadow>
+			</value>
+			<value name="MOTOR2">
+				<shadow type="math_number">
+					<field name="NUM">0</field>
+				</shadow>
+			</value>
+		</block>
+		<block type="brick_motor_direcao"></block>
+		<block type="brick_motor_frear"></block>
+		<block type="brick_parar_motores"></block>
+	</category>
+
+	<category name="CAT_BRICK_SENSORS" colour="#7E57C2">
+		<block type="brick_sensor_tcs34725_criar"></block>
+		<block type="brick_sensor_tcs34725_eh_cor"></block>
+		<block type="brick_sensor_tcs34725_cor"></block>
+		<block type="brick_sensor_tcs34725_ler"></block>
+		<block type="brick_sensor_tcs34725_calibrar"></block>
+		<block type="brick_led_inicializa"></block>
+		<block type="brick_led_cor"></block>
+		<block type="brick_led_apagar"></block>
+		<block type="brick_led_efeitos"></block>
+	</category>
+
 	<category name="CAT_LOGIC" colour="#FFAB19">
 		<block type="controls_if"></block>
 		<block type="controls_switch"></block>

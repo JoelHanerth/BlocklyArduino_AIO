@@ -297,6 +297,12 @@ Blockly.Arduino.finish = function(code) {
     userSetupCode = '\n' + Blockly.Arduino.setups_['userSetupCode'];
     delete Blockly.Arduino.setups_['userSetupCode'];
   }
+  // Garante que a inicialização do Brick (se existir) venha primeiro no setup
+  if (Blockly.Arduino.setups_['setup_brick_simples'] !== undefined) {
+    setups.push(Blockly.Arduino.setups_['setup_brick_simples']);
+    delete Blockly.Arduino.setups_['setup_brick_simples'];
+  }
+  // Demais códigos de setup, na ordem padrão
   for (var name in Blockly.Arduino.setups_) {
     setups.push(Blockly.Arduino.setups_[name]);
   }

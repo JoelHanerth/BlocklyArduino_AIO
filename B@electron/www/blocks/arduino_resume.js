@@ -122,6 +122,9 @@ head.load(
 "blocks/RTC_DS3231/RTC_DS3231.js",
 "blocks/Adafruit/Adafruit_SSD1306/Adafruit_SSD1306.js",
 "blocks/LoRa/LoRa.js",
+"blocks/brick_blocks/motor.js",
+"blocks/brick_blocks/sensores.js",
+"blocks/brick_blocks/brick.js",
 function() {
     // Call a function when done
     console.log("Done loading Various Blocks");
