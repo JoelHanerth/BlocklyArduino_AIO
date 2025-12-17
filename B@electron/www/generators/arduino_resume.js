@@ -116,6 +116,7 @@ head.load(
 "generators/arduino/brick/motor.js",
 "generators/arduino/brick/brick.js",
 "generators/arduino/brick/sensores.js",
+"generators/arduino/brick/led.js",
 
 function() {
     // Call a function when done

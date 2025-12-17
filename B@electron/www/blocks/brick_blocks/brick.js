@@ -9,7 +9,8 @@ goog.require('Blockly.Blocks');
 goog.require('Blockly.Types');
 
 Blockly.Blocks.brick = Blockly.Blocks.brick || {};
-Blockly.Blocks.brick.HUE = 200;
+// cor parecida com FF6680
+Blockly.Blocks.brick.HUE = "#FF6680";
 
 Blockly.Blocks['brick_atualizabrick'] = {
   init: function() {

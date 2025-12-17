@@ -6,7 +6,7 @@
 		<block type="brick_imprimir_terminal"></block>
 	</category>
 
-	<category name="CAT_BRICK_MOTORS" colour="#1cd343ff">
+	<category name="CAT_BRICK_MOTORS" colour="#0090F5">
 		<block type="brick_motor_criar"></block>
 		<block type="brick_motores_movimento"></block>
 		<block type="brick_motor_potencia">
@@ -33,15 +33,35 @@
 		<block type="brick_parar_motores"></block>
 	</category>
 
-	<category name="CAT_BRICK_SENSORS" colour="#7E57C2">
-		<block type="brick_sensor_tcs34725_criar"></block>
+	<category name="CAT_BRICK_SENSORS" colour="#00A8C9">
+		<!-- <block type="brick_sensor_tcs34725_criar"></block> -->
 		<block type="brick_sensor_tcs34725_eh_cor"></block>
 		<block type="brick_sensor_tcs34725_cor"></block>
 		<block type="brick_sensor_tcs34725_ler"></block>
 		<block type="brick_sensor_tcs34725_calibrar"></block>
-		<block type="brick_led_inicializa"></block>
+		<block type="brick_sensor_vl53l0x_distancia"></block>
+		<block type="brick_sensor_vl53l0x_compara">
+			<value name="VALOR">
+				<shadow type="math_number">
+					<field name="NUM">10</field>
+				</shadow>
+			</value>
+		</block>
+	</category>
+
+
+	<category name="CAT_BRICK_LED" colour="#9B6AF6">
+		<block type="brick_ledstrip_criar"></block>
 		<block type="brick_led_cor"></block>
+		<block type="brick_led_rgb"></block>
 		<block type="brick_led_apagar"></block>
+		<block type="brick_led_brilho">
+			<value name="PCT">
+				<shadow type="math_number">
+					<field name="NUM">50</field>
+				</shadow>
+			</value>
+		</block>
 		<block type="brick_led_efeitos"></block>
 	</category>
 

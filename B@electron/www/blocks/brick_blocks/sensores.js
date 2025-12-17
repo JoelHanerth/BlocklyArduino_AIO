@@ -9,7 +9,7 @@ goog.require('Blockly.Blocks');
 goog.require('Blockly.Types');
 
 Blockly.Blocks.brick_sensores = Blockly.Blocks.brick_sensores || {};
-Blockly.Blocks.brick_sensores.HUE = 260;
+Blockly.Blocks.brick_sensores.HUE = "#00A8C9";
 
 // Cria e registra um sensor de cor em uma porta escolhida
 Blockly.Blocks['brick_sensor_tcs34725_criar'] = {
@@ -38,7 +38,7 @@ Blockly.Blocks['brick_sensor_tcs34725_eh_cor'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-		.appendField('🎨 Sensor de cor na')
+		.appendField('🎨')
         .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_I2C_1'],
@@ -47,7 +47,7 @@ Blockly.Blocks['brick_sensor_tcs34725_eh_cor'] = {
           ['4', 'PORTA_I2C_4'],
           ['5', 'PORTA_I2C_5']
         ]), 'PORTA')
-        .appendField('está vendo a cor')
+        .appendField('é a cor')
         .appendField(new Blockly.FieldDropdown([
           ['⬛ preto', 'COR_PRETO'],
           ['⬜ branco', 'COR_BRANCO'],
@@ -67,7 +67,7 @@ Blockly.Blocks['brick_sensor_tcs34725_cor'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-		.appendField('🎨 Cor que o sensor vê na')
+		.appendField('🎨')
         .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_I2C_1'],
@@ -75,7 +75,8 @@ Blockly.Blocks['brick_sensor_tcs34725_cor'] = {
           ['3', 'PORTA_I2C_3'],
           ['4', 'PORTA_I2C_4'],
           ['5', 'PORTA_I2C_5']
-        ]), 'PORTA');
+        ]), 'PORTA')
+        .appendField('cor');
       this.setOutput(true, 'Number');
       this.setTooltip('Retorna a cor básica que o sensor está vendo (preto, branco, vermelho, verde, azul, amarelo).');
   }
@@ -87,7 +88,7 @@ Blockly.Blocks['brick_sensor_tcs34725_ler'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-		.appendField('🎨 Ler cor do sensor na')
+		.appendField('🎨')
         .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_I2C_1'],
@@ -96,7 +97,7 @@ Blockly.Blocks['brick_sensor_tcs34725_ler'] = {
           ['4', 'PORTA_I2C_4'],
           ['5', 'PORTA_I2C_5']
         ]), 'PORTA')
-        .appendField('componente')
+        .appendField('ler')
         .appendField(new Blockly.FieldDropdown([
           ['vermelho (R)', 'R'],
           ['verde (G)', 'G'],
@@ -114,7 +115,7 @@ Blockly.Blocks['brick_sensor_tcs34725_calibrar'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-		.appendField('🎨 Calibrar sensor de cor na')
+		.appendField('🎨 Calibrar sensor')
         .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_I2C_1'],
@@ -129,122 +130,58 @@ Blockly.Blocks['brick_sensor_tcs34725_calibrar'] = {
   }
 };
 
-// Controla a cor de um LED da fita (ou todos)
-Blockly.Blocks['brick_led_cor'] = {
+// Lê a distância do sensor VL53L0X em uma porta I2C escolhida, em cm ou mm
+Blockly.Blocks['brick_sensor_vl53l0x_distancia'] = {
   init: function() {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-		.appendField('💡 LED')
+        .appendField('📏 porta')
         .appendField(new Blockly.FieldDropdown([
-          ['todos', '255'],
-          ['1', '1'],
-          ['2', '2'],
-          ['3', '3'],
-          ['4', '4'],
-          ['5', '5'],
-          ['6', '6'],
-          ['7', '7'],
-          ['8', '8'],
-          ['9', '9'],
-          ['10', '10']
-        ]), 'LED')
-        .appendField('cor')
-        .appendField(new Blockly.FieldDropdown([
-          ['vermelho', 'VERMELHO'],
-          ['verde', 'VERDE'],
-          ['azul', 'AZUL'],
-          ['branco', 'BRANCO'],
-          ['amarelo', 'AMARELO'],
-          ['ciano', 'CIANO'],
-          ['magenta', 'MAGENTA']
-        ]), 'COR');
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setTooltip('Liga o(s) LED(s) da fita na cor escolhida. A opção "todos" altera todos os LEDs.');
-  }
-};
-
-// Apaga um LED da fita (ou todos)
-Blockly.Blocks['brick_led_apagar'] = {
-  init: function() {
-    this.setColour(Blockly.Blocks.brick_sensores.HUE);
-    this.setHelpUrl('');
-    this.appendDummyInput()
-		.appendField('💡 Apagar LED')
-        .appendField(new Blockly.FieldDropdown([
-          ['todos', '255'],
-          ['1', '1'],
-          ['2', '2'],
-          ['3', '3'],
-          ['4', '4'],
-          ['5', '5'],
-          ['6', '6'],
-          ['7', '7'],
-          ['8', '8'],
-          ['9', '9'],
-          ['10', '10']
-        ]), 'LED');
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setTooltip('Apaga o LED escolhido ou todos os LEDs da fita.');
-  }
-};
-
-// Inicializa a fita de LED na porta e quantidade desejada
-Blockly.Blocks['brick_led_inicializa'] = {
-  init: function() {
-    this.setColour(Blockly.Blocks.brick_sensores.HUE);
-    this.setHelpUrl('');
-    this.appendDummyInput()
-		.appendField('💡 Usar LEDs na')
-        .appendField('porta')
-        .appendField(new Blockly.FieldDropdown([
-          ['1', 'PORTA_LED_1'],
-          ['2', 'PORTA_LED_2'],
-          ['3', 'PORTA_LED_3'],
-          ['4', 'PORTA_LED_4']
+          ['1', 'PORTA_I2C_1'],
+          ['2', 'PORTA_I2C_2'],
+          ['3', 'PORTA_I2C_3'],
+          ['4', 'PORTA_I2C_4'],
+          ['5', 'PORTA_I2C_5']
         ]), 'PORTA')
-        .appendField('com')
+        .appendField('distância em')
         .appendField(new Blockly.FieldDropdown([
-          ['1 LED', '1'],
-          ['2 LEDs', '2'],
-          ['3 LEDs', '3'],
-          ['4 LEDs', '4'],
-          ['5 LEDs', '5'],
-          ['6 LEDs', '6'],
-          ['7 LEDs', '7'],
-          ['8 LEDs', '8'],
-          ['9 LEDs', '9'],
-          ['10 LEDs', '10']
-        ]), 'QTD');
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setTooltip('Inicializa a fita de LEDs na porta escolhida com a quantidade de LEDs que você está usando (1 a 10).');
+          ['cm', 'CM'],
+          ['mm', 'MM']
+        ]), 'UNID');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Lê a distância na unidade escolhida (cm ou mm) do sensor VL53L0X conectado na porta I2C escolhida.');
   }
 };
 
-// Efeitos especiais de luz na fita de LED
-Blockly.Blocks['brick_led_efeitos'] = {
+// Compara a distância do VL53L0X com um valor em cm ou mm
+Blockly.Blocks['brick_sensor_vl53l0x_compara'] = {
   init: function() {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-		.appendField('💡 Luzes especiais:')
+    .appendField('📏 porta')
+    .appendField(new Blockly.FieldDropdown([
+      ['1', 'PORTA_I2C_1'],
+      ['2', 'PORTA_I2C_2'],
+      ['3', 'PORTA_I2C_3'],
+      ['4', 'PORTA_I2C_4'],
+      ['5', 'PORTA_I2C_5']
+    ]), 'PORTA')
         .appendField(new Blockly.FieldDropdown([
-          ['arco-íris parado', 'ARCOIRIS'],
-          ['arco-íris girando', 'ARCOIRIS_ROT'],
-          ['Knight Rider', 'KNIGHT'],
-          ['preencher LEDs', 'PREENCHIMENTO'],
-          ['piscar', 'PISCAR'],
-          ['fade (aparecer/desaparecer)', 'FADE'],
-          ['teatro (correr luzes)', 'TEATRO'],
-          ['faíscas (sparkle)', 'SPARKLE'],
-          ['onda de luz', 'ONDA']
-        ]), 'EFEITO');
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setTooltip('Roda um efeito especial de luz na fita de LEDs (use depois de inicializar a fita).');
+          ['é mais perto que', 'MENOR'],
+          ['é igual a', 'IGUAL'],
+          ['é mais longe que', 'MAIOR']
+        ]), 'COND');
+    this.appendValueInput('VALOR')
+        .setCheck('Number')
+        .setAlign(Blockly.ALIGN_RIGHT);
+    this.appendDummyInput()
+		.appendField(new Blockly.FieldDropdown([
+		  ['cm', 'CM'],
+		  ['mm', 'MM']
+		]), 'UNID');
+    this.setOutput(true, 'Boolean');
+    this.setTooltip('Retorna verdadeiro se a distância medida pelo VL53L0X for mais perto, igual ou mais longe que o valor informado, na unidade escolhida (cm ou mm).');
   }
 };
-

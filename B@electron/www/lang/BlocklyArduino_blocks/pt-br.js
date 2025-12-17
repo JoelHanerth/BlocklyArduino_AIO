@@ -125,6 +125,7 @@ Blockly.Msg.CAT_ARDUINO_SERVO = "Servo Motor";
 Blockly.Msg.CAT_BRICK = "Brick";
 Blockly.Msg.CAT_BRICK_MOTORS = "Motores";
 Blockly.Msg.CAT_BRICK_SENSORS = "Sensores";
+Blockly.Msg.CAT_BRICK_LED = "LED";
 
 
 Blockly.Msg.CAT_ANEMOROTATION = "Anemometer with cups"; //added september 16th 2017

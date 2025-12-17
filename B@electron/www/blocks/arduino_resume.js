@@ -125,6 +125,7 @@ head.load(
 "blocks/brick_blocks/motor.js",
 "blocks/brick_blocks/sensores.js",
 "blocks/brick_blocks/brick.js",
+"blocks/brick_blocks/led.js",
 function() {
     // Call a function when done
     console.log("Done loading Various Blocks");

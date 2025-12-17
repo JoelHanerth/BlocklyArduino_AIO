@@ -24,7 +24,7 @@ goog.provide('Blockly.Blocks.motor');
 goog.require('Blockly.Blocks');
 goog.require('Blockly.Types');
 
-Blockly.Blocks.motor.HUE = 200;
+Blockly.Blocks.motor.HUE = "#0090F5";
 
 Blockly.Blocks['brick_potencia_motores'] = {
   init: function() {

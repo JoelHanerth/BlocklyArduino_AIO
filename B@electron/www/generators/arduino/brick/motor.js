@@ -151,8 +151,8 @@ Blockly.Arduino['brick_motores_movimento'] = function(block) {
   }
 
   // Monta a chamada de adiciona na ordem escolhida
-  var leftRef = (esq === 'MOTOR1') ? '&Motor1' : '&Motor2';
-  var rightRef = (dir === 'MOTOR1') ? '&Motor1' : '&Motor2';
+  var leftRef = (esq === 'MOTOR1') ? 'Motor1' : 'Motor2';
+  var rightRef = (dir === 'MOTOR1') ? 'Motor1' : 'Motor2';
 
   Blockly.Arduino.setups_['setup_brick_adiciona_motores'] =
     'brick.adiciona(' + leftRef + ', ' + rightRef + ');';
