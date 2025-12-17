@@ -31,16 +31,14 @@ Blockly.Blocks['brick_potencia_motores'] = {
     this.setColour(Blockly.Blocks.motor.HUE);
     this.setHelpUrl('');
     this.setInputsInline(true);
-    this.appendDummyInput()
-        .appendField("Potência dos Motores");
     this.appendValueInput("MOTOR1")
         .setCheck('Number')
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("Motor 1");
+        .appendField("Motor 1 potência");
     this.appendValueInput("MOTOR2")
         .setCheck('Number')
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("Motor 2");
+        .appendField("Motor 2 potência");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip("Define a potência dos motores (valores de -100 a 100)");

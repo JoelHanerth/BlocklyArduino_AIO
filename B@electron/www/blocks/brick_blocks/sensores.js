@@ -17,7 +17,11 @@ Blockly.Blocks['brick_sensor_tcs34725_criar'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-		.appendField('🎨 Usar sensor de cor na ')
+		 .appendField(new Blockly.FieldImage(
+            Blockly.pathToBlockly + 'blocks/brick_blocks/assets/tcs34725.png',
+            45,
+            18
+        ))
         .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_I2C_1'],
@@ -38,7 +42,11 @@ Blockly.Blocks['brick_sensor_tcs34725_eh_cor'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-		.appendField('🎨')
+        .appendField(new Blockly.FieldImage(
+            Blockly.pathToBlockly + 'blocks/brick_blocks/assets/tcs34725.png',
+            45,
+            18
+        ))
         .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_I2C_1'],
@@ -67,7 +75,11 @@ Blockly.Blocks['brick_sensor_tcs34725_cor'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-		.appendField('🎨')
+        .appendField(new Blockly.FieldImage(
+            Blockly.pathToBlockly + 'blocks/brick_blocks/assets/tcs34725.png',
+            45,
+            18
+        ))
         .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_I2C_1'],
@@ -88,7 +100,11 @@ Blockly.Blocks['brick_sensor_tcs34725_ler'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-		.appendField('🎨')
+        .appendField(new Blockly.FieldImage(
+            Blockly.pathToBlockly + 'blocks/brick_blocks/assets/tcs34725.png',
+            45,
+            18
+        ))
         .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_I2C_1'],
@@ -115,7 +131,11 @@ Blockly.Blocks['brick_sensor_tcs34725_calibrar'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-		.appendField('🎨 Calibrar sensor')
+        .appendField(new Blockly.FieldImage(
+            Blockly.pathToBlockly + 'blocks/brick_blocks/assets/tcs34725.png',
+            45,
+            18
+        ))
         .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_I2C_1'],
@@ -136,7 +156,12 @@ Blockly.Blocks['brick_sensor_vl53l0x_distancia'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-        .appendField('📏 porta')
+        .appendField(new Blockly.FieldImage(
+            Blockly.pathToBlockly + 'blocks/brick_blocks/assets/vl53l0x.png',
+            45,
+            18
+        ))
+        .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_I2C_1'],
           ['2', 'PORTA_I2C_2'],
@@ -160,7 +185,12 @@ Blockly.Blocks['brick_sensor_vl53l0x_compara'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-    .appendField('📏 porta')
+        .appendField(new Blockly.FieldImage(
+            Blockly.pathToBlockly + 'blocks/brick_blocks/assets/vl53l0x.png',
+            45,
+            18
+        ))
+    .appendField('porta')
     .appendField(new Blockly.FieldDropdown([
       ['1', 'PORTA_I2C_1'],
       ['2', 'PORTA_I2C_2'],
@@ -183,5 +213,64 @@ Blockly.Blocks['brick_sensor_vl53l0x_compara'] = {
 		]), 'UNID');
     this.setOutput(true, 'Boolean');
     this.setTooltip('Retorna verdadeiro se a distância medida pelo VL53L0X for mais perto, igual ou mais longe que o valor informado, na unidade escolhida (cm ou mm).');
+  }
+};
+
+// Lê a distância do sensor ultrassônico HC-SR04 em uma porta, em cm
+Blockly.Blocks['brick_sensor_ultrassonico_distancia'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick_sensores.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+    .appendField(new Blockly.FieldImage(
+        Blockly.pathToBlockly + 'blocks/brick_blocks/assets/ultrassonico.png',
+        45,
+        18
+    ))
+        .appendField('porta')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'PORTA_ULTRASSONICO_1'],
+          ['2', 'PORTA_ULTRASSONICO_2'],
+          ['3', 'PORTA_ULTRASSONICO_3'],
+          ['4', 'PORTA_ULTRASSONICO_4'],
+          ['5', 'PORTA_ULTRASSONICO_5']
+        ]), 'PORTA')
+        .appendField('distância em cm');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Lê a distância em centímetros do sensor ultrassônico conectado na porta escolhida.');
+  }
+};
+
+// Compara a distância do ultrassônico com um valor em cm
+Blockly.Blocks['brick_sensor_ultrassonico_compara'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick_sensores.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+  .appendField(new Blockly.FieldImage(
+      Blockly.pathToBlockly + 'blocks/brick_blocks/assets/ultrassonico.png',
+      45,
+      18
+  ))
+  .appendField('porta')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'PORTA_ULTRASSONICO_1'],
+          ['2', 'PORTA_ULTRASSONICO_2'],
+          ['3', 'PORTA_ULTRASSONICO_3'],
+          ['4', 'PORTA_ULTRASSONICO_4'],
+          ['5', 'PORTA_ULTRASSONICO_5']
+        ]), 'PORTA')
+        .appendField(new Blockly.FieldDropdown([
+          ['é mais perto que', 'MENOR'],
+          ['é igual a', 'IGUAL'],
+          ['é mais longe que', 'MAIOR']
+        ]), 'COND');
+    this.appendValueInput('VALOR')
+        .setCheck('Number')
+        .setAlign(Blockly.ALIGN_RIGHT);
+    this.appendDummyInput()
+		.appendField('cm');
+    this.setOutput(true, 'Boolean');
+    this.setTooltip('Retorna verdadeiro se a distância medida pelo ultrassônico for mais perto, igual ou mais longe que o valor informado em centímetros.');
   }
 };

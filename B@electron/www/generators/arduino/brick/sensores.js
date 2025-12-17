@@ -187,3 +187,58 @@ Blockly.Arduino['brick_sensor_vl53l0x_compara'] = function(block) {
 
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 };
+
+// Lê a distância do sensor ultrassônico HC-SR04 em uma porta (cm)
+Blockly.Arduino['brick_sensor_ultrassonico_distancia'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+
+  var porta = block.getFieldValue('PORTA') || 'PORTA_ULTRASSONICO_1';
+
+  var varName = 'sensorUS_' + porta.toLowerCase();
+
+  // Cria o objeto Ultrassonico para essa porta
+  Blockly.Arduino.definitions_['ultrassonico_' + porta.toLowerCase()] =
+    'Ultrassonico ' + varName + ' = Ultrassonico(' + porta + ');';
+
+  // Garante inicialização do Brick e registro do sensor
+  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  Blockly.Arduino.setups_['setup_brick_ultrassonico_' + porta.toLowerCase()] =
+    'brick.adiciona(' + varName + ');';
+
+  // getDistancia() já retorna a distância em centímetros
+  var code = varName + '.getDistancia()';
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+// Compara a distância do ultrassônico com um valor em cm
+Blockly.Arduino['brick_sensor_ultrassonico_compara'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+
+  var porta = block.getFieldValue('PORTA') || 'PORTA_ULTRASSONICO_1';
+  var cond = block.getFieldValue('COND') || 'MENOR';
+
+  var varName = 'sensorUS_' + porta.toLowerCase();
+
+  // Garante que o objeto Ultrassonico para essa porta exista
+  Blockly.Arduino.definitions_['ultrassonico_' + porta.toLowerCase()] =
+    'Ultrassonico ' + varName + ' = Ultrassonico(' + porta + ');';
+
+  // Garante inicialização do Brick e registro do sensor
+  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  Blockly.Arduino.setups_['setup_brick_ultrassonico_' + porta.toLowerCase()] =
+    'brick.adiciona(' + varName + ');';
+
+  var valor = Blockly.Arduino.valueToCode(block, 'VALOR', Blockly.Arduino.ORDER_MULTIPLICATIVE) || '0';
+
+  var dist = varName + '.getDistancia()';
+  var code;
+  if (cond === 'MENOR') {
+    code = dist + ' < ' + valor;
+  } else if (cond === 'MAIOR') {
+    code = dist + ' > ' + valor;
+  } else { // IGUAL
+    code = dist + ' == ' + valor;
+  }
+
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
