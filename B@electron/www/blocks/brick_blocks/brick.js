@@ -43,3 +43,28 @@ Blockly.Blocks['brick_imprimir_terminal'] = {
     this.setTooltip('Envia o valor para o Monitor Serial, com ou sem pular linha.');
   }
 };
+
+// Verifica se o botão do Brick está pressionado
+Blockly.Blocks['brick_botao_apertado'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+        .appendField('botão do Brick está pressionado?');
+    this.setOutput(true, 'Boolean');
+    this.setTooltip('Retorna verdadeiro se o botão do Brick estiver pressionado (usa brick.botaoApertado()).');
+  }
+};
+
+// Aguarda até que o botão do Brick seja pressionado
+Blockly.Blocks['brick_aguarde_botao_apertado'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+        .appendField('aguarde até o botão do Brick ser pressionado');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Fica esperando até que o botão do Brick seja pressionado (usa brick.botaoApertado()).');
+  }
+};

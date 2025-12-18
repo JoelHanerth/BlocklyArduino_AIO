@@ -63,16 +63,16 @@ Blockly.Blocks['brick_led_cor'] = {
 		.appendField('LED')
         .appendField(new Blockly.FieldDropdown([
           ['todos', '255'],
-          ['1', '1'],
-          ['2', '2'],
-          ['3', '3'],
-          ['4', '4'],
-          ['5', '5'],
-          ['6', '6'],
-          ['7', '7'],
-          ['8', '8'],
-          ['9', '9'],
-          ['10', '10']
+      ['1', 'LED_1'],
+      ['2', 'LED_2'],
+      ['3', 'LED_3'],
+      ['4', 'LED_4'],
+      ['5', 'LED_5'],
+      ['6', 'LED_6'],
+      ['7', 'LED_7'],
+      ['8', 'LED_8'],
+      ['9', 'LED_9'],
+      ['10', 'LED_10']
         ]), 'LED')
         .appendField('cor')
         .appendField(new Blockly.FieldDropdown([
@@ -107,16 +107,16 @@ Blockly.Blocks['brick_led_rgb'] = {
         .appendField('LED')
         .appendField(new Blockly.FieldDropdown([
           ['todos', '255'],
-          ['1', '1'],
-          ['2', '2'],
-          ['3', '3'],
-          ['4', '4'],
-          ['5', '5'],
-          ['6', '6'],
-          ['7', '7'],
-          ['8', '8'],
-          ['9', '9'],
-          ['10', '10']
+          ['1', 'LED_1'],
+          ['2', 'LED_2'],
+          ['3', 'LED_3'],
+          ['4', 'LED_4'],
+          ['5', 'LED_5'],
+          ['6', 'LED_6'],
+          ['7', 'LED_7'],
+          ['8', 'LED_8'],
+          ['9', 'LED_9'],
+          ['10', 'LED_10']
         ]), 'LED')
     this.appendValueInput('R')
         .setCheck('Number')
@@ -153,16 +153,16 @@ Blockly.Blocks['brick_led_apagar'] = {
 		.appendField('LED')
         .appendField(new Blockly.FieldDropdown([
           ['todos', '255'],
-          ['1', '1'],
-          ['2', '2'],
-          ['3', '3'],
-          ['4', '4'],
-          ['5', '5'],
-          ['6', '6'],
-          ['7', '7'],
-          ['8', '8'],
-          ['9', '9'],
-          ['10', '10']
+      ['1', 'LED_1'],
+      ['2', 'LED_2'],
+      ['3', 'LED_3'],
+      ['4', 'LED_4'],
+      ['5', 'LED_5'],
+      ['6', 'LED_6'],
+      ['7', 'LED_7'],
+      ['8', 'LED_8'],
+      ['9', 'LED_9'],
+      ['10', 'LED_10']
         ]), 'LED');
 		
     this.setPreviousStatement(true, null);

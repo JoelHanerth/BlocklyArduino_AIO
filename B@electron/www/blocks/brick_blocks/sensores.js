@@ -143,7 +143,8 @@ Blockly.Blocks['brick_sensor_tcs34725_calibrar'] = {
           ['3', 'PORTA_I2C_3'],
           ['4', 'PORTA_I2C_4'],
           ['5', 'PORTA_I2C_5']
-        ]), 'PORTA');
+        ]), 'PORTA')
+        .appendField('calibrar');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip('Grava a calibração do sensor de cor dessa porta na memória do Brick.');

@@ -7,6 +7,46 @@ goog.provide('Blockly.Arduino.brick_led');
 
 goog.require('Blockly.Arduino');
 
+// LEDStrip em uma porta LED escolhida, registrado no Brick
+Blockly.Arduino['brick_ledstrip_criar'] = function(block) {
+    Blockly.Arduino.includes_['include_brick_simples'] =
+        '#include <brickSimples.h>';
+
+    var porta = block.getFieldValue('PORTA') || 'PORTA_LED_1';
+  // "QTD" é um FieldDropdown, não uma entrada de valor, então usamos getFieldValue
+  var qtd = block.getFieldValue('QTD') || '1';
+
+    var varName;
+    switch (porta) {
+      case 'PORTA_LED_1':
+        varName = 'led1';
+        break;
+      case 'PORTA_LED_2':
+        varName = 'led2';
+        break;
+      case 'PORTA_LED_3':
+        varName = 'led3';
+        break;
+      case 'PORTA_LED_4':
+        varName = 'led4';
+        break;
+      default:
+        varName = 'led1';
+        break;
+    }
+
+    Blockly.Arduino.definitions_['ledstrip_' + porta.toLowerCase()] =
+        'LEDStrip ' + varName + ' = LEDStrip(' + porta + ', ' + qtd + ');';
+
+    Blockly.Arduino.setups_['setup_brick_simples'] =
+        'brick.inicializa();';
+
+    Blockly.Arduino.setups_['setup_brick_ledstrip_' + porta.toLowerCase()] =
+        'brick.adiciona(' + varName + ');';
+
+    return '';
+};
+
 // Controla a cor de um LED da fita (ou todos)
 Blockly.Arduino['brick_led_cor'] = function(block) {
   Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
@@ -49,11 +89,8 @@ Blockly.Arduino['brick_led_cor'] = function(block) {
   if (led === '255') {
     indice = '255';
   } else {
-    var n = parseInt(led, 10) - 1;
-    if (isNaN(n) || n < 0) {
-      n = 0;
-    }
-    indice = String(n);
+    // Usa diretamente os defines LED_1..LED_10
+    indice = led;
   }
 
   var code = '';
@@ -129,11 +166,8 @@ Blockly.Arduino['brick_led_rgb'] = function(block) {
   if (led === '255') {
     indice = '255';
   } else {
-    var n = parseInt(led, 10) - 1;
-    if (isNaN(n) || n < 0) {
-      n = 0;
-    }
-    indice = String(n);
+    // Usa diretamente os defines LED_1..LED_10
+    indice = led;
   }
 
   var r = Blockly.Arduino.valueToCode(block, 'R', Blockly.Arduino.ORDER_ATOMIC) || '0';
@@ -192,11 +226,8 @@ Blockly.Arduino['brick_led_apagar'] = function(block) {
   if (led === '255') {
     indice = '255';
   } else {
-    var n = parseInt(led, 10) - 1;
-    if (isNaN(n) || n < 0) {
-      n = 0;
-    }
-    indice = String(n);
+    // Usa diretamente os defines LED_1..LED_10
+    indice = led;
   }
 
   var code = '';
@@ -251,46 +282,6 @@ Blockly.Arduino['brick_led_brilho'] = function(block) {
              stripVar + '.atualiza();\n';
 
   return code;
-};
-
-// LEDStrip em uma porta LED escolhida, registrado no Brick
-Blockly.Arduino['brick_ledstrip_criar'] = function(block) {
-    Blockly.Arduino.includes_['include_brick_simples'] =
-        '#include <brickSimples.h>';
-
-    var porta = block.getFieldValue('PORTA') || 'PORTA_LED_1';
-  // "QTD" é um FieldDropdown, não uma entrada de valor, então usamos getFieldValue
-  var qtd = block.getFieldValue('QTD') || '1';
-
-    var varName;
-    switch (porta) {
-      case 'PORTA_LED_1':
-        varName = 'led1';
-        break;
-      case 'PORTA_LED_2':
-        varName = 'led2';
-        break;
-      case 'PORTA_LED_3':
-        varName = 'led3';
-        break;
-      case 'PORTA_LED_4':
-        varName = 'led4';
-        break;
-      default:
-        varName = 'led1';
-        break;
-    }
-
-    Blockly.Arduino.definitions_['ledstrip_' + porta.toLowerCase()] =
-        'LEDStrip ' + varName + ' = LEDStrip(' + porta + ', ' + qtd + ');';
-
-    Blockly.Arduino.setups_['setup_brick_simples'] =
-        'brick.inicializa();';
-
-    Blockly.Arduino.setups_['setup_brick_ledstrip_' + porta.toLowerCase()] =
-        'brick.adiciona(' + varName + ');';
-
-    return '';
 };
 
 // Roda efeitos especiais de luz na fita de LED

@@ -28,3 +28,21 @@ Blockly.Arduino['brick_imprimir_terminal'] = function(block) {
   var code = 'Serial.' + func + '(' + valor + ');\n';
   return code;
 };
+
+// Verifica se o botão do Brick está pressionado
+Blockly.Arduino['brick_botao_apertado'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+
+  var code = 'brick.botaoApertado()';
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+// Aguarda até que o botão do Brick seja pressionado
+Blockly.Arduino['brick_aguarde_botao_apertado'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+
+  var code = 'while (!brick.botaoApertado()) {\n  delay(10);\n}\n';
+  return code;
+};

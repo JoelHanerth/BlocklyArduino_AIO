@@ -114,6 +114,7 @@ head.load(
 "generators/arduino/Adafruit_SSD1306.js",
 "generators/arduino/LoRa.js",
 "generators/arduino/brick/motor.js",
+"generators/arduino/brick/motores.js",
 "generators/arduino/brick/brick.js",
 "generators/arduino/brick/sensores.js",
 "generators/arduino/brick/led.js",

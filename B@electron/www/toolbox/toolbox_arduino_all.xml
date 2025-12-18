@@ -4,11 +4,12 @@
 	<category name="CAT_BRICK" colour="#FF6680">
 		<block type="brick_atualizabrick"></block>
 		<block type="brick_imprimir_terminal"></block>
+		<block type="brick_botao_apertado"></block>
+		<block type="brick_aguarde_botao_apertado"></block>
 	</category>
 
-	<category name="CAT_BRICK_MOTORS" colour="#0090F5">
+	<category name="CAT_BRICK_MOTOR" colour="#0090F5">
 		<block type="brick_motor_criar"></block>
-		<block type="brick_motores_movimento"></block>
 		<block type="brick_motor_potencia">
 			<value name="POTENCIA">
 				<shadow type="math_number">
@@ -16,6 +17,12 @@
 				</shadow>
 			</value>
 		</block>
+		<block type="brick_motor_direcao"></block>
+		<block type="brick_motor_frear"></block>
+	</category>
+
+	<category name="CAT_BRICK_MOTORS" colour="#FF4CCD">
+		<block type="brick_motores_movimento"></block>
 		<block type="brick_potencia_motores">
 			<value name="MOTOR1">
 				<shadow type="math_number">
@@ -28,8 +35,6 @@
 				</shadow>
 			</value>
 		</block>
-		<block type="brick_motor_direcao"></block>
-		<block type="brick_motor_frear"></block>
 		<block type="brick_parar_motores"></block>
 	</category>
 
