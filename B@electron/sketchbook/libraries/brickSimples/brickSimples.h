@@ -19,6 +19,7 @@ private:
     uint8_t dir;
     char descricaoPorta[6];
     int potenciaAtual = 0;
+    int potenciaPadraoMotor = 60;
     bool invertido = false;
 public:
     Motor(PortaMotor p, bool invertido=false){
@@ -34,6 +35,31 @@ public:
 
     ~Motor(){
     }
+    void setPotenciaPadrao(int potencia){
+        potencia = constrain(potencia, -100, 100);
+        this->potenciaPadraoMotor = potencia;
+    }
+
+    int getPotenciaPadrao(){
+        return this->potenciaPadraoMotor;
+    }
+
+    void potencia(){
+        potencia(this->potenciaPadraoMotor);
+    }
+
+    void acionaPorTempo(unsigned long tempoMs){
+        potencia(this->potenciaPadraoMotor);
+        delay(tempoMs);
+        parar();
+    }
+
+    void acionaPorTempo(int potenciaAcionamento, unsigned long tempoMs){
+        potencia(potenciaAcionamento);
+        delay(tempoMs);
+        parar();
+    }
+
     void potencia(int potencia){
         // Agora a potência é de -100 a 100 (regra de 3 para 0-255 no PWM)
         potencia = constrain(potencia, -100, 100);
@@ -74,6 +100,7 @@ public:
     private:
     bool motor1Invertido = false;
     bool motor2Invertido = false;
+    int potenciaPadraoBrick = 60;
     TCS34725 *listaTCS34725[MAXIMO_SENSORES]={NULL, NULL, NULL, NULL, NULL};
     VL53L0X *listaVL53L0X[MAXIMO_SENSORES]={NULL, NULL, NULL, NULL, NULL};
     Ultrassonico *listaUltrassonico[MAXIMO_SENSORES]={NULL, NULL, NULL, NULL, NULL};
@@ -139,6 +166,31 @@ public:
         return ::millis()*4;
     }
 
+    void setPotenciaPadrao(int potencia){
+        potencia = constrain(potencia, -100, 100);
+        this->potenciaPadraoBrick = potencia;
+        if (listaMotor[0] != NULL){
+            listaMotor[0]->setPotenciaPadrao(potencia);
+        }
+        if (listaMotor[1] != NULL){
+            listaMotor[1]->setPotenciaPadrao(potencia);
+        }
+    }
+
+    int getPotenciaPadrao(){
+        return this->potenciaPadraoBrick;
+    }
+
+    // Controla ambos os motores usando a potência padrão configurada
+    void potenciaMotores(){
+        if (listaMotor[0] == NULL || listaMotor[1] == NULL){
+            Serial.println(F("Erro: Motores nao inicializados! Use inicializaMotores() antes de controlar os motores."));
+            return;
+        }
+        listaMotor[0]->potencia();
+        listaMotor[1]->potencia();
+    }
+
     
     // Controla ambos os motores com a mesma potência
     // potencia: -100 a 100 (negativo = reverso, positivo = frente)
@@ -160,6 +212,36 @@ public:
         }
         listaMotor[0]->potencia(pot1);
         listaMotor[1]->potencia(pot2);
+    }
+
+    // Aciona ambos os motores pela potencia padrao por um tempo em ms
+    void acionaMotoresPorTempo(unsigned long tempoMs){
+        if (listaMotor[0] == NULL || listaMotor[1] == NULL){
+            Serial.println(F("Erro: Motores nao inicializados! Use inicializaMotores() antes de controlar os motores."));
+            return;
+        }
+        // Liga os dois motores praticamente ao mesmo tempo
+        listaMotor[0]->potencia();
+        listaMotor[1]->potencia();
+        delay(tempoMs);
+        // Para os dois motores juntos
+        listaMotor[0]->parar();
+        listaMotor[1]->parar();
+    }
+
+    // Aciona ambos os motores por um tempo em ms com a potencia informada
+    void acionaMotoresPorTempo(int potencia, unsigned long tempoMs){
+        if (listaMotor[0] == NULL || listaMotor[1] == NULL){
+            Serial.println(F("Erro: Motores nao inicializados! Use inicializaMotores() antes de controlar os motores."));
+            return;
+        }
+        // Liga os dois com a mesma potencia praticamente ao mesmo tempo
+        listaMotor[0]->potencia(potencia);
+        listaMotor[1]->potencia(potencia);
+        delay(tempoMs);
+        // Para os dois juntos
+        listaMotor[0]->parar();
+        listaMotor[1]->parar();
     }
 
 

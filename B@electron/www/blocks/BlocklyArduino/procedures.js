@@ -130,6 +130,10 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     for (var i = 0; i < this.arguments_.length; i++) {
       var parameter = document.createElement('arg');
       parameter.setAttribute('name', this.arguments_[i]);
+      // Save argument type if available so it can be restored after reload.
+      if (this.argumentsTypes_ && this.argumentsTypes_[i]) {
+        parameter.setAttribute('type', this.argumentsTypes_[i]);
+      }
       if (opt_paramIds && this.paramIds_) {
         parameter.setAttribute('paramId', this.paramIds_[i]);
       }
@@ -149,9 +153,14 @@ Blockly.Blocks['procedures_defnoreturn'] = {
    */
   domToMutation: function(xmlElement) {
     this.arguments_ = [];
+    this.argumentsTypes_ = [];
     for (var i = 0, childNode; childNode = xmlElement.childNodes[i]; i++) {
       if (childNode.nodeName.toLowerCase() == 'arg') {
         this.arguments_.push(childNode.getAttribute('name'));
+        // Restore saved argument type (if any). Older projects may not
+        // have this attribute, so default to undefined in that case.
+        var argType = childNode.getAttribute('type');
+        this.argumentsTypes_.push(argType);
       }
     }
     this.updateParams_();
@@ -184,6 +193,10 @@ Blockly.Blocks['procedures_defnoreturn'] = {
       var paramBlock = workspace.newBlock('procedures_mutatorarg');
       paramBlock.initSvg();
       paramBlock.setFieldValue(this.arguments_[i], 'NAME');
+      // Restore the argument type dropdown in the mutator if we have it.
+      if (this.argumentsTypes_ && this.argumentsTypes_[i]) {
+        paramBlock.setFieldValue(this.argumentsTypes_[i], 'VARIABLE_SETTYPE_TYPE');
+      }
       // Store the old location.
       paramBlock.oldLocation = i;
       connection.connect(paramBlock.previousConnection);
@@ -206,7 +219,10 @@ Blockly.Blocks['procedures_defnoreturn'] = {
     var paramBlock = containerBlock.getInputTargetBlock('STACK');
     while (paramBlock) {
       this.arguments_.push(paramBlock.getFieldValue('NAME'));
-	  this.argumentsTypes_.push(paramBlock.getBlockType());
+	  // Store the Blockly.Types key selected in the mutator dropdown so it
+	  // can be serialized and later mapped back to a type object.
+	  var typeKey = paramBlock.getFieldValue('VARIABLE_SETTYPE_TYPE');
+	  this.argumentsTypes_.push(typeKey);
       this.paramIds_.push(paramBlock.id);
       paramBlock = paramBlock.nextConnection &&
           paramBlock.nextConnection.targetBlock();

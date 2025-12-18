@@ -275,3 +275,34 @@ Blockly.Blocks['brick_sensor_ultrassonico_compara'] = {
     this.setTooltip('Retorna verdadeiro se a distância medida pelo ultrassônico for mais perto, igual ou mais longe que o valor informado em centímetros.');
   }
 };
+
+// Tipagem dos blocos de sensores Brick para o sistema Blockly.Types
+// (necessário para atribuições em variáveis tipadas)
+if (Blockly.Types) {
+  // TCS34725
+  Blockly.Blocks['brick_sensor_tcs34725_eh_cor'].getBlockType = function() {
+    return Blockly.Types.BOOLEAN;
+  };
+  Blockly.Blocks['brick_sensor_tcs34725_cor'].getBlockType = function() {
+    return Blockly.Types.NUMBER;
+  };
+  Blockly.Blocks['brick_sensor_tcs34725_ler'].getBlockType = function() {
+    return Blockly.Types.NUMBER;
+  };
+
+  // VL53L0X
+  Blockly.Blocks['brick_sensor_vl53l0x_distancia'].getBlockType = function() {
+    return Blockly.Types.NUMBER;
+  };
+  Blockly.Blocks['brick_sensor_vl53l0x_compara'].getBlockType = function() {
+    return Blockly.Types.BOOLEAN;
+  };
+
+  // Ultrassônico
+  Blockly.Blocks['brick_sensor_ultrassonico_distancia'].getBlockType = function() {
+    return Blockly.Types.NUMBER;
+  };
+  Blockly.Blocks['brick_sensor_ultrassonico_compara'].getBlockType = function() {
+    return Blockly.Types.BOOLEAN;
+  };
+}

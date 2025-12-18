@@ -48,6 +48,148 @@ Blockly.Blocks['brick_motor_criar'] = {
   }
 };
 
+// Inicia o motor usando a potência padrão configurada (Motor1.potencia / Motor2.potencia)
+Blockly.Blocks['brick_motor_iniciar'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.motor.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+        .appendField('Iniciar motor')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'MOTOR1'],
+          ['2', 'MOTOR2']
+        ]), 'MOTOR');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Liga o motor selecionado usando a potência padrão configurada (Motor.potencia()).');
+  }
+};
+
+// Controla a potência de um único motor (Motor1.potencia / Motor2.potencia)
+Blockly.Blocks['brick_motor_potencia'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.motor.HUE);
+    this.setHelpUrl('');
+    this.setInputsInline(true);
+    this.appendDummyInput()
+        .appendField('Iniciar motor')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'MOTOR1'],
+          ['2', 'MOTOR2']
+        ]), 'MOTOR');
+    this.appendValueInput('POTENCIA')
+        .setCheck('Number')
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField(' com potência de');
+    this.appendDummyInput()
+        .appendField('%');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Define a potência de um único motor (usa Motor1.potencia ou Motor2.potencia).');
+  }
+};
+
+// Aciona motor com potência informada por um tempo em segundos/ms (usa Motor.acionaPorTempo(potencia, tempoMs))
+Blockly.Blocks['brick_motor_acionar_pot_tempo'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.motor.HUE);
+    this.setHelpUrl('');
+    this.setInputsInline(true);
+    this.appendDummyInput()
+        .appendField('Motor')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'MOTOR1'],
+          ['2', 'MOTOR2']
+        ]), 'MOTOR')
+        .appendField('girar a');
+    this.appendValueInput('POTENCIA')
+        .setCheck('Number');
+      this.appendDummyInput()
+        .appendField('%');
+    this.appendDummyInput()
+        .appendField('por');
+    this.appendValueInput('TEMPO')
+        .setCheck('Number');
+    this.appendDummyInput()
+        .appendField(new Blockly.FieldDropdown([
+          ['segundos', 'S'],
+          ['milissegundos', 'MS']
+        ]), 'UNIDADE');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Aciona o motor escolhido na potência informada por um tempo em segundos ou milissegundos (usa Motor.acionaPorTempo(potencia, tempoMs)).');
+  }
+};
+
+// Aciona motor usando a potência padrão por um tempo em segundos/ms (usa Motor.acionaPorTempo(tempoMs))
+Blockly.Blocks['brick_motor_acionar_tempo'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.motor.HUE);
+    this.setHelpUrl('');
+    this.setInputsInline(true);
+    this.appendDummyInput()
+        .appendField('Motor')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'MOTOR1'],
+          ['2', 'MOTOR2']
+        ]), 'MOTOR')
+        .appendField('girar');
+    this.appendDummyInput()
+        .appendField('por');
+    this.appendValueInput('TEMPO')
+        .setCheck('Number');
+    this.appendDummyInput()
+        .appendField(new Blockly.FieldDropdown([
+          ['segundos', 'S'],
+          ['milissegundos', 'MS']
+        ]), 'UNIDADE');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Aciona o motor escolhido usando a potência padrão por um tempo em segundos ou milissegundos (usa Motor.acionaPorTempo(tempoMs)).');
+  }
+};
+
+// Define a potência padrão (%) de um motor (Motor1.setPotenciaPadrao / Motor2.setPotenciaPadrao)
+Blockly.Blocks['brick_motor_potencia_padrao'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.motor.HUE);
+    this.setHelpUrl('');
+    this.setInputsInline(true);
+    this.appendDummyInput()
+        .appendField('Motor')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'MOTOR1'],
+          ['2', 'MOTOR2']
+        ]), 'MOTOR')
+        .appendField('definir potência a');
+    this.appendValueInput('POTENCIA')
+        .setCheck('Number')
+        .setAlign(Blockly.ALIGN_RIGHT);
+      this.appendDummyInput()
+        .appendField('%');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Define a potência de um único motor (usa Motor.setPotenciaPadrao, -100 a 100%).');
+  }
+};
+
+// Freia um único motor (Motor1.frear / Motor2.frear)
+Blockly.Blocks['brick_motor_frear'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.motor.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+        .appendField('Frear motor')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'MOTOR1'],
+          ['2', 'MOTOR2']
+        ]), 'MOTOR');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Freia apenas o motor escolhido (Motor1.frear ou Motor2.frear).');
+  }
+};
+
 // Define a direção (normal/invertido) de um motor
 Blockly.Blocks['brick_motor_direcao'] = {
   init: function() {
@@ -67,45 +209,5 @@ Blockly.Blocks['brick_motor_direcao'] = {
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip('Escolhe se o motor gira na direção normal ou invertida.');
-  }
-};
-
-
-// Controla a potência de um único motor (Motor1.potencia / Motor2.potencia)
-Blockly.Blocks['brick_motor_potencia'] = {
-  init: function() {
-    this.setColour(Blockly.Blocks.motor.HUE);
-    this.setHelpUrl('');
-    this.setInputsInline(true);
-    this.appendDummyInput()
-        .appendField('Motor')
-        .appendField(new Blockly.FieldDropdown([
-          ['1', 'MOTOR1'],
-          ['2', 'MOTOR2']
-        ]), 'MOTOR');
-    this.appendValueInput('POTENCIA')
-        .setCheck('Number')
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField('potência');
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setTooltip('Define a potência de um único motor (usa Motor1.potencia ou Motor2.potencia).');
-  }
-};
-
-// Freia um único motor (Motor1.frear / Motor2.frear)
-Blockly.Blocks['brick_motor_frear'] = {
-  init: function() {
-    this.setColour(Blockly.Blocks.motor.HUE);
-    this.setHelpUrl('');
-    this.appendDummyInput()
-        .appendField('Frear motor')
-        .appendField(new Blockly.FieldDropdown([
-          ['1', 'MOTOR1'],
-          ['2', 'MOTOR2']
-        ]), 'MOTOR');
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setTooltip('Freia apenas o motor escolhido (Motor1.frear ou Motor2.frear).');
   }
 };

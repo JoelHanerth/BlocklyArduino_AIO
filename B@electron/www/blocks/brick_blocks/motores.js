@@ -68,8 +68,8 @@ Blockly.Blocks['brick_motores_movimento'] = {
       ]), 'DIR')
       .appendField('direção')
       .appendField(new Blockly.FieldDropdown([
-        ['normal', 'MOTOR_NORMAL'],
-        ['invertido', 'MOTOR_INVERTIDO']
+        ['invertido', 'MOTOR_INVERTIDO'],
+        ['normal', 'MOTOR_NORMAL']
       ]), 'DIR_DIR');
 
     this.setPreviousStatement(true);
@@ -104,5 +104,121 @@ Blockly.Blocks['brick_motores_movimento'] = {
         );
       }
     }
+  }
+};
+
+// Inicia o movimento dos dois motores na direção escolhida (frente ou ré)
+Blockly.Blocks['brick_motores_iniciar_movimento'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.motores.HUE);
+    this.setHelpUrl('');
+    this.setInputsInline(true);
+    this.appendDummyInput()
+      .appendField('Iniciar movimento')
+      .appendField(new Blockly.FieldDropdown([
+        ['⬆️', 'FRENTE'],
+        ['⬇️', 'RE']
+      ]), 'DIRECAO');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Inicia o movimento usando a potência padrão configurada: seta para cima = frente, seta para baixo = ré.');
+  }
+};
+
+// Inicia o movimento por um tempo (segundos/ms) usando a potência padrão, na direção escolhida
+Blockly.Blocks['brick_motores_iniciar_movimento_tempo'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.motores.HUE);
+    this.setHelpUrl('');
+    this.setInputsInline(true);
+    this.appendDummyInput()
+      .appendField('Mover')
+      .appendField(new Blockly.FieldDropdown([
+        ['⬆️', 'FRENTE'],
+        ['⬇️', 'RE']
+      ]), 'DIRECAO')
+      .appendField('por');
+    this.appendValueInput('TEMPO')
+      .setCheck('Number');
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldDropdown([
+        ['segundos', 'S'],
+        ['milissegundos', 'MS']
+      ]), 'UNIDADE');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Inicia o movimento na direção escolhida por um tempo em segundos ou milissegundos, usando a potência padrão.');
+  }
+};
+
+// Inicia o movimento na direção escolhida com a potência informada (sem usar a potência padrão)
+Blockly.Blocks['brick_motores_iniciar_movimento_potencia'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.motores.HUE);
+    this.setHelpUrl('');
+    this.setInputsInline(true);
+    this.appendDummyInput()
+      .appendField('Iniciar movimento')
+      .appendField(new Blockly.FieldDropdown([
+        ['⬆️', 'FRENTE'],
+        ['⬇️', 'RE']
+      ]), 'DIRECAO')
+      .appendField('com potência');
+    this.appendValueInput('POTENCIA')
+      .setCheck('Number');
+    this.appendDummyInput()
+      .appendField('%');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Inicia o movimento na direção escolhida usando a potência informada (valores de -100 a 100).');
+  }
+};
+
+// Move na direção escolhida por um tempo (segundos/ms) com a potência informada
+Blockly.Blocks['brick_motores_mover_tempo_potencia'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.motores.HUE);
+    this.setHelpUrl('');
+    this.setInputsInline(true);
+    this.appendDummyInput()
+      .appendField('Mover')
+      .appendField(new Blockly.FieldDropdown([
+        ['⬆️', 'FRENTE'],
+        ['⬇️', 'RE']
+      ]), 'DIRECAO')
+      .appendField('por');
+    this.appendValueInput('TEMPO')
+      .setCheck('Number');
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldDropdown([
+        ['segundos', 'S'],
+        ['milissegundos', 'MS']
+      ]), 'UNIDADE')
+      .appendField('com potência');
+    this.appendValueInput('POTENCIA')
+      .setCheck('Number');
+    this.appendDummyInput()
+      .appendField('%');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Move na direção escolhida por um tempo em segundos ou milissegundos, usando a potência informada.');
+  }
+};
+
+// Define a potência padrão de movimento (BrickSimples.setPotenciaPadrao) em porcentagem
+Blockly.Blocks['brick_motores_potencia_padrao'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.motores.HUE);
+    this.setHelpUrl('');
+    this.setInputsInline(true);
+    this.appendDummyInput()
+      .appendField('Definir potência de movimento a');
+    this.appendValueInput('POTENCIA')
+      .setCheck('Number');
+    this.appendDummyInput()
+      .appendField('%');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Define a potência padrão de movimento para os dois motores (usa brick.setPotenciaPadrao, -100 a 100).');
   }
 };

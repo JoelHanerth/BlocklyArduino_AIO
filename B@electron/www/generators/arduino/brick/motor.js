@@ -111,3 +111,137 @@ Blockly.Arduino['brick_motor_frear'] = function(block) {
   var code = nomeVar + '.frear();\n';
   return code;
 };
+
+// Define a potência padrão (%) de um único motor (Motor1.setPotenciaPadrao / Motor2.setPotenciaPadrao)
+Blockly.Arduino['brick_motor_potencia_padrao'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+
+  var motorSel = block.getFieldValue('MOTOR') || 'MOTOR1';
+  var potencia = Blockly.Arduino.valueToCode(block, 'POTENCIA', Blockly.Arduino.ORDER_ATOMIC) || '0';
+
+  var nomeVar, portaConst;
+  if (motorSel === 'MOTOR1') {
+    nomeVar = 'Motor1';
+    portaConst = 'PORTA_MOTOR_1';
+  } else {
+    nomeVar = 'Motor2';
+    portaConst = 'PORTA_MOTOR_2';
+  }
+
+  // Se ainda não existir definição explícita para esse motor, cria com MOTOR_NORMAL
+  var defKey = 'brick_motor_' + portaConst.toLowerCase();
+  if (!Blockly.Arduino.definitions_[defKey]) {
+    Blockly.Arduino.definitions_[defKey] = 'Motor ' + nomeVar + ' = Motor(' + portaConst + ', MOTOR_NORMAL);';
+  }
+
+  var code = nomeVar + '.setPotenciaPadrao(' + potencia + ');\n';
+  return code;
+};
+
+// Inicia o motor usando a potência padrão configurada (Motor1.potencia / Motor2.potencia)
+Blockly.Arduino['brick_motor_iniciar'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+
+  var motorSel = block.getFieldValue('MOTOR') || 'MOTOR1';
+
+  var nomeVar, portaConst;
+  if (motorSel === 'MOTOR1') {
+    nomeVar = 'Motor1';
+    portaConst = 'PORTA_MOTOR_1';
+  } else {
+    nomeVar = 'Motor2';
+    portaConst = 'PORTA_MOTOR_2';
+  }
+
+  // Se ainda não existir definição explícita para esse motor, cria com MOTOR_NORMAL
+  var defKey = 'brick_motor_' + portaConst.toLowerCase();
+  if (!Blockly.Arduino.definitions_[defKey]) {
+    Blockly.Arduino.definitions_[defKey] = 'Motor ' + nomeVar + ' = Motor(' + portaConst + ', MOTOR_NORMAL);';
+  }
+
+  var code = nomeVar + '.potencia();\n';
+  return code;
+};
+
+// Aciona motor com potência informada por um tempo em segundos/ms (usa Motor.acionaPorTempo(potencia, tempoMs))
+Blockly.Arduino['brick_motor_acionar_pot_tempo'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+
+  var motorSel = block.getFieldValue('MOTOR') || 'MOTOR1';
+  var potencia = Blockly.Arduino.valueToCode(block, 'POTENCIA', Blockly.Arduino.ORDER_ATOMIC) || '0';
+  var tempo = Blockly.Arduino.valueToCode(block, 'TEMPO', Blockly.Arduino.ORDER_ATOMIC) || '0';
+  var unidade = block.getFieldValue('UNIDADE') || 'S';
+
+  var nomeVar, portaConst;
+  if (motorSel === 'MOTOR1') {
+    nomeVar = 'Motor1';
+    portaConst = 'PORTA_MOTOR_1';
+  } else {
+    nomeVar = 'Motor2';
+    portaConst = 'PORTA_MOTOR_2';
+  }
+
+  // Se ainda não existir definição explícita para esse motor, cria com MOTOR_NORMAL
+  var defKey = 'brick_motor_' + portaConst.toLowerCase();
+  if (!Blockly.Arduino.definitions_[defKey]) {
+    Blockly.Arduino.definitions_[defKey] = 'Motor ' + nomeVar + ' = Motor(' + portaConst + ', MOTOR_NORMAL);';
+  }
+
+  var tempoMs;
+  if (unidade === 'S') {
+    var num = parseFloat(tempo);
+    if (!isNaN(num)) {
+      tempoMs = String(Math.round(num * 1000));
+    } else {
+      tempoMs = '1000*(' + tempo + ')';
+    }
+  } else {
+    tempoMs = tempo;
+  }
+
+  var code = nomeVar + '.acionaPorTempo(' + potencia + ', ' + tempoMs + ');\n';
+  return code;
+};
+
+// Aciona motor usando a potência padrão por um tempo em segundos/ms (usa Motor.acionaPorTempo(tempoMs))
+Blockly.Arduino['brick_motor_acionar_tempo'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+
+  var motorSel = block.getFieldValue('MOTOR') || 'MOTOR1';
+  var tempo = Blockly.Arduino.valueToCode(block, 'TEMPO', Blockly.Arduino.ORDER_ATOMIC) || '0';
+  var unidade = block.getFieldValue('UNIDADE') || 'S';
+
+  var nomeVar, portaConst;
+  if (motorSel === 'MOTOR1') {
+    nomeVar = 'Motor1';
+    portaConst = 'PORTA_MOTOR_1';
+  } else {
+    nomeVar = 'Motor2';
+    portaConst = 'PORTA_MOTOR_2';
+  }
+
+  // Se ainda não existir definição explícita para esse motor, cria com MOTOR_NORMAL
+  var defKey = 'brick_motor_' + portaConst.toLowerCase();
+  if (!Blockly.Arduino.definitions_[defKey]) {
+    Blockly.Arduino.definitions_[defKey] = 'Motor ' + nomeVar + ' = Motor(' + portaConst + ', MOTOR_NORMAL);';
+  }
+
+  var tempoMs;
+  if (unidade === 'S') {
+    var num2 = parseFloat(tempo);
+    if (!isNaN(num2)) {
+      tempoMs = String(Math.round(num2 * 1000));
+    } else {
+      tempoMs = '1000*(' + tempo + ')';
+    }
+  } else {
+    tempoMs = tempo;
+  }
+
+  var code = nomeVar + '.acionaPorTempo(' + tempoMs + ');\n';
+  return code;
+};

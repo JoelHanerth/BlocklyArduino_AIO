@@ -68,3 +68,9 @@ Blockly.Blocks['brick_aguarde_botao_apertado'] = {
     this.setTooltip('Fica esperando até que o botão do Brick seja pressionado (usa brick.botaoApertado()).');
   }
 };
+
+
+// Define o tipo de retorno do bloco brick_botao_apertado como Boolean
+Blockly.Blocks['brick_botao_apertado'].getBlockType = function() {
+    return Blockly.Types.BOOLEAN;
+};

@@ -44,7 +44,13 @@ Blockly.Arduino.procedures_defreturn = function(block){
         var arg = '';
         var argType = '';
         if (block.argumentsTypes_[x]) {
-            argType = Blockly.Arduino.getArduinoType_(block.argumentsTypes_[x]);
+                // argumentsTypes_ now stores the Blockly.Types key string.
+                // Map it back to a Blockly.Type object when generating code.
+                var typeObj = block.argumentsTypes_[x];
+                if (typeof typeObj === 'string') {
+                    typeObj = Blockly.Types[typeObj] || Blockly.Types.UNDEF;
+                }
+                argType = Blockly.Arduino.getArduinoType_(typeObj);
         } else {
             argType = Blockly.Arduino.getArduinoType_(Blockly.Types.UNDEF);
         }
@@ -72,7 +78,13 @@ Blockly.Arduino['procedures_defnoreturn'] = function(block){
         var arg = '';
         var argType = '';
         if (block.argumentsTypes_[x]) {
-            argType = Blockly.Arduino.getArduinoType_(block.argumentsTypes_[x]);
+                // argumentsTypes_ now stores the Blockly.Types key string.
+                // Map it back to a Blockly.Type object when generating code.
+                var typeObj = block.argumentsTypes_[x];
+                if (typeof typeObj === 'string') {
+                    typeObj = Blockly.Types[typeObj] || Blockly.Types.UNDEF;
+                }
+                argType = Blockly.Arduino.getArduinoType_(typeObj);
         } else {
             argType = Blockly.Arduino.getArduinoType_(Blockly.Types.UNDEF);
         }
