@@ -124,6 +124,7 @@ head.load(
 "blocks/LoRa/LoRa.js",
 "blocks/brick_blocks/motor.js",
 "blocks/brick_blocks/motores.js",
+"blocks/brick_blocks/servos.js",
 "blocks/brick_blocks/sensores.js",
 "blocks/brick_blocks/brick.js",
 "blocks/brick_blocks/led.js",

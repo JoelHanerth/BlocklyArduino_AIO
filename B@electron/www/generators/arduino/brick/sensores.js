@@ -242,3 +242,67 @@ Blockly.Arduino['brick_sensor_ultrassonico_compara'] = function(block) {
 
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 };
+
+// --- Giroscópio BMI160 (via Brick) ---
+
+// Função auxiliar para garantir definição e registro do giroscópio na porta escolhida
+function brickEnsureGiroscopioForPort(porta) {
+  var varName = 'giroscopio_' + porta.toLowerCase();
+
+  // Define objeto Giroscopio se ainda não existir
+  if (!Blockly.Arduino.definitions_['giroscopio_' + porta.toLowerCase()]) {
+    Blockly.Arduino.definitions_['giroscopio_' + porta.toLowerCase()] =
+      'Giroscopio ' + varName + ' = Giroscopio(' + porta + ');';
+  }
+
+  // Garante inicialização do Brick e registro do giroscópio
+  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  Blockly.Arduino.setups_['setup_brick_giroscopio_' + porta.toLowerCase()] =
+    'brick.adiciona(' + varName + ');';
+
+  return varName;
+}
+
+// Lê eixo X (pitch)
+Blockly.Arduino['brick_sensor_giroscopio_x'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+
+  var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_3';
+  var varName = brickEnsureGiroscopioForPort(porta);
+
+  var code = varName + '.getAnguloX()';
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+// Lê eixo Y (roll)
+Blockly.Arduino['brick_sensor_giroscopio_y'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+
+  var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_3';
+  var varName = brickEnsureGiroscopioForPort(porta);
+
+  var code = varName + '.getAnguloY()';
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+// Lê eixo Z (yaw)
+Blockly.Arduino['brick_sensor_giroscopio_z'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+
+  var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_3';
+  var varName = brickEnsureGiroscopioForPort(porta);
+
+  var code = varName + '.getAnguloZ()';
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+// Zera eixo Z
+Blockly.Arduino['brick_sensor_giroscopio_zerar_z'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+
+  var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_3';
+  var varName = brickEnsureGiroscopioForPort(porta);
+
+  var code = varName + '.zerarZ();\n';
+  return code;
+};

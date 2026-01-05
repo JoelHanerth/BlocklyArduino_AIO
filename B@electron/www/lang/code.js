@@ -57,8 +57,8 @@ Code.LANGUAGE_RTL = ['ar', 'fa', 'he'];
 Code.getLang = function() {
   var lang = BlocklyDuino.getStringParamFromUrl('lang', '');
   if (Code.LANGUAGE_NAME[lang] === undefined) {
-    // Default to English.
-    lang = 'en';
+    // Default to Brazilian Portuguese.
+    lang = 'pt-br';
   }
   return lang;
 };

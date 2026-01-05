@@ -5,8 +5,9 @@
 #include "VL53L0X.h"
 #include "led.h"
 #include "ultrassonico.h"
-#include "giroscopio.h"
 #include "buzzer.h"
+#include "giroscopio.h"
+#include "sensorLinha.h"
 
 
 #define MAXIMO_SENSORES 5
@@ -107,6 +108,8 @@ public:
     Motor *listaMotor[MAXIMO_MOTORES]={NULL, NULL};
     LEDStrip *ledStrip[MAXIMO_SERVOS] = {NULL, NULL, NULL, NULL};
     Buzzer *buzzer[MAXIMO_SERVOS] = {NULL, NULL, NULL, NULL};
+    Giroscopio *giroscopio = NULL;
+    SensorLinha *sensorLinha = NULL;
 
     public:
     BrickSimples(){
@@ -120,17 +123,21 @@ public:
         // Configura Timer1 para PWM em ~122Hz (prescaler 1024)
         // Timer1 controla PWM dos pinos 9 e 10 (motores)
         TCCR1B = (TCCR1B & 0b11111000) | 0x05; // Prescaler 1024 (~31Hz PWM)
+        
+        //(os pinos abaixo estão sendo iniciados na declaração dos motores)
         //PINOS MOTOR ESQUERDO
-        pinMode(9, OUTPUT);
-        pinMode(7, OUTPUT);
-        digitalWrite(9, LOW);
-        digitalWrite(7, LOW);
+        // pinMode(9, OUTPUT);
+        // pinMode(7, OUTPUT);
+        // digitalWrite(9, LOW);
+        // digitalWrite(7, LOW);
 
-        //PINOS MOTOR DIREITO
-        pinMode(10, OUTPUT);
-        pinMode(4, OUTPUT);
-        digitalWrite(10, LOW);
-        digitalWrite(4, LOW);
+        // //PINOS MOTOR DIREITO
+        // pinMode(10, OUTPUT);
+        // pinMode(4, OUTPUT);
+        // digitalWrite(10, LOW);
+        // digitalWrite(4, LOW);
+
+
         Serial.println("Hello, Brick Simples!");
         Serial.print("Tensao da bateria: ");
         uint32_t tensao = analogRead(PINO_BATERIA);
@@ -144,17 +151,17 @@ public:
                 tensao = analogRead(PINO_BATERIA);
                 tensao = 4887 * tensao; //microvolt (estou fazendo isso para nao usar float)
                 tensao = tensao / 1000; //milivolt
-                if(tensao > 1500) break;
+                if(tensao > 2000) break;
                 espera(500);
             }
-            Serial.println("Brick ligado, começando o código");
-            return;
         }
         if(tensao > 2000 && tensao < 3100){ //milivolt
             Serial.println("Bateria fraca!");
             Serial.println("Coloque o brick para carregar e aguarde.");
             while(1);
         }
+        Serial.println("Brick ligado, começando o código");
+        return;
     }
 
     void espera(uint32_t ms){
@@ -274,7 +281,15 @@ public:
     }
 
     void atualiza(){
-        
+        //vejo se a chave foi desligada, se foi, reseto o código para parar de fazer qualquer coisa
+        uint32_t tensao = analogRead(PINO_BATERIA);
+        tensao = 4887 * tensao; //microvolt (estou fazendo isso para nao usar float)
+        tensao = tensao / 1000; //milivolt
+        if(tensao <= 2000){ //milivolt
+            delay(100);
+            this->reset();
+        }
+        bool giroscopioAtualizado = false;
         for(uint8_t i=0; i<MAXIMO_SENSORES; i++){
             if(listaVL53L0X[i] != NULL){
                 listaVL53L0X[i]->iniciaLeituraEmMilimetros();
@@ -293,6 +308,12 @@ public:
                 listaTCS34725[i]->enablePON();
             }
         }
+        //Se tiver sensor de linha, vou ler aqui
+        if(sensorLinha != NULL){
+            sensorLinha->atualizaDadosTimeOut();
+        }
+
+        //caso o tempo de atualização, seja menor que o tempo necessário para iniciar os sensores, espero o tempo restante
         while(micros() - microsInicio < 2500); //pequena espera para garantir que os sensores estejam prontos
         //delayMicroseconds(2500); //pequena espera para garantir que os sensores estejam prontos
         
@@ -303,7 +324,20 @@ public:
             }
         }
         //while(micros() - microsInicio < 3800);
-        delayMicroseconds(4200);
+
+        //como a leitura dos sensores serais que desenvolvi são rapidas (115200bps), preciso desativar todas as interrupções na hora da leitura da serial
+        //então só posso fazer isso, porque a demora pode afetar os servos, então só faço se o servo não estiver ativo
+        if(modoCicloServo == MODO_SERVO_FINALIZADO){ //posso atualizar o giroscopio (gasto aproximadamente 900uS)
+            if(giroscopio != NULL){
+                giroscopio->lerDados();
+                giroscopioAtualizado = true;
+            }
+        }else{
+            delayMicroseconds(900);    
+        }
+        delayMicroseconds(3300);
+
+
         for(uint8_t i=0; i<MAXIMO_SENSORES; i++){
             if(listaTCS34725[i] != NULL){
                 listaTCS34725[i]->getRawData();
@@ -331,8 +365,17 @@ public:
                 listaTCS34725[i]->ledOff();
             }
         }
-        //while(micros() - microsInicio < 3800);
-        delayMicroseconds(4200);
+        
+        //tento atualizar novamente se nao consegui lá em cima
+        if(!giroscopioAtualizado && modoCicloServo == MODO_SERVO_FINALIZADO){ //posso atualizar o giroscopio (gasto aproximadamente 900uS)
+            if(giroscopio != NULL){
+                giroscopio->lerDados();
+                giroscopioAtualizado = true;
+            }
+        }else{
+            delayMicroseconds(900);    
+        }
+        delayMicroseconds(3300);
         uint16_t r_on, g_on, b_on, c_on;
         for(uint8_t i=0; i<MAXIMO_SENSORES; i++){
             if(listaTCS34725[i] != NULL){
@@ -413,9 +456,34 @@ public:
         buzzer.inicializa();
     }
 
+    void adiciona(Giroscopio &giro){
+        this->giroscopio = &giro;
+        giro.inicializa();
+    }
+
+    void adiciona(SensorLinha &sensorLinha){
+        this->sensorLinha = &sensorLinha;
+        sensorLinha.inicializa();
+    }
+
     void adiciona(Motor &motor1, Motor &motor2){ //não tem porque adicionar um motor somente pra usar o "modo drive"
         listaMotor[0] = &motor1;
         listaMotor[1] = &motor2;
+    }
+
+    void reset(){
+        // Configura todos os pinos das portas seriais como entrada
+        pinMode(14, INPUT);
+        pinMode(15, INPUT);
+        pinMode(16, INPUT);
+        pinMode(17, INPUT);
+        pinMode(8, INPUT);
+        pinMode(6, INPUT);
+        pinMode(2, INPUT);
+        pinMode(3, INPUT);
+        pinMode(18, INPUT);
+        pinMode(19, INPUT);
+        asm volatile ("jmp 0x0000");
     }
 };
 
@@ -472,6 +540,48 @@ class Servos{
     void moveServo(PortaServo porta, int angulo){
         if(porta.porta < 1 || porta.porta > 4) return; //número inválido
         servos[porta.porta - 1].write(angulo);
+    }
+    void moveServoTempo(PortaServo porta, int anguloDestino, unsigned long tempoMs){
+        if(porta.porta < 1 || porta.porta > 4) return; // número inválido
+
+        // Garante limite de ângulo dentro do suportado pela biblioteca
+        anguloDestino = constrain(anguloDestino, 0, 180);
+
+        uint8_t indice = porta.porta - 1;
+        int anguloAtual = servos[indice].read();
+
+        int diferenca = anguloDestino - anguloAtual;
+        int passos = abs(diferenca);
+
+        // Se já está na posição desejada ou não há tempo, apenas posiciona
+        if(passos == 0 || tempoMs == 0){
+            servos[indice].write(anguloDestino);
+            return;
+        }
+
+        // Define o intervalo entre cada passo em ms
+        unsigned long intervalo = tempoMs / passos;
+        if(intervalo == 0){
+            intervalo = 1; // passo mínimo de 1 ms
+        }
+
+        // Tempo total realmente gasto com os passos
+        unsigned long tempoUsado = intervalo * passos;
+        long ajusteFinal = (long)tempoMs - (long)tempoUsado;
+
+        int incremento = (diferenca > 0) ? 1 : -1;
+        int angulo = anguloAtual;
+
+        for(int i = 0; i < passos; i++){
+            angulo += incremento;
+            servos[indice].write(angulo);
+            delay(intervalo);
+        }
+
+        // Se ainda sobrou um pequeno tempo por causa de arredondamento, espera ele
+        if(ajusteFinal > 0){
+            delay((unsigned long)ajusteFinal);
+        }
     }
     void desanexaServo(PortaServo porta){
         if(porta.porta < 1 || porta.porta > 4) return; //número inválido

@@ -276,6 +276,89 @@ Blockly.Blocks['brick_sensor_ultrassonico_compara'] = {
   }
 };
 
+// --- Giroscópio BMI160 (via Brick) ---
+
+// Lê eixo X (pitch) do giroscópio em uma porta serial escolhida
+Blockly.Blocks['brick_sensor_giroscopio_x'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick_sensores.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+        .appendField('giroscópio porta serial')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'PORTA_SERIAL_1'],
+          ['2', 'PORTA_SERIAL_2'],
+          ['3', 'PORTA_SERIAL_3'],
+          ['4', 'PORTA_SERIAL_4'],
+          ['5', 'PORTA_SERIAL_5']
+        ]), 'PORTA')
+        .appendField('eixo X (°)');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Lê o ângulo X (pitch) do giroscópio conectado na porta serial escolhida.');
+  }
+};
+
+// Lê eixo Y (roll) do giroscópio em uma porta serial escolhida
+Blockly.Blocks['brick_sensor_giroscopio_y'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick_sensores.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+        .appendField('giroscópio porta serial')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'PORTA_SERIAL_1'],
+          ['2', 'PORTA_SERIAL_2'],
+          ['3', 'PORTA_SERIAL_3'],
+          ['4', 'PORTA_SERIAL_4'],
+          ['5', 'PORTA_SERIAL_5']
+        ]), 'PORTA')
+        .appendField('eixo Y (°)');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Lê o ângulo Y (roll) do giroscópio conectado na porta serial escolhida.');
+  }
+};
+
+// Lê eixo Z (yaw) do giroscópio em uma porta serial escolhida
+Blockly.Blocks['brick_sensor_giroscopio_z'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick_sensores.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+        .appendField('giroscópio porta serial')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'PORTA_SERIAL_1'],
+          ['2', 'PORTA_SERIAL_2'],
+          ['3', 'PORTA_SERIAL_3'],
+          ['4', 'PORTA_SERIAL_4'],
+          ['5', 'PORTA_SERIAL_5']
+        ]), 'PORTA')
+        .appendField('eixo Z (°)');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Lê o ângulo Z (yaw) do giroscópio conectado na porta serial escolhida.');
+  }
+};
+
+// Zera o eixo Z do giroscópio em uma porta serial escolhida
+Blockly.Blocks['brick_sensor_giroscopio_zerar_z'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick_sensores.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+        .appendField('giroscópio porta serial')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'PORTA_SERIAL_1'],
+          ['2', 'PORTA_SERIAL_2'],
+          ['3', 'PORTA_SERIAL_3'],
+          ['4', 'PORTA_SERIAL_4'],
+          ['5', 'PORTA_SERIAL_5']
+        ]), 'PORTA')
+        .appendField('zerar eixo Z');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Zera o ângulo Z (yaw) do giroscópio conectado na porta serial escolhida.');
+  }
+};
+
 // Tipagem dos blocos de sensores Brick para o sistema Blockly.Types
 // (necessário para atribuições em variáveis tipadas)
 if (Blockly.Types) {
@@ -304,5 +387,19 @@ if (Blockly.Types) {
   };
   Blockly.Blocks['brick_sensor_ultrassonico_compara'].getBlockType = function() {
     return Blockly.Types.BOOLEAN;
+  };
+
+  // Giroscópio
+  Blockly.Blocks['brick_sensor_giroscopio_x'].getBlockType = function() {
+    return Blockly.Types.NUMBER;
+  };
+  Blockly.Blocks['brick_sensor_giroscopio_y'].getBlockType = function() {
+    return Blockly.Types.NUMBER;
+  };
+  Blockly.Blocks['brick_sensor_giroscopio_z'].getBlockType = function() {
+    return Blockly.Types.NUMBER;
+  };
+  Blockly.Blocks['brick_sensor_giroscopio_zerar_z'].getBlockType = function() {
+    return Blockly.Types.NULL;
   };
 }
