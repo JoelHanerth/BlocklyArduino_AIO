@@ -99,6 +99,8 @@ html,body {
 	/* line-height: 0; */
 	padding: 3px 10px;
 	border: 1px solid #000000;
+	/* Allow long labels in any button to wrap instead of being cut. */
+	white-space: normal;
 }
 .btn-sm:hover, .btn:hover {
 	background-color: #FFFFFF; 
@@ -151,6 +153,20 @@ html,body {
 	padding-right: 5px;
 	position: absolute;
 	height: 100%;
+}
+
+/* Hide unused buttons and tools in the UI. */
+/*Deixei botões não visíveis */
+#btn_factory,
+#btn_RGB,
+#btn_convert,
+#divTitre,
+#tab_supervision,
+#btn_example,
+#btn_create_example,
+#btn_reset,
+#btn_about {
+	display: none;
 }
 
 html[dir="RTL"] .menuPanel-ver {

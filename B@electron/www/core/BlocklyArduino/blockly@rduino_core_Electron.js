@@ -16,7 +16,7 @@ Blockly.pathToBlockly = './';
 Blockly.pathToMedia = './media/';
 
 BlocklyDuino.selectedToolbox = "toolbox_none";
-BlocklyDuino.selectedCard = 'none';
+BlocklyDuino.selectedCard = 'pacoca';
 BlocklyDuino.selectedTab = 'blocks';
 BlocklyDuino.inlineBool = true;
 BlocklyDuino.withImage = true;

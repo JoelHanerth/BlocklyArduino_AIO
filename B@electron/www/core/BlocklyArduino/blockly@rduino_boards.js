@@ -183,6 +183,32 @@ var profile = {
         upload_arg: "arduino:avr:nano:cpu=atmega328",
         help_link: "https://www.arduino.cc/en/Main/ArduinoBoardNano"
     },
+    pacoca: {
+        description: "Paçoca (Nano compatível)",
+        cpu: "atmega328p",
+        speed: "115200",
+        digital: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"],
+        dropdownDigital: [["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"], ["11", "11"], ["12", "12"], ["13", "13"]],
+        PWM: ["3", "5", "6", "9", "10", "11"],
+        dropdownPWM: [["3", "3"], ["5", "5"], ["6", "6"], ["9", "9"], ["10", "10"], ["11", "11"]],
+        analog: ["A0", "A1", "A2", "A3", "A4", "A5", "A6", "A7"],
+        dropdownAnalog: [["A0", "A0"], ["A1", "A1"], ["A2", "A2"], ["A3", "A3"], ["A4", "A4"], ["A5", "A5"], ["A6", "A6"], ["A7", "A7"]],
+        /*irqonchange: [["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"], ["11", "11"], ["12", "12"], ["13", "13"],["A0", "14"], ["A1", "15"], ["A2", "16"], ["A3", "17"], ["A4", "18"], ["A5", "19"]],*/
+        I2C: ["A4", "A5"],
+        SPI: [["10 (SS)", "10"], ["11 (MOSI)", "11"], ["12 (MISO)", "12"], ["13 (SCK)", "13"]],
+        interrupt: ["2", "3"],
+        picture: "media/boards/pacoca.jpg",
+        miniPicture: "media/boards/pacoca_mini.jpg",
+        miniPicture_hor: "media/boards/pacoca_mini.jpg",
+        serial: [['300', '300'], ['600', '600'], ['1200', '1200'],
+            ['2400', '2400'], ['4800', '4800'], ['9600', '9600'],
+            ['14400', '14400'], ['19200', '19200'], ['28800', '28800'],
+            ['31250', '31250'], ['38400', '38400'], ['57600', '57600'],
+            ['115200', '115200']],
+        serialPin: [["0 (Rx) ; 1 (Tx)", "0"]],
+        upload_arg: "arduino:avr:nano:cpu=atmega328",
+        help_link: "https://www.arduino.cc/en/Main/ArduinoBoardNano"
+    },
     arduino_pro8: {
         description: "Arduino Pro Mini 3.3V",
         cpu: "atmega328p",
@@ -1085,8 +1111,8 @@ var profile = {
     }
 };
 
-//set default profile to arduino standard-compatible board
-profile.defaultBoard = profile["none"];
+//set default profile to Arduino Nano ATmega328 as standard-compatible board
+profile.defaultBoard = profile["arduino_nano"];
 
 /**
  * Ensure that PIN number exists in Digital array.
