@@ -2,7 +2,29 @@
  * Blockly@rduino
  */
 
-'use strict';
+"use strict";
+
+// Integração com Electron para salvar diretamente no disco (modo AIO)
+var BlocklyDuino = BlocklyDuino || {};
+BlocklyDuino.currentProjectPath = BlocklyDuino.currentProjectPath || null;
+
+var _fs = null;
+var _electronDialog = null;
+
+// Garante que tentamos obter os módulos do Electron apenas quando necessário
+BlocklyDuino._ensureElectronEnv = function () {
+	if (_fs && _electronDialog !== null) {
+		return;
+	}
+	try {
+		var electron = require("electron");
+		_fs = require("fs");
+		_electronDialog = (electron.remote && electron.remote.dialog) || electron.dialog || null;
+	} catch (e) {
+		_fs = null;
+		_electronDialog = null;
+	}
+};
 
 
 /**
@@ -12,45 +34,142 @@ BlocklyDuino.editArduinoCode = function() {
 	    $('#edit_code').val($('#pre_arduino').text());
 };
 
-/**
- * Creates an XML file containing the blocks from the Blockly workspace and
- * prompts the users to save it into their local file system.
- */
-BlocklyDuino.saveXmlFile = function () {
+// Gera o XML completo do projeto (incluindo informações de toolbox)
+BlocklyDuino.buildProjectXmlText = function () {
 	var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-	
+
 	var toolbox = window.localStorage.toolbox;
 	if (!toolbox) {
 		toolbox = $("#toolboxes").val();
 	}
-	
+
 	if (toolbox) {
 		var newel = document.createElement("toolbox");
 		newel.appendChild(document.createTextNode(toolbox));
 		xml.insertBefore(newel, xml.childNodes[0]);
 	}
-	
+
 	var toolboxids = window.localStorage.toolboxids;
 	if (toolboxids === undefined || toolboxids === "") {
 		if ($('#defaultCategories').length) {
 			toolboxids = $('#defaultCategories').html();
 		}
 	}
-	
+
 	if (toolboxids) {
 		var newel = document.createElement("toolboxcategories");
 		newel.appendChild(document.createTextNode(toolboxids));
 		xml.insertBefore(newel, xml.childNodes[0]);
 	}
-	
-	var data = Blockly.Xml.domToPrettyText(xml);
+
+	return Blockly.Xml.domToPrettyText(xml);
+};
+
+// Salvar (sobrescrever) projeto. Se ainda não houver caminho, cai para "Salvar como".
+BlocklyDuino.saveXmlFile = function (event) {
+	// Impede que outros handlers de clique rodem (por exemplo, handlers legados)
+	if (event) {
+		if (event.preventDefault) event.preventDefault();
+		if (event.stopImmediatePropagation) {
+			event.stopImmediatePropagation();
+		} else if (event.stopPropagation) {
+			event.stopPropagation();
+		}
+	}
+
+	var data = BlocklyDuino.buildProjectXmlText();
+	BlocklyDuino._ensureElectronEnv();
+
+	// Se temos acesso ao sistema de arquivos e já existe caminho, sobrescreve sem abrir diálogo
+	if (_fs && BlocklyDuino.currentProjectPath) {
+		_fs.writeFile(BlocklyDuino.currentProjectPath, data, 'utf8', function (err) {
+			if (err) {
+				alert('Erro ao salvar o projeto: ' + err.message);
+			}
+		});
+		return false;
+	}
+
+	// Caso ainda não haja caminho definido, comporta-se como "Salvar como"
+	if (_fs && _electronDialog) {
+		BlocklyDuino.saveXmlFileAs(event);
+		return false;
+	}
+
+	// Fallback: comportamento antigo via download (para ambientes sem Electron)
 	var datenow = Date.now();
-	var uri = 'data:text/xml;charset=utf-8,' + encodeURIComponent(data);
-	$(this).attr({
-	            'download': "blockly_arduino"+datenow+".B@",
-				'href': uri,
-				'target': '_blank'
-	});
+	var filename = "blockly_arduino" + datenow + ".B@";
+	var element = document.createElement('a');
+	element.setAttribute('href', 'data:text/xml;charset=utf-8,' + encodeURIComponent(data));
+	element.setAttribute('download', filename);
+	element.style.display = 'none';
+	document.body.appendChild(element);
+	element.click();
+	document.body.removeChild(element);
+};
+
+// "Salvar como" – sempre pergunta o local e atualiza o caminho do projeto
+BlocklyDuino.saveXmlFileAs = function (event) {
+	if (event) {
+		if (event.preventDefault) event.preventDefault();
+		if (event.stopImmediatePropagation) {
+			event.stopImmediatePropagation();
+		} else if (event.stopPropagation) {
+			event.stopPropagation();
+		}
+	}
+
+	var data = BlocklyDuino.buildProjectXmlText();
+	BlocklyDuino._ensureElectronEnv();
+
+	if (!_fs || !_electronDialog) {
+		// Sem Electron, volta para o comportamento antigo de download, mas usando link temporário
+		var datenow = Date.now();
+		var filename = "blockly_arduino" + datenow + ".B@";
+		var element = document.createElement('a');
+		element.setAttribute('href', 'data:text/xml;charset=utf-8,' + encodeURIComponent(data));
+		element.setAttribute('download', filename);
+		element.style.display = 'none';
+		document.body.appendChild(element);
+		element.click();
+		document.body.removeChild(element);
+		return;
+	}
+
+	var defaultName = "blockly_arduino.B@";
+	if (BlocklyDuino.currentProjectPath) {
+		defaultName = BlocklyDuino.currentProjectPath;
+	}
+
+	try {
+		var options = {
+			title: (typeof MSG !== 'undefined' && MSG['span_saveXML']) ? MSG['span_saveXML'] : 'Salvar projeto',
+			defaultPath: defaultName,
+			filters: [
+				{ name: 'Projetos BlocklyArduino', extensions: ['B@', 'xml'] },
+				{ name: 'Todos os arquivos', extensions: ['*'] }
+			]
+		};
+
+		// API clássica baseada em callback, compatível com versões antigas
+		_electronDialog.showSaveDialog(options, function (result) {
+			if (!result) {
+				return;
+			}
+			var filePath = (typeof result === 'string') ? result : result.filePath;
+			if (!filePath) {
+				return; // usuário cancelou
+			}
+			BlocklyDuino.currentProjectPath = filePath;
+			_fs.writeFile(filePath, data, 'utf8', function (err) {
+				if (err) {
+					alert('Erro ao salvar o projeto: ' + err.message);
+				}
+			});
+		});
+	} catch (e) {
+		alert('Erro ao abrir o diálogo de salvar: ' + e.message);
+	}
 };
 
 /**
@@ -88,6 +207,15 @@ BlocklyDuino.load = function (event) {
 	if (files.length != 1) {
 		return;
 	}
+	// FileReader
+
+	// Em Electron, o objeto File possui a propriedade "path" com o caminho real
+	if (files[0] && files[0].path) {
+		BlocklyDuino.currentProjectPath = files[0].path;
+	} else {
+		BlocklyDuino.currentProjectPath = null;
+	}
+
 	// FileReader
 	var reader = new FileReader();
 	reader.onloadend = function(event) {    
