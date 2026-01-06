@@ -350,7 +350,7 @@ Blockly.Msg.CAT_FONCTION_AFFICHAGE_LCD = "LCD";
 Blockly.Msg.CAT_FONCTION_AFFICHAGE_LCD_SERIE = "LCD Série";
 Blockly.Msg.CAT_FONCTION_AFFICHAGE_LCD_I2C = "LCD I2C";
 Blockly.Msg.CAT_FONCTION_AFFICHAGE_LCD_4BITS = "LCD 4 Bits";
-Blockly.Msg.CAT_FONCTION_AFFICHAGE_SERIE = "Moniteur Série Arduino";
+Blockly.Msg.CAT_FONCTION_AFFICHAGE_SERIE = "Monitor Serial Arduino";
 
 Blockly.Msg.CAT_FONCTION_CAPTEURS_TEMPERATURE = "Température";
 Blockly.Msg.CAT_FONCTION_CAPTEURS_TEMPHUM = "Température / humidité";
@@ -905,18 +905,18 @@ Blockly.Msg.ROBOTS_MISC_BUZZER_VOLUME = "Volume";
 Blockly.Msg.ROBOTS_MISC_BUZZER_NOTE = "Note";
 
 //infrarouge updated August 22th 2018
-Blockly.Msg.IR_init_TEXT = "Initialiser le détecteur";
-Blockly.Msg.IR_init_TOOLTIP = "Initialisition du détecteur infrarouge";
-Blockly.Msg.IR_test_LED_TEXT = "Test avec LED";
-Blockly.Msg.IR_test_LED_TOOLTIP = "Tester la réception d'un code infrarouge à l'aide d'une LED";
-Blockly.Msg.IR_test_monitor_TEXT = "Test avec moniteur";
-Blockly.Msg.IR_test_monitor_TOOLTIP = "Tester la réception d'une code infrarouge à l'aide du moniteur Arduino";
-Blockly.Msg.IR_next_value_TEXT = "Passer au prochain code";
-Blockly.Msg.IR_next_value_TOOLTIP = "Après chaque réception d'un code, on signale au récepteur qu'il peut recevoir un nouveau code";
-Blockly.Msg.IR_detection_TEXT = "Signal détecté";
-Blockly.Msg.IR_detection_TOOLTIP = "Permet de savoir un signal a été détecté par le récepteur infrarouge";
-Blockly.Msg.IR_reception_code_TEXT = "Code reçu";
-Blockly.Msg.IR_reception_code_TOOLTIP = "Valeur du code reçu par le récepteur infrarouge";
+Blockly.Msg.IR_init_TEXT = "Inicializar o detector";
+Blockly.Msg.IR_init_TOOLTIP = "Inicializa o detector infravermelho";
+Blockly.Msg.IR_test_LED_TEXT = "Teste com LED";
+Blockly.Msg.IR_test_LED_TOOLTIP = "Testa a recepção de um código infravermelho usando um LED";
+Blockly.Msg.IR_test_monitor_TEXT = "Teste com monitor";
+Blockly.Msg.IR_test_monitor_TOOLTIP = "Testa a recepção de um código infravermelho usando o Monitor Serial do Arduino";
+Blockly.Msg.IR_next_value_TEXT = "Ir para o próximo código";
+Blockly.Msg.IR_next_value_TOOLTIP = "Após cada recepção de um código, avisa o receptor que ele pode receber um novo código";
+Blockly.Msg.IR_detection_TEXT = "Sinal detectado";
+Blockly.Msg.IR_detection_TOOLTIP = "Permite saber se um sinal foi detectado pelo receptor infravermelho";
+Blockly.Msg.IR_reception_code_TEXT = "Código recebido";
+Blockly.Msg.IR_reception_code_TOOLTIP = "Valor do código recebido pelo receptor infravermelho";
 
 //updated july 24th 2015
 Blockly.Msg.TECHNOZONE51_TEXT1 = "The sensor ";
