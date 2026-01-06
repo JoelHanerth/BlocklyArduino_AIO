@@ -45,7 +45,7 @@ BlocklyDuino.renderContent = function() {
 		$("#tools_blocks").show();
 		$("#btn_levels").show();
 		$("#header_supervision").hide();
-		$("#header_code").hide();
+		$("#header_code").show();
 	} else {		
 		switch (content.prop('id')) {
 		// case 'content_xml':
