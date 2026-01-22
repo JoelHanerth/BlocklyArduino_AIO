@@ -36,6 +36,11 @@ Blockly.Arduino.base_setup = function () {
     if (Blockly.Arduino.INFINITE_LOOP_TRAP) {
         branch = Blockly.Arduino.INFINITE_LOOP_TRAP.replace(/%1/g, '\'' + this.id + '\'') + branch;
     }
+  // Remove a indentação inicial adicionada por statementToCode
+  // para que o setup tenha apenas um nível de indentação
+  if (branch) {
+    branch = branch.replace(/^  /gm, '');
+  }
     var code = //'{\n' +
             branch;// + '\n}\n';
     var setup_key = Blockly.Arduino.variableDB_.getDistinctName('base_setup', Blockly.Variables.NAME_TYPE);
@@ -57,6 +62,10 @@ Blockly.Arduino.base_setup_loop = function () {
     if (Blockly.Arduino.INFINITE_LOOP_TRAP) {
         branch = Blockly.Arduino.INFINITE_LOOP_TRAP.replace(/%1/g, '\'' + this.id + '\'') + branch;
     }
+  // Remove a indentação inicial adicionada por statementToCode
+  if (branch) {
+    branch = branch.replace(/^  /gm, '');
+  }
     var code = //'{\n' +
             branch;// + '\n}\n';
     var setup_key = Blockly.Arduino.variableDB_.getDistinctName('base_setup', Blockly.Variables.NAME_TYPE);

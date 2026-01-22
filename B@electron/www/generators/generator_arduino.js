@@ -321,8 +321,28 @@ Blockly.Arduino.finish = function(code) {
   Blockly.Arduino.variableDB_.reset();
 
   var allDefs = includes.join('\n') + definitions.join('\n') + variables.join('\n') + functions.join('\n\n');
-  var setup = 'void setup() {' + setups.join('\n  ') + '\n}\n\n';
+
+  // Monta o setup() garantindo que TODAS as linhas (inclusive
+  // as internas de entradas multi-linha em setups_) recebam
+  // exatamente um nível de indentação.
+  var setupLines = [];
+  for (var i = 0; i < setups.length; i++) {
+    var entry = setups[i];
+    if (!entry) continue;
+    // Indenta a primeira linha e todas as subsequentes
+    setupLines.push('  ' + entry.replace(/\n/g, '\n  '));
+  }
+  var setupBody = '';
+  if (setupLines.length) {
+    setupBody = '\n' + setupLines.join('\n') + '\n';
+  } else {
+    setupBody = '\n';
+  }
+  var setup = 'void setup() {' + setupBody + '}\n\n';
+
+  // Mantém a mesma lógica de indentação para o loop()
   var loop = 'void loop() {\n  ' + code.replace(/\n/g, '\n  ') + '\n}';
+
   return allDefs + setup + loop;
 };
 
