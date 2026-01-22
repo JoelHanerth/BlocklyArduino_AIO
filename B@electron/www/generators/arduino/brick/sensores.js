@@ -111,10 +111,8 @@ Blockly.Arduino['brick_sensor_tcs34725_calibrar'] = function(block) {
   Blockly.Arduino.setups_['setup_brick_tcs34725_' + porta.toLowerCase()] =
     'brick.adiciona(' + varName + ');';
 
-  Blockly.Arduino.setups_['setup_brick_tcs34725_calibrar_' + porta.toLowerCase()] =
-    varName + '.calibrar();';
-
-  return '';
+  var code = varName + '.calibrar();\n';
+  return code;
 };
 
 // Lê a distância do sensor VL53L0X em uma porta I2C escolhida (cm ou mm)

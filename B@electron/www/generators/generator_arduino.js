@@ -440,6 +440,71 @@ Blockly.Arduino.scrubNakedValue = function(line) {
 };
 
 /**
+ * Indica se um bloco de topo (sem pai) deve contribuir
+ * diretamente para o código principal da função loop().
+ *
+ * Aqui limitamos isso apenas aos blocos "estruturais" que
+ * representam o laço principal Arduino (base_loop e
+ * base_setup_loop). Qualquer outro bloco solto (por exemplo,
+ * um comando digitalWrite arrastado sozinho) continua sendo
+ * processado para efeitos colaterais (includes, variáveis,
+ * setups, etc.), mas o código gerado por ele é ignorado no
+ * corpo do loop.
+ */
+Blockly.Arduino.isTopBlockAllowedInMain_ = function(block) {
+  return block &&
+    (block.type === 'base_loop' ||
+     block.type === 'base_setup_loop');
+};
+
+/**
+ * Versão específica para Arduino de workspaceToCode.
+ *
+ * Ela funciona como a implementação padrão de Blockly.Generator,
+ * porém só processa (chama blockToCode) os blocos de topo considerados
+ * estruturais (definidos em isTopBlockAllowedInMain_). Assim, blocos
+ * soltos fora dessas árvores não geram código nem efeitos colaterais
+ * em includes_/definitions_/setups_.
+ */
+Blockly.Arduino.workspaceToCode = function(workspace) {
+  if (!workspace) {
+    console.warn('No workspace specified in workspaceToCode call.  Guessing.');
+    workspace = Blockly.getMainWorkspace();
+  }
+
+  var lines = [];
+  this.init(workspace);
+
+  var topBlocks = workspace.getTopBlocks(true);
+  for (var i = 0, block; (block = topBlocks[i]); i++) {
+    // Ignora completamente blocos de topo que não sejam estruturais:
+    // não gera código e nem executa seus efeitos colaterais.
+    if (!Blockly.Arduino.isTopBlockAllowedInMain_(block)) {
+      continue;
+    }
+
+    var code = this.blockToCode(block);
+    if (goog.isArray(code)) {
+      code = code[0];
+    }
+    if (!code) {
+      continue;
+    }
+
+    if (block.outputConnection && this.scrubNakedValue) {
+      code = this.scrubNakedValue(code);
+    }
+    lines.push(code);
+  }
+
+  lines = lines.join('\n');
+  lines = this.finish(lines);
+  lines = lines.replace(/^\s+\n/, '');
+  lines = lines.replace(/\n\s+$/, '\n');
+  return lines.replace(/[ \t]+\n/g, '\n');
+};
+
+/**
  * Encode a string as a properly escaped Arduino string, complete with quotes.
  * @param {string} string Text to encode.
  * @return {string} Arduino string.
