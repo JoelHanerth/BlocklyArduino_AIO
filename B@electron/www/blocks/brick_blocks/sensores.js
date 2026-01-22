@@ -90,7 +90,7 @@ Blockly.Blocks['brick_sensor_tcs34725_cor'] = {
         ]), 'PORTA')
         .appendField('cor');
       this.setOutput(true, 'Number');
-      this.setTooltip('Retorna a cor básica que o sensor está vendo (preto, branco, vermelho, verde, azul, amarelo).');
+      this.setTooltip('Retorna a cor básica detectada (preto - 0, branco - 1, vermelho - 2, verde - 3, azul - 4, amarelo - 5, indeterminado - -1).');
   }
 };
 
@@ -284,7 +284,12 @@ Blockly.Blocks['brick_sensor_linha_valor'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-        .appendField('sensor de linha porta serial')
+      .appendField(new Blockly.FieldImage(
+                Blockly.pathToBlockly + 'blocks/brick_blocks/assets/sensor_linha.png',
+                45,
+                18
+            ))
+        .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_SERIAL_1'],
           ['2', 'PORTA_SERIAL_2'],
@@ -310,7 +315,12 @@ Blockly.Blocks['brick_sensor_linha_cor'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-        .appendField('sensor de linha porta serial')
+      .appendField(new Blockly.FieldImage(
+                Blockly.pathToBlockly + 'blocks/brick_blocks/assets/sensor_linha.png',
+                45,
+                18
+            ))
+        .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_SERIAL_1'],
           ['2', 'PORTA_SERIAL_2'],
@@ -342,7 +352,12 @@ Blockly.Blocks['brick_sensor_linha_cor_basica'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-        .appendField('sensor de linha porta serial')
+      .appendField(new Blockly.FieldImage(
+                Blockly.pathToBlockly + 'blocks/brick_blocks/assets/sensor_linha.png',
+                45,
+                18
+            ))
+        .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_SERIAL_1'],
           ['2', 'PORTA_SERIAL_2'],
@@ -356,9 +371,9 @@ Blockly.Blocks['brick_sensor_linha_cor_basica'] = {
           ['2 (meio)', 'MEIO'],
           ['3 (direita)', 'DIR']
         ]), 'POS')
-        .appendField('cor básica');
+        .appendField('cor');
     this.setOutput(true, 'Number');
-    this.setTooltip('Lê a cor básica detectada (preto, branco, vermelho, amarelo, azul, verde) em um dos sensores de cor (esquerda, meio ou direita).');
+    this.setTooltip('Retorna a cor básica detectada (preto - 0, branco - 1, vermelho - 2, verde - 3, azul - 4, amarelo - 5, indeterminado - -1).');
   }
 };
 
@@ -370,7 +385,12 @@ Blockly.Blocks['brick_sensor_giroscopio_x'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-        .appendField('giroscópio porta serial')
+      .appendField(new Blockly.FieldImage(
+              Blockly.pathToBlockly + 'blocks/brick_blocks/assets/giroscopio.png',
+              45,
+              18
+          ))
+        .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_SERIAL_1'],
           ['2', 'PORTA_SERIAL_2'],
@@ -390,7 +410,12 @@ Blockly.Blocks['brick_sensor_giroscopio_y'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-        .appendField('giroscópio porta serial')
+      .appendField(new Blockly.FieldImage(
+                Blockly.pathToBlockly + 'blocks/brick_blocks/assets/giroscopio.png',
+                45,
+                18
+            ))
+        .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_SERIAL_1'],
           ['2', 'PORTA_SERIAL_2'],
@@ -410,7 +435,12 @@ Blockly.Blocks['brick_sensor_giroscopio_z'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-        .appendField('giroscópio porta serial')
+      .appendField(new Blockly.FieldImage(
+                Blockly.pathToBlockly + 'blocks/brick_blocks/assets/giroscopio.png',
+                45,
+                18
+            ))
+        .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_SERIAL_1'],
           ['2', 'PORTA_SERIAL_2'],
@@ -430,7 +460,12 @@ Blockly.Blocks['brick_sensor_giroscopio_zerar_z'] = {
     this.setColour(Blockly.Blocks.brick_sensores.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-        .appendField('giroscópio porta serial')
+      .appendField(new Blockly.FieldImage(
+                Blockly.pathToBlockly + 'blocks/brick_blocks/assets/giroscopio.png',
+                45,
+                18
+            ))
+        .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_SERIAL_1'],
           ['2', 'PORTA_SERIAL_2'],
