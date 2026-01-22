@@ -69,6 +69,20 @@ Blockly.Blocks['brick_aguarde_botao_apertado'] = {
   }
 };
 
+// Espera usando o relógio interno do Brick
+Blockly.Blocks['brick_espere'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick.HUE);
+    this.setHelpUrl('');
+    this.appendValueInput('TEMPO')
+        .setCheck('Number')
+        .appendField('espere (ms)');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Espera o tempo indicado em milissegundos usando brick.espera(tempo).');
+  }
+};
+
 
 // Define o tipo de retorno do bloco brick_botao_apertado como Boolean
 Blockly.Blocks['brick_botao_apertado'].getBlockType = function() {

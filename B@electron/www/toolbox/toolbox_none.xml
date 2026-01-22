@@ -6,6 +6,13 @@
 		<block type="brick_imprimir_terminal"></block>
 		<block type="brick_botao_apertado"></block>
 		<block type="brick_aguarde_botao_apertado"></block>
+		<block type="brick_espere">
+			<value name="TEMPO">
+				<shadow type="math_number">
+					<field name="NUM">1000</field>
+				</shadow>
+			</value>
+		</block>
 	</category>
 
 	<category name="CAT_BRICK_MOTOR" colour="#0090F5">

@@ -46,3 +46,13 @@ Blockly.Arduino['brick_aguarde_botao_apertado'] = function(block) {
   var code = 'while (!brick.botaoApertado()) {\n  delay(10);\n}\n';
   return code;
 };
+
+// Espera usando o método espera do Brick
+Blockly.Arduino['brick_espere'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+
+  var tempo = Blockly.Arduino.valueToCode(block, 'TEMPO', Blockly.Arduino.ORDER_ATOMIC) || '0';
+  var code = 'brick.espera(' + tempo + ');\n';
+  return code;
+};
