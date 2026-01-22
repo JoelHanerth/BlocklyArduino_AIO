@@ -263,6 +263,24 @@ function brickEnsureGiroscopioForPort(porta) {
   return varName;
 }
 
+// --- Sensor de linha (via Brick) ---
+
+// Função auxiliar para garantir definição e registro do sensor de linha na porta escolhida
+function brickEnsureSensorLinhaForPort(porta) {
+  var varName = 'sensorLinha_' + porta.toLowerCase();
+
+  if (!Blockly.Arduino.definitions_['sensor_linha_' + porta.toLowerCase()]) {
+    Blockly.Arduino.definitions_['sensor_linha_' + porta.toLowerCase()] =
+      'SensorLinha ' + varName + '(' + porta + ');';
+
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    Blockly.Arduino.setups_['setup_brick_sensor_linha_' + porta.toLowerCase()] =
+      'brick.adiciona(' + varName + ');';
+  }
+
+  return varName;
+}
+
 // Lê eixo X (pitch)
 Blockly.Arduino['brick_sensor_giroscopio_x'] = function(block) {
   Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
@@ -305,4 +323,73 @@ Blockly.Arduino['brick_sensor_giroscopio_zerar_z'] = function(block) {
 
   var code = varName + '.zerarZ();\n';
   return code;
+};
+
+// Lê um dos 4 sensores de linha (0 = branco, 100 = preto)
+Blockly.Arduino['brick_sensor_linha_valor'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+
+  var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_4';
+  var indice = block.getFieldValue('SENSOR') || '0';
+
+  var varName = brickEnsureSensorLinhaForPort(porta);
+
+  var code = varName + '.getLinha(' + indice + ')';
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+// Lê um componente de cor (R, G, B ou C) de um dos sensores de cor (esquerda, meio ou direita)
+Blockly.Arduino['brick_sensor_linha_cor'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+
+  var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_4';
+  var pos = block.getFieldValue('POS') || 'ESQ';
+  var comp = block.getFieldValue('COMP') || 'R';
+
+  var varName = brickEnsureSensorLinhaForPort(porta);
+
+  var metodoBase;
+  if (pos === 'ESQ') {
+    metodoBase = 'Esquerda';
+  } else if (pos === 'MEIO') {
+    metodoBase = 'Meio';
+  } else {
+    metodoBase = 'Direita';
+  }
+
+  var metodoPrefixo;
+  if (comp === 'R') {
+    metodoPrefixo = 'Red';
+  } else if (comp === 'G') {
+    metodoPrefixo = 'Green';
+  } else if (comp === 'B') {
+    metodoPrefixo = 'Blue';
+  } else {
+    metodoPrefixo = 'Clear';
+  }
+
+  var code = varName + '.get' + metodoPrefixo + metodoBase + '()';
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
+};
+
+// Lê a cor básica detectada (enum Cor) em um dos sensores (esquerda, meio ou direita)
+Blockly.Arduino['brick_sensor_linha_cor_basica'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+
+  var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_4';
+  var pos = block.getFieldValue('POS') || 'ESQ';
+
+  var varName = brickEnsureSensorLinhaForPort(porta);
+
+  var metodo;
+  if (pos === 'ESQ') {
+    metodo = 'getCorEsquerda()';
+  } else if (pos === 'MEIO') {
+    metodo = 'getCorMeio()';
+  } else {
+    metodo = 'getCorDireita()';
+  }
+
+  var code = varName + '.' + metodo;
+  return [code, Blockly.Arduino.ORDER_ATOMIC];
 };

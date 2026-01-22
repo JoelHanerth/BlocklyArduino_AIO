@@ -1,22 +1,37 @@
 #include "brickSimples.h"
 
-void setup() {
-    brick.inicializa(); // OBRIGATÓRIO: primeira linha do setup
+SensorLinha sensorLinha(PORTA_SERIAL_4);
 
-    // Inicializa os servos
-    servos.iniciaServo(PORTA_SERVO_2);
+void setup() {
+    brick.inicializa();               // Obrigatório
+    brick.adiciona(sensorLinha);      // Adiciona o sensor ao brick
+
+    delay(1000);
 }
 
 void loop() {
-    brick.atualiza(); // OBRIGATÓRIO: primeira linha do loop
+    brick.atualiza();
+    sensorLinha.getCorEsquerda();
 
-    // // Move os servos
-    // servos.moveServoTempo(PORTA_SERVO_2, 0, 2000);
+    // // Leitura dos 4 sensores de linha
+    // Serial.print("L1: ");
+    // Serial.print(sensorLinha.getLinha(0));
+    // Serial.print(" L2: ");
+    // Serial.print(sensorLinha.getLinha(1));
+    // Serial.print(" L3: ");
+    // Serial.print(sensorLinha.getLinha(2));
+    // Serial.print(" L4: ");
+    // Serial.println(sensorLinha.getLinha(3));
 
+    // // RGB do lado esquerdo (se quiser usar)
+    // Serial.print("RGB: R=");
+    // Serial.print(sensorLinha.getRedEsquerda());
+    // Serial.print(" G=");
+    // Serial.print(sensorLinha.getGreenEsquerda());
+    // Serial.print(" B=");
+    // Serial.print(sensorLinha.getBlueEsquerda());
+    // Serial.print(" C=");
+    // Serial.println(sensorLinha.getClearEsquerda());
 
-    // delay(1000);
-
-    // servos.moveServoTempo(PORTA_SERVO_2, 180, 2000);
-
-    delay(1000);
+    delay(200);
 }

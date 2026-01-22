@@ -8,6 +8,8 @@
 #include "buzzer.h"
 #include "giroscopio.h"
 #include "sensorLinha.h"
+#include "Bluetooth.h"
+#include "interrupcoes.h"
 
 
 #define MAXIMO_SENSORES 5
@@ -137,7 +139,8 @@ public:
         // digitalWrite(10, LOW);
         // digitalWrite(4, LOW);
 
-
+        DDRE |= (1 << DDE0); // Configura PE0 como saída (pino do LED interno)
+        ativaLedInterno();
         Serial.println("Hello, Brick Simples!");
         Serial.print("Tensao da bateria: ");
         uint32_t tensao = analogRead(PINO_BATERIA);
@@ -147,30 +150,37 @@ public:
         Serial.println(" mV");
         if(tensao <= 2000){ //milivolt
             Serial.println("Brick ligado apenas na USB, para ele funcionar, ligue a chave liga/desliga.");
+            desativaLedInterno();
             while(1){
                 tensao = analogRead(PINO_BATERIA);
                 tensao = 4887 * tensao; //microvolt (estou fazendo isso para nao usar float)
                 tensao = tensao / 1000; //milivolt
                 if(tensao > 2000) break;
-                espera(500);
+                delay(500);
             }
         }
         if(tensao > 2000 && tensao < 3100){ //milivolt
             Serial.println("Bateria fraca!");
             Serial.println("Coloque o brick para carregar e aguarde.");
+            desativaLedInterno();
             while(1);
         }
         Serial.println("Brick ligado, começando o código");
+        desativaLedInterno();
         return;
     }
 
-    void espera(uint32_t ms){
-        ::delay(ms/4);
+    void espera(uint32_t ms){ //assim espero atualizando as coisas do brick
+        uint32_t tempoFim = millis();
+        tempoFim += ms;
+        while(millis() < tempoFim){
+            this->atualiza();
+        }
     }
 
 
     uint32_t millis(){
-        return ::millis()*4;
+        return ::millis();
     }
 
     void setPotenciaPadrao(int potencia){
@@ -290,6 +300,7 @@ public:
             this->reset();
         }
         bool giroscopioAtualizado = false;
+        bool sensorLinhaAtualizado = false;
         for(uint8_t i=0; i<MAXIMO_SENSORES; i++){
             if(listaVL53L0X[i] != NULL){
                 listaVL53L0X[i]->iniciaLeituraEmMilimetros();
@@ -308,10 +319,7 @@ public:
                 listaTCS34725[i]->enablePON();
             }
         }
-        //Se tiver sensor de linha, vou ler aqui
-        if(sensorLinha != NULL){
-            sensorLinha->atualizaDadosTimeOut();
-        }
+        
 
         //caso o tempo de atualização, seja menor que o tempo necessário para iniciar os sensores, espero o tempo restante
         while(micros() - microsInicio < 2500); //pequena espera para garantir que os sensores estejam prontos
@@ -324,6 +332,8 @@ public:
             }
         }
         //while(micros() - microsInicio < 3800);
+        microsInicio = micros();
+        //AQUI EMBAIXO POSSO ADICIONAR MAIS FUNCÕES JÁ QUE ESPERO 5MS
 
         //como a leitura dos sensores serais que desenvolvi são rapidas (115200bps), preciso desativar todas as interrupções na hora da leitura da serial
         //então só posso fazer isso, porque a demora pode afetar os servos, então só faço se o servo não estiver ativo
@@ -332,11 +342,20 @@ public:
                 giroscopio->lerDados();
                 giroscopioAtualizado = true;
             }
-        }else{
-            delayMicroseconds(900);    
-        }
-        delayMicroseconds(3300);
 
+            //Se tiver sensor de linha, vou ler aqui
+            if(sensorLinha != NULL){
+                sensorLinha->atualizaDadosTimeOut();
+                sensorLinhaAtualizado = true;
+            }
+
+        }
+        // else{
+        //     delayMicroseconds(900);    
+        // }
+        // delayMicroseconds(3300);
+
+        while(micros() - microsInicio < 5000); //pequena espera para garantir que os sensores estejam prontos
 
         for(uint8_t i=0; i<MAXIMO_SENSORES; i++){
             if(listaTCS34725[i] != NULL){
@@ -365,17 +384,34 @@ public:
                 listaTCS34725[i]->ledOff();
             }
         }
-        
+
+        microsInicio = micros();
+
         //tento atualizar novamente se nao consegui lá em cima
-        if(!giroscopioAtualizado && modoCicloServo == MODO_SERVO_FINALIZADO){ //posso atualizar o giroscopio (gasto aproximadamente 900uS)
-            if(giroscopio != NULL){
-                giroscopio->lerDados();
-                giroscopioAtualizado = true;
+        //isso pode acontecer pelo tempo de movimentação de como os servos funcionam, então faço as duas tentativas. O ideal é por todos os sensores
+        //serial dessa forma, tentando duas vezes com essa verificação para evitar espasmos nos servos, já que eu preciso desativar as interrupções
+        //enquanto leio o retorno da serial dos sensores
+        if(modoCicloServo == MODO_SERVO_FINALIZADO){
+            if(!giroscopioAtualizado){ //posso atualizar o giroscopio (gasto aproximadamente 900uS)
+                if(giroscopio != NULL){
+                    giroscopio->lerDados();
+                    giroscopioAtualizado = true;
+                }
             }
-        }else{
-            delayMicroseconds(900);    
+            if(!sensorLinhaAtualizado){
+                if(sensorLinha != NULL){
+                    sensorLinha->atualizaDadosTimeOut();
+                    sensorLinhaAtualizado = true;
+                }
+            }
         }
-        delayMicroseconds(3300);
+
+        // else{
+        //     delayMicroseconds(900);    
+        // }
+        // delayMicroseconds(3300);
+        while(micros() - microsInicio < 5000);
+
         uint16_t r_on, g_on, b_on, c_on;
         for(uint8_t i=0; i<MAXIMO_SENSORES; i++){
             if(listaTCS34725[i] != NULL){
@@ -471,6 +507,14 @@ public:
         listaMotor[1] = &motor2;
     }
 
+    void ativaLedInterno(){
+        PORTE |= (1 << PINE0); // Define PE0 como alto
+    }
+
+    void desativaLedInterno(){
+        PORTE &= ~(1 << PINE0); // Define PE0 como baixo
+    }
+
     void reset(){
         // Configura todos os pinos das portas seriais como entrada
         pinMode(14, INPUT);
@@ -485,6 +529,9 @@ public:
         pinMode(19, INPUT);
         asm volatile ("jmp 0x0000");
     }
+
+
+
 };
 
 
@@ -541,7 +588,7 @@ class Servos{
         if(porta.porta < 1 || porta.porta > 4) return; //número inválido
         servos[porta.porta - 1].write(angulo);
     }
-    void moveServoTempo(PortaServo porta, int anguloDestino, unsigned long tempoMs){
+        void moveServoTempo(PortaServo porta, int anguloDestino, unsigned long tempoMs){
         if(porta.porta < 1 || porta.porta > 4) return; // número inválido
 
         // Garante limite de ângulo dentro do suportado pela biblioteca

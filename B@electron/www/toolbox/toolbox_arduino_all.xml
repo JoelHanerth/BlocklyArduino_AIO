@@ -147,6 +147,9 @@
 		<block type="brick_sensor_giroscopio_y"></block>
 		<block type="brick_sensor_giroscopio_z"></block>
 		<block type="brick_sensor_giroscopio_zerar_z"></block>
+		<block type="brick_sensor_linha_valor"></block>
+		<block type="brick_sensor_linha_cor"></block>
+		<block type="brick_sensor_linha_cor_basica"></block>
 	</category>
 
 

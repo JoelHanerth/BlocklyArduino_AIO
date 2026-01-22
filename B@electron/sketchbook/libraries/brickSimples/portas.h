@@ -2,6 +2,36 @@
 #define _PORTAS_H_
 #include <Arduino.h>
 
+
+//definições dos registradores do atmega328pb (que é o utilizado) mesmo ele se passando por um 328P, podemos usar os pinos extras e controlar pelos registradores
+#define PINE    _SFR_IO8(0x0C)
+#define PINE3   3
+#define PINE2   2
+#define PINE1   1
+#define PINE0   0
+
+#define DDRE    _SFR_IO8(0x0D)
+#define DDRE3   3
+// Inserted "DDE3" from "DDRE3" due to compatibility
+#define DDE3    3
+#define DDRE2   2
+// Inserted "DDE2" from "DDRE2" due to compatibility
+#define DDE2    2
+#define DDRE1   1
+// Inserted "DDE1" from "DDRE1" due to compatibility
+#define DDE1    1
+#define DDRE0   0
+// Inserted "DDE0" from "DDRE0" due to compatibility
+#define DDE0    0
+
+#define PORTE   _SFR_IO8(0x0E)
+#define PORTE3  3
+#define PORTE2  2
+#define PORTE1  1
+#define PORTE0  0
+
+
+
 #define PINO_BATERIA A7
 
 
@@ -39,8 +69,8 @@ struct PortaAnalogica{
 };
 
 struct PortaUltrassonico{
-    const uint8_t trig;
     const uint8_t echo;
+    const uint8_t trig;
     const char *descricao;
 };
 
@@ -105,8 +135,8 @@ struct PortaMotor{
 #define PORTA_ANALOGICA_2 {A2, A3}
 #define PORTA_ANALOGICA_5 {A4, A5}
 
-// Portas Ultrassônico
-#define PORTA_ULTRASSONICO_1 {14, 15, "US-1"}
+// Portas Ultrassônico //ORDEM DOS PINOS: ECHO, TRIGGER
+#define PORTA_ULTRASSONICO_1 {14, 15, "US-1"} 
 #define PORTA_ULTRASSONICO_2 {16, 17, "US-2"}
 #define PORTA_ULTRASSONICO_3 {8, 6, "US-3"}
 #define PORTA_ULTRASSONICO_4 {2, 3, "US-4"}

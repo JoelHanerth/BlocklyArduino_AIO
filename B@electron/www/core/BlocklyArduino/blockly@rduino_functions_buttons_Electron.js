@@ -2,221 +2,56 @@
  * Blockly@rduino
  */
 
-"use strict";
+'use strict';
 
-// Integração com Electron para salvar diretamente no disco (modo Electron)
-var BlocklyDuino = BlocklyDuino || {};
-BlocklyDuino.currentProjectPath = BlocklyDuino.currentProjectPath || null;
-try {
-	// Restaura o último caminho de projeto salvo entre recargas de página
-	var storedPath = window.localStorage.currentProjectPath;
-	if (storedPath) {
-		BlocklyDuino.currentProjectPath = storedPath;
-	}
-} catch (e) {
-	// ignore problemas de acesso ao localStorage
-}
-
-var _fs = null;
-var _electronDialog = null;
-
-// Garante que tentamos obter os módulos do Electron apenas quando necessário
-BlocklyDuino._ensureElectronEnv = function () {
-	if (_fs && _electronDialog !== null) {
-		return;
-	}
-	try {
-		var electron = require("electron");
-		_fs = require("fs");
-		_electronDialog = (electron.remote && electron.remote.dialog) || electron.dialog || null;
-	} catch (e) {
-		_fs = null;
-		_electronDialog = null;
-	}
-};
-
-// Exibe uma pequena animação/aviso de "Projeto salvo" usando o modal já existente
-BlocklyDuino.showSavedMessage = function () {
-	try {
-		if (!window.jQuery) {
-			return;
-		}
-		var $msg = $('#message');
-		var $msgDiv = $('#messageDIV');
-		if (!$msg.length || !$msgDiv.length) {
-			return;
-		}
-		var text = 'Projeto salvo';
-		if (typeof MSG !== 'undefined' && MSG['project_saved']) {
-			text = MSG['project_saved'];
-		}
-		$msgDiv.text(text);
-		$msg.modal('show');
-		setTimeout(function () {
-			$msg.modal('hide');
-		}, 1200);
-	} catch (e) {
-		// se algo der errado na animação, não impedir o salvamento
-	}
-};
 
 /**
  * Populate the edit textarea "edit_code" with the pre arduino code
  */
 BlocklyDuino.editArduinoCode = function() {
-	$('#edit_code').val($('#pre_arduino').text());
+	    $('#edit_code').val($('#pre_arduino').text());
 };
 
-// Gera o XML completo do projeto (incluindo informações de toolbox)
-BlocklyDuino.buildProjectXmlText = function () {
+/**
+ * Creates an XML file containing the blocks from the Blockly workspace and
+ * prompts the users to save it into their local file system.
+ */
+BlocklyDuino.saveXmlFile = function () {
 	var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-
+	
 	var toolbox = window.localStorage.toolbox;
 	if (!toolbox) {
 		toolbox = $("#toolboxes").val();
 	}
-
+	
 	if (toolbox) {
 		var newel = document.createElement("toolbox");
 		newel.appendChild(document.createTextNode(toolbox));
 		xml.insertBefore(newel, xml.childNodes[0]);
 	}
-
+	
 	var toolboxids = window.localStorage.toolboxids;
 	if (toolboxids === undefined || toolboxids === "") {
 		if ($('#defaultCategories').length) {
 			toolboxids = $('#defaultCategories').html();
 		}
 	}
-
+	
 	if (toolboxids) {
 		var newel = document.createElement("toolboxcategories");
 		newel.appendChild(document.createTextNode(toolboxids));
 		xml.insertBefore(newel, xml.childNodes[0]);
 	}
-
-	return Blockly.Xml.domToPrettyText(xml);
-};
-
-// Salvar (sobrescrever) projeto. Se ainda não houver caminho, cai para "Salvar como".
-BlocklyDuino.saveXmlFile = function (event) {
-	// Garante que outros handlers de clique não rodem (por exemplo, handlers legados)
-	if (event) {
-		if (event.preventDefault) event.preventDefault();
-		if (event.stopImmediatePropagation) {
-			event.stopImmediatePropagation();
-		} else if (event.stopPropagation) {
-			event.stopPropagation();
-		}
-	}
-
-	var data = BlocklyDuino.buildProjectXmlText();
-	BlocklyDuino._ensureElectronEnv();
-
-	// Se temos acesso ao sistema de arquivos e já existe caminho, sobrescreve sem abrir diálogo
-	if (_fs && BlocklyDuino.currentProjectPath) {
-		_fs.writeFile(BlocklyDuino.currentProjectPath, data, 'utf8', function (err) {
-			if (err) {
-				alert('Erro ao salvar o projeto: ' + err.message);
-			} else {
-				BlocklyDuino.showSavedMessage();
-			}
-		});
-		return false;
-	}
-
-	// Caso ainda não haja caminho definido, comporta-se como "Salvar como"
-	if (_fs && _electronDialog) {
-		BlocklyDuino.saveXmlFileAs(event);
-		return false;
-	}
-
-	// Fallback: comportamento antigo via download (para ambientes sem Electron)
+	
+	var data = Blockly.Xml.domToPrettyText(xml);
 	var datenow = Date.now();
-	var filename = "blockly_arduino" + datenow + ".B@";
-	var element = document.createElement('a');
-	element.setAttribute('href', 'data:text/xml;charset=utf-8,' + encodeURIComponent(data));
-	element.setAttribute('download', filename);
-	element.style.display = 'none';
-	document.body.appendChild(element);
-	element.click();
-	document.body.removeChild(element);
+	var uri = 'data:text/xml;charset=utf-8,' + encodeURIComponent(data);
+	$(this).attr({
+	            'download': "blockly_arduino"+datenow+".B@",
+				'href': uri,
+				'target': '_blank'
+	});
 };
-
-// "Salvar como" – sempre pergunta o local e atualiza o caminho do projeto
-BlocklyDuino.saveXmlFileAs = function (event) {
-	if (event) {
-		if (event.preventDefault) event.preventDefault();
-		if (event.stopImmediatePropagation) {
-			event.stopImmediatePropagation();
-		} else if (event.stopPropagation) {
-			event.stopPropagation();
-		}
-	}
-
-	var data = BlocklyDuino.buildProjectXmlText();
-	BlocklyDuino._ensureElectronEnv();
-
-	if (!_fs || !_electronDialog) {
-		// Sem Electron, volta para o comportamento antigo de download, mas usando link temporário
-		var datenow = Date.now();
-		var filename = "blockly_arduino" + datenow + ".B@";
-		var element = document.createElement('a');
-		element.setAttribute('href', 'data:text/xml;charset=utf-8,' + encodeURIComponent(data));
-		element.setAttribute('download', filename);
-		element.style.display = 'none';
-		document.body.appendChild(element);
-		element.click();
-		document.body.removeChild(element);
-		if (event) {
-			event.preventDefault();
-			event.stopPropagation();
-		}
-		return;
-	}
-
-	var defaultName = "blockly_arduino.B@";
-	if (BlocklyDuino.currentProjectPath) {
-		defaultName = BlocklyDuino.currentProjectPath;
-	}
-
-	try {
-		var options = {
-			title: (typeof MSG !== 'undefined' && MSG['span_saveXML']) ? MSG['span_saveXML'] : 'Salvar projeto',
-			defaultPath: defaultName,
-			filters: [
-				{ name: 'Projetos BlocklyArduino', extensions: ['B@', 'xml'] },
-				{ name: 'Todos os arquivos', extensions: ['*'] }
-			]
-		};
-
-		// API clássica baseada em callback, compatível com versões antigas
-		_electronDialog.showSaveDialog(options, function (result) {
-			if (!result) {
-				return;
-			}
-			var filePath = (typeof result === 'string') ? result : result.filePath;
-			if (!filePath) {
-				return; // usuário cancelou
-			}
-			BlocklyDuino.currentProjectPath = filePath;
-			try {
-				window.localStorage.currentProjectPath = filePath;
-			} catch (e) {}
-			_fs.writeFile(filePath, data, 'utf8', function (err) {
-				if (err) {
-					alert('Erro ao salvar o projeto: ' + err.message);
-				} else {
-					BlocklyDuino.showSavedMessage();
-				}
-			});
-		});
-	} catch (e) {
-		alert('Erro ao abrir o diálogo de salvar: ' + e.message);
-	}
-};
-
-// (quickSaveXmlFile removido - comportamento consolidado em saveXmlFile/saveXmlFileAs)
 
 /**
  * Creates an INO file containing the Arduino code from the Blockly workspace and
@@ -253,20 +88,6 @@ BlocklyDuino.load = function (event) {
 	if (files.length != 1) {
 		return;
 	}
-
-	// Em Electron, o objeto File possui a propriedade "path" com o caminho real
-	if (files[0] && files[0].path) {
-		BlocklyDuino.currentProjectPath = files[0].path;
-		try {
-			window.localStorage.currentProjectPath = files[0].path;
-		} catch (e) {}
-	} else {
-		BlocklyDuino.currentProjectPath = null;
-		try {
-			window.localStorage.removeItem('currentProjectPath');
-		} catch (e) {}
-	}
-
 	// FileReader
 	var reader = new FileReader();
 	reader.onloadend = function(event) {    

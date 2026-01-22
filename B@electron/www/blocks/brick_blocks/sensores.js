@@ -276,6 +276,92 @@ Blockly.Blocks['brick_sensor_ultrassonico_compara'] = {
   }
 };
 
+// --- Sensor de linha (via Brick) ---
+
+// Lê um dos 4 sensores de linha (0 = branco, 100 = preto)
+Blockly.Blocks['brick_sensor_linha_valor'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick_sensores.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+        .appendField('sensor de linha porta serial')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'PORTA_SERIAL_1'],
+          ['2', 'PORTA_SERIAL_2'],
+          ['3', 'PORTA_SERIAL_3'],
+          ['4', 'PORTA_SERIAL_4'],
+          ['5', 'PORTA_SERIAL_5']
+        ]), 'PORTA')
+        .appendField('sensor')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', '0'],
+          ['2', '1'],
+          ['3', '2'],
+          ['4', '3']
+        ]), 'SENSOR');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Lê um dos 4 sensores de linha (0 = branco, 100 = preto).');
+  }
+};
+
+// Lê um componente de cor (R, G, B ou C) de um dos sensores de cor (esquerda, meio ou direita)
+Blockly.Blocks['brick_sensor_linha_cor'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick_sensores.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+        .appendField('sensor de linha porta serial')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'PORTA_SERIAL_1'],
+          ['2', 'PORTA_SERIAL_2'],
+          ['3', 'PORTA_SERIAL_3'],
+          ['4', 'PORTA_SERIAL_4'],
+          ['5', 'PORTA_SERIAL_5']
+        ]), 'PORTA')
+        .appendField('sensor')
+        .appendField(new Blockly.FieldDropdown([
+          ['1 (esquerda)', 'ESQ'],
+          ['2 (meio)', 'MEIO'],
+          ['3 (direita)', 'DIR']
+        ]), 'POS')
+        .appendField('cor')
+        .appendField(new Blockly.FieldDropdown([
+          ['vermelho (R)', 'R'],
+          ['verde (G)', 'G'],
+          ['azul (B)', 'B'],
+          ['claro (C)', 'C']
+        ]), 'COMP');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Lê um valor de cor (R, G, B ou C) de um dos sensores de cor (esquerda, meio ou direita).');
+  }
+};
+
+// Lê a cor básica detectada (preto, branco, vermelho, amarelo, azul, verde)
+Blockly.Blocks['brick_sensor_linha_cor_basica'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick_sensores.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+        .appendField('sensor de linha porta serial')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'PORTA_SERIAL_1'],
+          ['2', 'PORTA_SERIAL_2'],
+          ['3', 'PORTA_SERIAL_3'],
+          ['4', 'PORTA_SERIAL_4'],
+          ['5', 'PORTA_SERIAL_5']
+        ]), 'PORTA')
+        .appendField('sensor')
+        .appendField(new Blockly.FieldDropdown([
+          ['1 (esquerda)', 'ESQ'],
+          ['2 (meio)', 'MEIO'],
+          ['3 (direita)', 'DIR']
+        ]), 'POS')
+        .appendField('cor básica');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Lê a cor básica detectada (preto, branco, vermelho, amarelo, azul, verde) em um dos sensores de cor (esquerda, meio ou direita).');
+  }
+};
+
 // --- Giroscópio BMI160 (via Brick) ---
 
 // Lê eixo X (pitch) do giroscópio em uma porta serial escolhida
@@ -387,6 +473,17 @@ if (Blockly.Types) {
   };
   Blockly.Blocks['brick_sensor_ultrassonico_compara'].getBlockType = function() {
     return Blockly.Types.BOOLEAN;
+  };
+
+  // Sensor de linha
+  Blockly.Blocks['brick_sensor_linha_valor'].getBlockType = function() {
+    return Blockly.Types.NUMBER;
+  };
+  Blockly.Blocks['brick_sensor_linha_cor'].getBlockType = function() {
+    return Blockly.Types.NUMBER;
+  };
+  Blockly.Blocks['brick_sensor_linha_cor_basica'].getBlockType = function() {
+    return Blockly.Types.NUMBER;
   };
 
   // Giroscópio
