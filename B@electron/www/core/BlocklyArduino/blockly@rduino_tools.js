@@ -50,7 +50,10 @@ BlocklyDuino.validateConfigGlobal = function () {
 		{
 		if (window.confirm(MSG['arduino_card']+' '+window.profile[$("#board_select").val()].description+' ?'))
 			{
-			BlocklyDuino.workspace.clear();
+			// Antes limpava completamente o workspace aqui, o que fazia
+			// o usuário perder todos os blocos ao aplicar configurações
+			// globais. Removemos essa limpeza para preservar o projeto
+			// atual mesmo após mudar placa/idioma/fonte.
 			if (search.length <= 1) {
 				search = '?card=' + $("#board_select").val();
 			} else if (search.match(/[?&]card=[^&]*/)) {

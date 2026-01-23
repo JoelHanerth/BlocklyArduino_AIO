@@ -303,6 +303,7 @@ BlocklyDuino.bindFunctions = function() {
 	$('#btn_saveArduino').on("click", BlocklyDuino.saveArduinoFile);
 	$('#btn_block_capture').on("click", BlocklyDuino.workspace_capture);
 	$('#btn_saveXML').on("click", BlocklyDuino.saveXmlFile);
+	$('#btn_saveXMLAs').on("click", BlocklyDuino.saveXmlFileAs);
 	$('#menu_12').on("click", BlocklyDuino.saveXmlFileAs);
 	$('#btn_validCode').on("click", BlocklyDuino.valideEditedCode);
 	$('#btn_factory').on("click", function() {

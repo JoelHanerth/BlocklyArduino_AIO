@@ -138,6 +138,7 @@ Code.initLanguage = function() {
 
   $('#span_delete').text(MSG['span_delete']);
   $('#span_saveXML').text(MSG['span_saveXML']);
+  $('#span_saveXMLAs').text(MSG['span_menu_12']);
   $('#span_fakeload').text(MSG['span_fakeload']);
 
   $('#a_supervision').text(MSG['span_supervision']);
@@ -250,6 +251,7 @@ Code.initLanguage = function() {
   $('#tab_blocks').attr('title', MSG['a_blocks']);
   $('#tab_arduino').attr('title', MSG['a_arduino']);
   $('#btn_saveXML').attr('title', MSG['span_saveXML']);
+  $('#btn_saveXMLAs').attr('title', MSG['span_menu_12']);
   $('#btn_fakeload').attr('title', MSG['span_fakeload']);
   $('#btn_example').attr('title', MSG['span_example']);
   $('#btn_create_example').attr('title', MSG['span_create_example']);

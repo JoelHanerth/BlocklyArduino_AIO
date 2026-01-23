@@ -229,3 +229,202 @@ BlocklyDuino.workspace_capture = function() {
 		a.click();
 	}
 };
+
+// =============================================================
+//  Extensões: controle de nome de projeto e salvar/salvar como
+// =============================================================
+
+/**
+ * Nome do arquivo de projeto atualmente aberto (.B@ ou .xml).
+ * Quando carregamos um arquivo ou usamos "Salvar como",
+ * atualizamos este valor para que o botão "Salvar" possa
+ * reaproveitar o mesmo nome nas próximas gravações.
+ */
+BlocklyDuino.currentProjectName = BlocklyDuino.currentProjectName || null;
+
+// Restaura, se existir, o último nome de projeto salvo
+try {
+	if (window.localStorage && window.localStorage.currentProjectName) {
+		BlocklyDuino.currentProjectName = window.localStorage.currentProjectName;
+	}
+} catch (e) {
+	// Ignora problemas de acesso ao localStorage
+}
+
+/**
+ * Constrói o XML do workspace incluindo informações de toolbox
+ * e devolve o texto pronto para salvar em disco.
+ */
+BlocklyDuino.buildWorkspaceXmlText = function () {
+	var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+
+	var toolbox = window.localStorage.toolbox;
+	if (!toolbox) {
+		toolbox = $('#toolboxes').val();
+	}
+
+	if (toolbox) {
+		var newel = document.createElement('toolbox');
+		newel.appendChild(document.createTextNode(toolbox));
+		xml.insertBefore(newel, xml.childNodes[0]);
+	}
+
+	var toolboxids = window.localStorage.toolboxids;
+	if (toolboxids === undefined || toolboxids === '') {
+		if ($('#defaultCategories').length) {
+			toolboxids = $('#defaultCategories').html();
+		}
+	}
+
+	if (toolboxids) {
+		var newel2 = document.createElement('toolboxcategories');
+		newel2.appendChild(document.createTextNode(toolboxids));
+		xml.insertBefore(newel2, xml.childNodes[0]);
+	}
+
+	return Blockly.Xml.domToPrettyText(xml);
+};
+
+/**
+ * Salvar projeto: se já houver um nome associado ao projeto
+ * (arquivo aberto ou salvo anteriormente), reutiliza esse nome.
+ * Caso contrário, comporta-se como "Salvar como".
+ */
+BlocklyDuino.saveXmlFile = function () {
+	if (!BlocklyDuino.currentProjectName) {
+		return BlocklyDuino.saveXmlFileAs.call(this);
+	}
+
+	var data = BlocklyDuino.buildWorkspaceXmlText();
+	var uri = 'data:text/xml;charset=utf-8,' + encodeURIComponent(data);
+	$(this).attr({
+		'download': BlocklyDuino.currentProjectName,
+		'href': uri,
+		'target': '_blank'
+	});
+};
+
+/**
+ * "Salvar como": sempre propõe um nome (novo ou baseado no atual)
+ * e memoriza esse nome como projeto corrente.
+ */
+BlocklyDuino.saveXmlFileAs = function () {
+	var data = BlocklyDuino.buildWorkspaceXmlText();
+	var datenow = Date.now();
+	var defaultName = BlocklyDuino.currentProjectName || ('blockly_arduino' + datenow + '.B@');
+	var uri = 'data:text/xml;charset=utf-8,' + encodeURIComponent(data);
+	$(this).attr({
+		'download': defaultName,
+		'href': uri,
+		'target': '_blank'
+	});
+
+	BlocklyDuino.currentProjectName = defaultName;
+	try {
+		window.localStorage.currentProjectName = defaultName;
+	} catch (e) {
+		// ignorar problemas de acesso ao localStorage
+	}
+};
+
+// Sobrescreve o carregamento para lembrar o nome do arquivo aberto
+BlocklyDuino.load = function (event) {
+	var files = event.target.files;
+	// Only allow uploading one file.
+	if (files.length != 1) {
+		return;
+	}
+
+	// Memoriza o nome do arquivo de projeto atualmente aberto
+	BlocklyDuino.currentProjectName = files[0].name;
+	try {
+		window.localStorage.currentProjectName = files[0].name;
+	} catch (e) {
+		// ignorar problemas de acesso ao localStorage
+	}
+
+	// FileReader
+	var reader = new FileReader();
+	reader.onloadend = function(event) {
+		var target = event.target;
+		// 2 == FileReader.DONE
+		if (target.readyState == 2) {
+			try {
+				var xml = Blockly.Xml.textToDom(target.result);
+			} catch (e) {
+				alert(MSG['xmlError']+'\n' + e);
+				return;
+			}
+			var count = BlocklyDuino.workspace.getAllBlocks().length;
+			if (count && confirm(MSG['xmlLoad'])) {
+				BlocklyDuino.workspace.clear();
+			}
+			$('#tab_blocks a').tab('show');
+			Blockly.Xml.domToWorkspace(xml, BlocklyDuino.workspace);
+			BlocklyDuino.selectedTab = 'blocks';
+			BlocklyDuino.renderContent();
+			
+			// load toolbox
+			var elem = xml.getElementsByTagName('toolbox')[0];
+			if (elem != undefined) {
+				var node = elem.childNodes[0];
+				window.localStorage.toolbox = node.nodeValue;
+				$('#toolboxes').val(node.nodeValue);
+				
+				// load toolbox categories
+				elem = xml.getElementsByTagName('toolboxcategories')[0];
+				if (elem != undefined) {
+					node = elem.childNodes[0];
+					window.localStorage.toolboxids = node.nodeValue;
+				}
+
+				var search = BlocklyDuino.addReplaceParamToUrl(window.location.search, 'toolbox', $('#toolboxes').val());
+				search = search.replace(/([?&]url=)[^&]*/, '');
+				window.location = window.location.protocol + '//' + window.location.host + window.location.pathname + search;
+			}
+		}
+		// Reset value of input after loading because Chrome will not fire
+		// a 'change' event if the same file is loaded again.
+		$('#load').val('');
+	};
+	reader.readAsText(files[0]);
+};
+
+// Ajusta descarte para voltar o projeto ao estado "novo"
+var _origDiscard = BlocklyDuino.discard;
+BlocklyDuino.discard = function () {
+	var count = BlocklyDuino.workspace.getAllBlocks().length;
+	if (count < 2 || window.confirm(MSG['discard'].replace('%1', count))) {
+		BlocklyDuino.workspace.clear();
+		//clean URL from example if opened
+		var search = window.location.search;
+		var newsearch = search.replace(/([?&]url=)[^&]*/, '');
+		window.history.pushState(search, 'Title', newsearch);
+		BlocklyDuino.renderContent();
+
+		BlocklyDuino.currentProjectName = null;
+		try {
+			window.localStorage.removeItem('currentProjectName');
+		} catch (e) {
+			// ignorar problemas de acesso ao localStorage
+		}
+	}
+};
+
+// Ajusta limpeza de storage para também esquecer o projeto atual
+var _origClearLocalStorage = BlocklyDuino.clearLocalStorage;
+BlocklyDuino.clearLocalStorage = function () {
+	if (typeof _origClearLocalStorage === 'function') {
+		_origClearLocalStorage();
+	} else {
+		window.removeEventListener('unload', BlocklyDuino.backupBlocks, false);
+		localStorage.clear();
+		sessionStorage.clear();
+	}
+	BlocklyDuino.currentProjectName = null;
+	try {
+		window.localStorage.removeItem('currentProjectName');
+	} catch (e) {
+		// ignorar problemas de acesso ao localStorage
+	}
+};

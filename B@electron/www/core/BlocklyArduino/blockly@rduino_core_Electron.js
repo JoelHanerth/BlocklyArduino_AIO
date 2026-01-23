@@ -300,6 +300,7 @@ BlocklyDuino.bindFunctions = function() {
 	$('#btn_saveArduino').on("click", BlocklyDuino.saveArduinoFile);
 	$('#btn_block_capture').on("click", BlocklyDuino.workspace_capture);
 	$('#btn_saveXML').on("click", BlocklyDuino.saveXmlFile);
+	$('#btn_saveXMLAs').on("click", BlocklyDuino.saveXmlFileAs);
 	$('#menu_12').on("click", BlocklyDuino.saveXmlFileAs);
 	$('#btn_validCode').on("click", BlocklyDuino.valideEditedCode);
 	$('#btn_factory').on("click", function() {
@@ -308,7 +309,11 @@ BlocklyDuino.bindFunctions = function() {
 	});
 	$('#load').on("change", BlocklyDuino.load);
 	$('#btn_fakeload, #menu_11').on("click", function() {
-		$('#load').click();
+		if (typeof BlocklyDuino.openProject === 'function') {
+			BlocklyDuino.openProject();
+		} else {
+			$('#load').click();
+		}
 	});
 	$('#btn_preview').on("click", function() {
 		$("#toggle_code").toggle("blind");
@@ -578,8 +583,33 @@ BlocklyDuino.openConfigToolbox = function () {
 	
 	var modalbody = $("#modal-body-config");
 	
-	// load the toolboxes id's stored in session
+	// Carrega os IDs de categorias do localStorage
 	var loadIds = window.localStorage.toolboxids;
+	// Garante que quaisquer categorias "default" novas (como BRICK
+	// de servos/LED/som) sejam sempre incluídas pelo menos uma vez
+	// na configuração atual.
+	try {
+		var defaultCats = '';
+		if ($('#defaultCategories').length) {
+			defaultCats = $('#defaultCategories').text();
+		}
+		if (defaultCats && defaultCats.length) {
+			var current = (loadIds && loadIds.length) ? loadIds.split(',') : [];
+			var defArr = defaultCats.split(',');
+			var changed = false;
+			for (var i = 0; i < defArr.length; i++) {
+				var id = defArr[i];
+				if (current.indexOf(id) === -1) {
+					current.push(id);
+					changed = true;
+				}
+			}
+			if (changed) {
+				loadIds = current.join(',');
+				window.localStorage.toolboxids = loadIds;
+			}
+		}
+	} catch (e) {}
 
 	// set the default toolbox if none
 	if (loadIds === undefined || loadIds === "") {
@@ -670,6 +700,33 @@ BlocklyDuino.buildToolbox = function() {
 	if (loadIds === undefined || loadIds === "") {
 		loadIds = window.localStorage.toolboxids;
 	}
+
+	// Garante que qualquer categoria marcada como padrão em
+	// defaultCategories (incluindo BRICK servos/LED/som) esteja
+	// sempre presente pelo menos uma vez em loadIds, mesmo se o
+	// usuário tiver uma configuração antiga salva.
+	try {
+		var defaultCats2 = '';
+		if ($('#defaultCategories').length) {
+			defaultCats2 = $('#defaultCategories').text();
+		}
+		if (defaultCats2 && defaultCats2.length) {
+			var cur = (loadIds && loadIds.length) ? loadIds.split(',') : [];
+			var def2 = defaultCats2.split(',');
+			var changed2 = false;
+			for (var j = 0; j < def2.length; j++) {
+				var id2 = def2[j];
+				if (cur.indexOf(id2) === -1) {
+					cur.push(id2);
+					changed2 = true;
+				}
+			}
+			if (changed2) {
+				loadIds = cur.join(',');
+				window.localStorage.toolboxids = loadIds;
+			}
+		}
+	} catch (e) {}
 
 	// set the default toolbox if none
 	if (loadIds === undefined || loadIds === "" || kitURL.startsWith('kit')) {
@@ -899,6 +956,13 @@ BlocklyDuino.init = function() {
 	BlocklyDuino.renderContent();
 	
 	BlocklyDuino.workspace.addChangeListener(BlocklyDuino.renderArduinoCodePreview);
+	// Salvamento automático: agenda gravação silenciosa sempre que
+	// o workspace for modificado, desde que haja um arquivo associado.
+	if (typeof BlocklyDuino._scheduleAutoSave === 'function') {
+		BlocklyDuino.workspace.addChangeListener(function () {
+			BlocklyDuino._scheduleAutoSave();
+		});
+	}
 
 	// load blocks stored in session or passed by url
 	var urlFile = BlocklyDuino.getStringParamFromUrl('url', '');
