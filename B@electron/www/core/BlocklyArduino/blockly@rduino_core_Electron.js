@@ -956,13 +956,28 @@ BlocklyDuino.init = function() {
 	BlocklyDuino.renderContent();
 	
 	BlocklyDuino.workspace.addChangeListener(BlocklyDuino.renderArduinoCodePreview);
-	// Salvamento automático: agenda gravação silenciosa sempre que
-	// o workspace for modificado, desde que haja um arquivo associado.
-	if (typeof BlocklyDuino._scheduleAutoSave === 'function') {
-		BlocklyDuino.workspace.addChangeListener(function () {
+	// Salvamento automático e marcação de alterações pendentes:
+	// em cada modificação no workspace, agenda autosave (se houver
+	// arquivo associado) e atualiza o estado "sujo/limpo" com base
+	// nos blocos atuais (workspace vazio é considerado limpo).
+	BlocklyDuino.workspace.addChangeListener(function (event) {
+		// Ignora eventos puramente de interface (como trocar categoria
+		// da toolbox, zoom, seleção etc.). Só consideramos eventos que
+		// realmente mudam os blocos: create/delete/change/move.
+		try {
+			if (event && event.type === 'ui') {
+				return;
+			}
+		} catch (e) {}
+		if (typeof BlocklyDuino._updateDirtyFromWorkspace === 'function') {
+			BlocklyDuino._updateDirtyFromWorkspace();
+		} else if (typeof BlocklyDuino._markWorkspaceDirty === 'function') {
+			BlocklyDuino._markWorkspaceDirty();
+		}
+		if (typeof BlocklyDuino._scheduleAutoSave === 'function') {
 			BlocklyDuino._scheduleAutoSave();
-		});
-	}
+		}
+	});
 
 	// load blocks stored in session or passed by url
 	var urlFile = BlocklyDuino.getStringParamFromUrl('url', '');

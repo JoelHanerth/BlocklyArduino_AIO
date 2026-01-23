@@ -250,6 +250,37 @@ BlocklyDuino.currentProjectPath = null;
 // Título base da aplicação (capturado uma vez)
 BlocklyDuino._baseDocumentTitle = document.title || 'Blockly@rduino';
 
+// Flag de alterações pendentes desde o último salvamento/carregamento
+BlocklyDuino._isWorkspaceDirty = false;
+
+BlocklyDuino._markWorkspaceDirty = function () {
+	BlocklyDuino._isWorkspaceDirty = true;
+};
+
+BlocklyDuino._markWorkspaceClean = function () {
+	BlocklyDuino._isWorkspaceDirty = false;
+};
+
+// Atualiza o estado "sujo/limpo" com base no conteúdo atual
+// do workspace: se não houver blocos, consideramos limpo;
+// se houver qualquer bloco, consideramos sujo.
+BlocklyDuino._updateDirtyFromWorkspace = function () {
+	try {
+		if (!BlocklyDuino.workspace ||
+			typeof BlocklyDuino.workspace.getAllBlocks !== 'function') {
+			return;
+		}
+		var count = BlocklyDuino.workspace.getAllBlocks().length;
+		if (count === 0) {
+			BlocklyDuino._isWorkspaceDirty = false;
+		} else {
+			BlocklyDuino._isWorkspaceDirty = true;
+		}
+	} catch (e) {
+		// falha silenciosa; não é crítico
+	}
+};
+
 // Tenta restaurar o estado do projeto da sessão atual (sobrevive a
 // recarregamentos internos, mas NÃO entre execuções diferentes do app).
 try {
@@ -335,6 +366,21 @@ if (!BlocklyDuino.currentProjectName) {
 	} catch (e) {}
 }
 
+// Antes de fechar a janela do app, se houver alterações pendentes,
+// exibe um alerta padrão do navegador/Electron pedindo confirmação.
+try {
+	window.addEventListener('beforeunload', function (e) {
+		if (!BlocklyDuino._isWorkspaceDirty) {
+			return;
+		}
+		var msg = (typeof MSG !== 'undefined' && MSG['unsavedProject']) ?
+			MSG['unsavedProject'] :
+			'Você tem alterações não salvas neste projeto. Deseja realmente sair?';
+		e.returnValue = msg;
+		return msg;
+	});
+} catch (e) {}
+
 // Feedback visual para indicar que o projeto foi salvo
 BlocklyDuino._showSaveAnimation = function (anchorElement) {
 	try {
@@ -389,10 +435,14 @@ BlocklyDuino._showSaveAnimation = function (anchorElement) {
 // Agendamento de salvamento automático
 BlocklyDuino._scheduleAutoSave = function () {
 	try {
+		// Só faz autosave quando já existe um arquivo associado
+		// (projeto previamente salvo ou aberto). Projetos novos
+		// ainda não salvos não devem abrir diálogo de "Salvar como"
+		// automaticamente.
+		if (!BlocklyDuino.currentProjectPath) {
+			return;
+		}
 		// Verifica se estamos em Electron e temos ipcRenderer.
-		// Se ainda não houver um arquivo associado, o primeiro autosave
-		// vai se comportar como "Salvar como" (abrindo o diálogo nativo)
-		// e, depois disso, passará a sobrescrever em silêncio.
 		var ipcRenderer = null;
 		try {
 			if (typeof require === 'function') {
@@ -458,6 +508,9 @@ BlocklyDuino._saveProjectNative = function (forceSaveAs, anchorElement, isAuto) 
 			window.localStorage.currentProjectName = fileName;
 		} catch (e) {}
 		BlocklyDuino._updateWindowTitle(BlocklyDuino.currentProjectName);
+		if (typeof BlocklyDuino._markWorkspaceClean === 'function') {
+			BlocklyDuino._markWorkspaceClean();
+		}
 		if (!isAuto) {
 			BlocklyDuino._showSaveAnimation(anchorElement || this);
 		}
@@ -505,6 +558,9 @@ BlocklyDuino._saveProjectNative = function (forceSaveAs, anchorElement, isAuto) 
 			// falha silenciosa, apenas não atualiza o nome
 		}
 		BlocklyDuino._updateWindowTitle(BlocklyDuino.currentProjectName);
+		if (typeof BlocklyDuino._markWorkspaceClean === 'function') {
+			BlocklyDuino._markWorkspaceClean();
+		}
 		if (isAuto) {
 			// Para autosave, usamos o botão padrão de salvar caso
 			// nenhum elemento tenha sido informado.
@@ -610,6 +666,9 @@ BlocklyDuino.load = function (event) {
 	try {
 		BlocklyDuino._updateWindowTitle(BlocklyDuino.currentProjectName);
 	} catch (e) {}
+	if (typeof BlocklyDuino._markWorkspaceClean === 'function') {
+		BlocklyDuino._markWorkspaceClean();
+	}
 
 	// FileReader
 	var reader = new FileReader();
@@ -680,6 +739,9 @@ BlocklyDuino.openProject = function () {
 
 		// Aplica o conteúdo XML no workspace
 		BlocklyDuino._applyProjectXmlText(result.content);
+		if (typeof BlocklyDuino._markWorkspaceClean === 'function') {
+			BlocklyDuino._markWorkspaceClean();
+		}
 	}).catch(function (e) {
 		// Se o IPC falhar por qualquer motivo, volta para o input file
 		try {
@@ -715,6 +777,9 @@ BlocklyDuino.discard = function () {
 		try {
 			BlocklyDuino._setDefaultProject();
 		} catch (e) {}
+		if (typeof BlocklyDuino._markWorkspaceClean === 'function') {
+			BlocklyDuino._markWorkspaceClean();
+		}
 	}
 };
 
@@ -743,6 +808,9 @@ BlocklyDuino.clearLocalStorage = function () {
 	try {
 		BlocklyDuino._setDefaultProject();
 	} catch (e) {}
+	if (typeof BlocklyDuino._markWorkspaceClean === 'function') {
+		BlocklyDuino._markWorkspaceClean();
+	}
 };
 
 // Permite definir/alterar manualmente o nome do projeto atual
