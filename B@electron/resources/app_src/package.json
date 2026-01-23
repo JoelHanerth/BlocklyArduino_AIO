@@ -1,0 +1,22 @@
+{
+  "name": "BlocklyArduino",
+  "version": "1.3.6",
+  "description": "environnement de développement pour langage graphique",
+  "author": "Sébastien Canet, many thanks to Fontaine Jean-Philippe",
+  "license": "GNU General Public License v3.0",
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/technologiescollege/BlocklyArduino_electron"
+  },
+  "bugs": {
+    "url": "https://github.com/technologiescollege/BlocklyArduino_electron/issues"
+  },
+  "dependencies": {
+    "ajv": "^7.0.2",
+    "child_process": "^1.0.2",
+    "fs-extra": "^9.0.1",
+    "serialport": "^9.0.4",
+    "tableify": "^1.1.0"
+  }
+}
