@@ -276,6 +276,9 @@ BlocklyDuino._updateDirtyFromWorkspace = function () {
 		} else {
 			BlocklyDuino._isWorkspaceDirty = true;
 		}
+		if (typeof BlocklyDuino._updateWindowTitle === 'function') {
+			BlocklyDuino._updateWindowTitle(BlocklyDuino.currentProjectName);
+		}
 	} catch (e) {
 		// falha silenciosa; não é crítico
 	}
@@ -336,11 +339,15 @@ BlocklyDuino.buildWorkspaceXmlText = function () {
 BlocklyDuino._updateWindowTitle = function (projectName) {
 	try {
 		var baseTitle = BlocklyDuino._baseDocumentTitle || 'Blockly@rduino';
+		var title = baseTitle;
 		if (projectName && projectName !== '') {
-			document.title = baseTitle + ' - ' + projectName;
-		} else {
-			document.title = baseTitle;
+			title = baseTitle + ' - ' + projectName;
 		}
+		// Se houver alterações não salvas, prefixa um * no título.
+		if (BlocklyDuino._isWorkspaceDirty) {
+			title = title + ' *';
+		}
+		document.title = title;
 	} catch (e) {
 		// apenas ignora, não é crítico
 	}
@@ -350,6 +357,9 @@ BlocklyDuino._updateWindowTitle = function (projectName) {
 BlocklyDuino._setDefaultProject = function () {
 	BlocklyDuino.currentProjectName = 'Projeto 1';
 	BlocklyDuino.currentProjectPath = null;
+	if (typeof BlocklyDuino._markWorkspaceClean === 'function') {
+		BlocklyDuino._markWorkspaceClean();
+	}
 	BlocklyDuino._updateWindowTitle(BlocklyDuino.currentProjectName);
 	try {
 		if (window.sessionStorage) {
@@ -507,10 +517,10 @@ BlocklyDuino._saveProjectNative = function (forceSaveAs, anchorElement, isAuto) 
 		try {
 			window.localStorage.currentProjectName = fileName;
 		} catch (e) {}
-		BlocklyDuino._updateWindowTitle(BlocklyDuino.currentProjectName);
 		if (typeof BlocklyDuino._markWorkspaceClean === 'function') {
 			BlocklyDuino._markWorkspaceClean();
 		}
+		BlocklyDuino._updateWindowTitle(BlocklyDuino.currentProjectName);
 		if (!isAuto) {
 			BlocklyDuino._showSaveAnimation(anchorElement || this);
 		}
@@ -557,10 +567,10 @@ BlocklyDuino._saveProjectNative = function (forceSaveAs, anchorElement, isAuto) 
 		} catch (e) {
 			// falha silenciosa, apenas não atualiza o nome
 		}
-		BlocklyDuino._updateWindowTitle(BlocklyDuino.currentProjectName);
 		if (typeof BlocklyDuino._markWorkspaceClean === 'function') {
 			BlocklyDuino._markWorkspaceClean();
 		}
+		BlocklyDuino._updateWindowTitle(BlocklyDuino.currentProjectName);
 		if (isAuto) {
 			// Para autosave, usamos o botão padrão de salvar caso
 			// nenhum elemento tenha sido informado.
