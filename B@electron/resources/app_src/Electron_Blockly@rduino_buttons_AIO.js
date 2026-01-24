@@ -3,6 +3,25 @@ const {exec} = require('child_process');
 const fs = require('fs-extra');
 const SerialPort = require('serialport');
 
+function traduzirMensagemArduinoCli(texto) {
+	if (!texto) return texto;
+	let t = texto.toString();
+	t = t.replace(/Error during Upload:/g, 'Erro durante o envio:');
+	t = t.replace(/opening sketch:/g, 'abrindo o sketch:');
+	t = t.replace(/no valid sketch found/g, 'nenhum sketch válido encontrado');
+	t = t.replace(/missing tmp\.ino/g, 'arquivo tmp.ino ausente');
+	t = t.replace(/Sketch uses ([0-9]+) bytes \(1%\) of program storage space\./g,
+		'Sketch usa $1 bytes (1%) do espaço de armazenamento do programa.');
+	t = t.replace(/Sketch uses ([0-9]+) bytes \(([0-9]+)%\) of program storage space\./g,
+		'Sketch usa $1 bytes ($2%) do espaço de armazenamento do programa.');
+	t = t.replace(/Maximum is ([0-9]+) bytes\./g, 'O máximo é de $1 bytes.');
+	t = t.replace(/Global variables use ([0-9]+) bytes \(([0-9]+)%\) of dynamic memory, leaving ([0-9]+) bytes for local variables\./g,
+		'Variáveis globais usam $1 bytes ($2%) da memória dinâmica, restando $3 bytes para variáveis locais.');
+	t = t.replace(/Maximum is ([0-9]+) bytes for local variables\./g,
+		'O máximo é de $1 bytes para variáveis locais.');
+	return t;
+}
+
 /* fake IDE code Arduino
 ** load: serial port list
 ** btn_term: open modal with serial console
@@ -85,11 +104,11 @@ window.addEventListener('load', function load(event) {
 		exec(cmd , {cwd: './B@electron/arduino'} , (error, stdout, stderr) => {
 			if (error) {
 				document.getElementById('local_debug').style.color = '#ff0000'
-				document.getElementById('local_debug').innerHTML = stderr
+				document.getElementById('local_debug').innerHTML = traduzirMensagemArduinoCli(stderr)
 				return
 			}
 			document.getElementById('local_debug').style.color = '#00ff00'
-				document.getElementById('local_debug').innerHTML = stdout + '\nVerificação: OK'
+				document.getElementById('local_debug').innerHTML = traduzirMensagemArduinoCli(stdout) + '\nVerificação: OK'
 		})
 	}
 	document.getElementById('btn_flash_local').onclick = function(event) {
@@ -122,11 +141,11 @@ window.addEventListener('load', function load(event) {
 		exec(cmd , {cwd: './B@electron/arduino'} , (error, stdout, stderr) => {
 			if (error) {
 				document.getElementById('local_debug').style.color = '#ff0000'
-				document.getElementById('local_debug').innerHTML = stderr
+				document.getElementById('local_debug').innerHTML = traduzirMensagemArduinoCli(stderr)
 				return
 			}
 			document.getElementById('local_debug').style.color = '#00ff00'
-				document.getElementById('local_debug').innerHTML = stdout + '\nTransferência: OK'
+				document.getElementById('local_debug').innerHTML = traduzirMensagemArduinoCli(stdout) + '\nTransferência: OK'
 			const path = require('path')
 			fs.readdir('.\\B@electron\\arduino\\tmp', (err, files) => {
 			  if (err) throw err;
