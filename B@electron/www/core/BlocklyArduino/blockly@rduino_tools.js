@@ -38,6 +38,16 @@ BlocklyDuino.validateConfigGlobal = function () {
 
 	// Store the blocks for the duration of the reload.
 	BlocklyDuino.backupBlocks();
+
+	// Esta navegação é um recarregamento interno (mudar placa/
+	// idioma/fonte), o projeto não será perdido porque já fizemos
+	// backup dos blocos. Não faz sentido avisar "projeto não salvo"
+	// nesse caso específico.
+	try {
+		if (typeof BlocklyDuino !== 'undefined') {
+			BlocklyDuino._suppressUnloadPrompt = true;
+		}
+	} catch (e) {}
 	
 	var search = window.location.search;
 	//change Arduino card
@@ -110,6 +120,14 @@ BlocklyDuino.validateConfigOffline = function () {
 
 	// Store the blocks for the duration of the reload.
 	BlocklyDuino.backupBlocks();
+
+	// Também é um recarregamento interno apenas para aplicar
+	// configurações offline, sem risco de perder o projeto atual.
+	try {
+		if (typeof BlocklyDuino !== 'undefined') {
+			BlocklyDuino._suppressUnloadPrompt = true;
+		}
+	} catch (e) {}
 	
 	var search = window.location.search;	
 	// remove values from url to test toggles
