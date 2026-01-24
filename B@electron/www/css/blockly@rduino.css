@@ -172,6 +172,11 @@ html, body {
 	background-color: #f5f5f5;
 }
 
+/* Ocultar botão "Limpar o espaço de trabalho" na área de blocos */
+#btn_delete {
+	display: none !important;
+}
+
 /* Overlay de carregamento entre telas (novo projeto, mudança de layout) */
 #page-loading-overlay {
 	position: fixed;
@@ -738,6 +743,19 @@ html[dir="RTL"] #select_all {
 	fill-opacity: 1;
 	box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12) !important;
 	border-radius: 8px;
+}
+
+/*
+	Responsividade básica da barra de botões
+	- Em larguras menores escondemos alguns botões menos críticos
+*/
+@media (max-width: 920px) {
+	#btn_block_capture,
+	#btn_blocs_picture,
+	#btn_preview,
+	#btn_inline{
+		display: none !important;
+	}
 }
 
 .blocklyTreeRoot {

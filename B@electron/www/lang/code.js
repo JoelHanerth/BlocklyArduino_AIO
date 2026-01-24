@@ -156,6 +156,12 @@ Code.initLanguage = function() {
   $('#span_connect_serial').text(MSG['span_connect_serial']);
   $('#span_edit_code').text(MSG['span_edit_code']);
 
+  // Tooltips dos botões de envio / console serial (comportamento igual ao desfazer/refazer)
+  $('#btn_saveArduino').attr('title', MSG['span_saveIno']);
+  $('#btn_verify_local').attr('title', MSG['span_verify_local']);
+  $('#btn_flash_local').attr('title', MSG['span_flash_local']);
+  $('#btn_term').attr('title', MSG['span_connect_serial']);
+
   $('#configModalLabel').text(MSG['configModalLabel']);
   $('#span_functionToggle').text(MSG['span_functionToggle']);
   $('#span_functionON').text(MSG['span_functionON']);

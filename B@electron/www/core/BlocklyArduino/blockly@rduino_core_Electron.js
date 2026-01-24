@@ -169,6 +169,8 @@ BlocklyDuino.valideEditedCode = function() {
 	}
 };
 
+
+
 /**
  * Render Arduino code in preview box
  */
@@ -349,31 +351,7 @@ BlocklyDuino.bindFunctions = function() {
 	$('#board_select').on("focus", function() {
 		BlocklyDuino.selectedCard = $(this).val();
 	});
-	$('#btn_edit_code').mouseover(function() {
-		document.getElementById("survol").textContent = MSG['span_edit_code'];
-	}).mouseout(function() {
-		document.getElementById("survol").textContent = "";
-	});
-	$('#btn_saveArduino').mouseover(function() {
-		document.getElementById("survol").textContent = MSG['span_saveIno'];
-	}).mouseout(function() {
-		document.getElementById("survol").textContent = "";
-	});
-	$('#btn_verify_local').mouseover(function() {
-		document.getElementById("survol").textContent = MSG['span_verify_local'];
-	}).mouseout(function() {
-		document.getElementById("survol").textContent = "";
-	});
-	$('#btn_flash_local').mouseover(function() {
-		document.getElementById("survol").textContent = MSG['span_flash_local'];
-	}).mouseout(function() {
-		document.getElementById("survol").textContent = "";
-	});
-	$('#btn_term').mouseover(function() {
-		document.getElementById("survol").textContent = MSG['span_connect_serial'];
-	}).mouseout(function() {
-		document.getElementById("survol").textContent = "";
-	});
+
 	$('#btn_configGlobal').on("click", BlocklyDuino.buildlibraries);
 	$('#configModalGlobal').on("hidden.bs.modal", function() {
 		$("#board_select").val(BlocklyDuino.selectedCard);
