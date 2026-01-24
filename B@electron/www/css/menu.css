@@ -114,15 +114,13 @@ header {
   width: 100%;
   background: #00969D;  
 }*/
-#divTitreMenu_miniCard, #divTitreMenu_menu {
-    display: inline-block;
-}
 #divTitreMenu_menu {
-	float: left;
+  display: inline-block;
+  float: left;
 }
- 
-#divTitreMenu_miniCard {   overflow:auto;
-    margin-left: 0px;
+
+#divTitreMenu_miniCard {
+  display: none;
 }
   
 nav li {
@@ -136,15 +134,16 @@ nav a {
   color: #f5f5f5;
   background: #00969D;
   text-decoration: none;
-  display: block;
-  padding: .5em;
+  display: flex;
+  align-items: center;
+  padding: 0 1.25em;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
   -webkit-transition: all 0.2s ease;
   -moz-transition: all 0.2s ease;
   transition: all 0.2s ease;
-  height: 36px;
+  height: 56px;
 }
 nav a i[class*="caret"] {
   color: #3b536b;

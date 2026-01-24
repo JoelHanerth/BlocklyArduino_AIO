@@ -369,12 +369,46 @@ BlocklyDuino._setDefaultProject = function () {
 	} catch (e) {}
 };
 
-// Ao iniciar (sem projeto carregado), assume "Projeto 1" como nome lógico
+// Ao iniciar:
+// - se já houver um nome de projeto restaurado da sessão (por exemplo,
+//   após recarregar a página ao mudar o layout), apenas reaplicamos o
+//   título com esse nome;
+// - se não houver nenhum nome (primeira execução, ou storage limpo),
+//   assumimos "Projeto 1" como projeto padrão.
 if (!BlocklyDuino.currentProjectName) {
 	try {
 		BlocklyDuino._setDefaultProject();
 	} catch (e) {}
+} else {
+	try {
+		if (typeof BlocklyDuino._updateWindowTitle === 'function') {
+			BlocklyDuino._updateWindowTitle(BlocklyDuino.currentProjectName);
+		}
+	} catch (e) {}
 }
+
+// Em alguns ambientes Electron, o processo principal pode voltar a
+// sobrescrever o título da janela (por exemplo, ao maximizar). Para
+// garantir que o nome do projeto continue aparecendo na barra superior,
+// reaplicamos o título toda vez que a janela é redimensionada ou ganha foco.
+try {
+	window.addEventListener('resize', function () {
+		try {
+			if (typeof BlocklyDuino !== 'undefined' &&
+				typeof BlocklyDuino._updateWindowTitle === 'function') {
+				BlocklyDuino._updateWindowTitle(BlocklyDuino.currentProjectName);
+			}
+		} catch (e) {}
+	});
+	window.addEventListener('focus', function () {
+		try {
+			if (typeof BlocklyDuino !== 'undefined' &&
+				typeof BlocklyDuino._updateWindowTitle === 'function') {
+				BlocklyDuino._updateWindowTitle(BlocklyDuino.currentProjectName);
+			}
+		} catch (e) {}
+	});
+} catch (e) {}
 
 // Antes de fechar a janela do app, se houver alterações pendentes,
 // exibe um alerta padrão do navegador/Electron pedindo confirmação.
