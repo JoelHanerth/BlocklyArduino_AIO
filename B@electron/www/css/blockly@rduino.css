@@ -85,9 +85,17 @@ html,body {
 }
 
 #header_code {
-	margin-left: 230px;
-	margin-bottom: 5px;
 	position: absolute;
+	left: 230px;
+	right: 0;
+	top: 0;
+	height: 56px;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
 }
 
 #header_supervision {
@@ -115,9 +123,29 @@ html,body {
 	margin-top: 5px;
 }
 
+#top_toolbar {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	width: 100%;
+	overflow-x: auto;
+}
+
+#barre_ide {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	gap: 6px;
+}
+
 #tools_blocks {
-	float: right;
-	height: 56px;
+	margin-left: auto;
 	margin-right: 10px;
 	display: -webkit-box;
 	display: -ms-flexbox;
@@ -126,6 +154,8 @@ html,body {
 	-ms-flex-align: center;
 	align-items: center;
 	gap: 6px;
+	float: none;
+	height: auto;
 }
 
 #divBody {
@@ -603,9 +633,9 @@ html[dir="RTL"] #languageMenu {
 	box-shadow: 0 1px 3px rgba(15, 23, 42, 0.16);
 }
 #barre_ide{
-	padding : 6px 8px 6px 14px;
-	background-color : #018790;
-	box-shadow: 0 1px 3px rgba(15, 23, 42, 0.16);
+	padding : 0 8px;
+	background-color : transparent;
+	box-shadow: none;
 }
 #btn_term {
 	right: 15px;
