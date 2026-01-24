@@ -860,10 +860,12 @@ BlocklyDuino.init = function() {
 		}
 		if (BlocklyDuino.getSize() == 'miniMenu') {
 			$("#menuPanel").css({"width" : "60px"});
-			$("#divTabpanel").css({"margin-left" : "70px"});
-			$(".blocklyFlyout").css({"margin-left" : "175px"});
-			$(".blocklySvg").css({"margin-left" : "225px"});
-			$(".blocklyWorkspace").css({"margin-left" : "225px"});
+			// Aproxima a área de blocos do painel de botões no modo recolhido,
+			// reduzindo o espaço vazio entre eles.
+			$("#divTabpanel").css({"margin-left" : "60px"});
+			$(".blocklyFlyout").css({"margin-left" : "130px"});
+			$(".blocklySvg").css({"margin-left" : "180px"});
+			$(".blocklyWorkspace").css({"margin-left" : "180px"});
 			$("#configGlobalLabel").remove();
 			$("#btn_configGlobal").removeClass("btn-block");
 			$("#divTitreMenu_miniCard").removeClass("hidden");			
@@ -903,9 +905,10 @@ BlocklyDuino.init = function() {
 			$("#div_about").addClass("btn-group-vertical");
 			$("#div_about").css({"width" : "40px", "bottom" : "10px", "position" : "fixed"});
 			$("#span_about").remove();
+			// Mantém o botão de recolher no rodapé, apenas ajustando a largura
+			// para acompanhar a coluna estreita do miniMenu.
 			$("#div_tools_button").addClass("btn-group-vertical");
-			$("#div_tools_button").removeClass("div_tools_button-ver");
-			$("#div_tools_button").css({"width" : "40px", "margin-bottom" : "10px"});
+			$("#div_tools_button").css({"width" : "40px", "left" : "10px"});
 		}
 	} else {
 		$("#menuPanel").css({"display" : ""});
