@@ -52,27 +52,12 @@
         <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css"/>
         <link rel="stylesheet" type="text/css" href="css/jquery-ui.css"/>
         <link rel="stylesheet" type="text/css" href="css/prettify.css"/>
-
-        <style>
-            /* Evitar barras de rolagem gerais na janela principal */
-            html, body {
-                margin: 0;
-                padding: 0;
-                height: 100%;
-                overflow: hidden;
-                background-color: #f5f5f5;
-            }
-
-            /* Corpo começa invisível para evitar qualquer frame intermediário
-               durante o carregamento; é exibido via JS após o DOM estar pronto. */
-            body {
-                opacity: 0;
-                transition: opacity 0.15s ease-out;
-            }
-        </style>
     </head>
 
     <body onload="BlocklyDuino.init()">
+        <div id="page-loading-overlay">
+            <div class="loader-circle"></div>
+        </div>
         <div id="header">
             <div id="logo_Titre">
                 <div id="app_brand">
@@ -768,9 +753,12 @@
                     } catch (e) {}
                 }
 
-                function showBody() {
+                function hideOverlay() {
                     try {
-                        document.body.style.opacity = '1';
+                        var overlay = document.getElementById('page-loading-overlay');
+                        if (overlay) {
+                            overlay.style.display = 'none';
+                        }
                     } catch (e) {}
                 }
 
@@ -779,7 +767,7 @@
                     // para garantir que o BlocklyDuino.init() já terminou
                     // antes de exibirmos o layout ao usuário.
                     setTimeout(function () {
-                        showBody();
+                        hideOverlay();
                         initAutoOpenProject();
                     }, 200);
                 }

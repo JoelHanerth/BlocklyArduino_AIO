@@ -134,6 +134,42 @@ html,body {
 	bottom: 5px;
 	width: 100%;
 }
+
+/* Evitar barras de rolagem gerais na janela principal em modo Electron
+   e alinhar fundo com a janela nativa */
+html, body {
+	overflow: hidden;
+	background-color: #f5f5f5;
+}
+
+/* Overlay de carregamento entre telas (novo projeto, mudança de layout) */
+#page-loading-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #f5f5f5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
+}
+
+#page-loading-overlay .loader-circle {
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	border: 3px solid #cccccc;
+	border-top-color: #4CAF50;
+	animation: page-loader-spin 0.8s linear infinite;
+}
+
+@keyframes page-loader-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
 /* surcharge css min pour accéssibilité
 ------------------------------------------------ */
 .btn-sm, .btn {
