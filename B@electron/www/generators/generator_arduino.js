@@ -464,17 +464,16 @@ Blockly.Arduino.scrubNakedValue = function(line) {
  * diretamente para o código principal da função loop().
  *
  * Aqui limitamos isso apenas aos blocos "estruturais" que
- * representam o laço principal Arduino (base_loop e
- * base_setup_loop). Qualquer outro bloco solto (por exemplo,
- * um comando digitalWrite arrastado sozinho) continua sendo
- * processado para efeitos colaterais (includes, variáveis,
- * setups, etc.), mas o código gerado por ele é ignorado no
- * corpo do loop.
+ * representam o laço principal Arduino (base_loop,
+ * base_setup_loop e base_setup). Qualquer outro bloco solto
+ * (por exemplo, um comando digitalWrite arrastado sozinho)
+ * continua sendo ignorado na geração do código principal.
  */
 Blockly.Arduino.isTopBlockAllowedInMain_ = function(block) {
   return block &&
     (block.type === 'base_loop' ||
-     block.type === 'base_setup_loop');
+     block.type === 'base_setup_loop' ||
+     block.type === 'base_setup');
 };
 
 /**
