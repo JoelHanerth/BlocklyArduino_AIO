@@ -8,6 +8,7 @@ const {
 } = require('electron');
 var path = require('path');
 let mainWindow = null;
+let splashWindow = null;
 let termWindow = null;
 let factoryWindow = null;
 //const userDataPath = app.getPath ('userData')
@@ -26,8 +27,10 @@ function createMainWindow() {
     mainWindow = new BrowserWindow({
             width: 1280,
             height: 800,
+            backgroundColor: '#f5f5f5',
             titleBarStyle: 'hidden',
             thickFrame: true,
+			show: false,
 			webPreferences: {
 				nodeIntegration: true
 			},
@@ -59,19 +62,29 @@ function createMainWindow() {
                 mainWindow.loadURL(`file://${__dirname}` + url + process.argv[1]);
             } else {
                 // no use yet for arguments in Electron single mode
-                mainWindow.loadURL(`file://${__dirname}` + url + 'index_electron.html');
+                mainWindow.loadURL(`file://${__dirname}` + url + 'start.html');
             }
         } else {
             if (Settings == "" || Settings == "undefined") {
-                mainWindow.loadURL(`file://${__dirname}` + url + 'index_electron.html');
+                mainWindow.loadURL(`file://${__dirname}` + url + 'start.html');
             } else {
                 Settings = Settings.replace('"', '');
                 Settings = Settings.replace('"', '');
-                mainWindow.loadURL(`file://${__dirname}` + url + 'index_electron.html' + Settings);
+                mainWindow.loadURL(`file://${__dirname}` + url + 'start.html' + Settings);
             }
         }
     }
     mainWindow.setMenu(null);
+
+    // Só mostra a janela principal quando estiver pronta para evitar
+    // a sensação de tela travada em branco. Até lá, mantemos o splash.
+    mainWindow.once('ready-to-show', () => {
+        if (splashWindow) {
+            splashWindow.close();
+            splashWindow = null;
+        }
+        mainWindow.show();
+    });
 
     // Quando o renderer usar window.onbeforeunload/beforeunload para
     // sinalizar alterações não salvas, o Electron emite o evento
@@ -117,6 +130,21 @@ function refresh(mainWindow = BrowserWindow.getFocusedWindow()) {
 //need to be deleted at next serialport upgrad > 9.0.0
 app.allowRendererProcessReuse = false;
 app.on('ready', function () {
+    // Janela de splash leve e rápida
+    splashWindow = new BrowserWindow({
+        width: 400,
+        height: 260,
+        resizable: false,
+        movable: true,
+        frame: false,
+        alwaysOnTop: true,
+        backgroundColor: '#f5f5f5',
+        icon: './www/favicon.ico'
+    });
+    var splashUrl = `file://${__dirname}` + '../../../www/splash.html';
+    splashWindow.loadURL(splashUrl);
+    splashWindow.setMenu(null);
+
     createMainWindow();
     globalShortcut.register('CmdOrCtrl+I', open_console);
     globalShortcut.register('F8', open_console);

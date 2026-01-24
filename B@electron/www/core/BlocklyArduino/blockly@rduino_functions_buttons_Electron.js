@@ -746,7 +746,9 @@ BlocklyDuino.load = function (event) {
 	reader.readAsText(files[0]);
 };
 
-// Abertura nativa de projeto (Electron): usa diálogo do sistema
+// Abertura nativa de projeto (Electron): usa diálogo do sistema.
+// Agora retorna uma Promise<boolean>, que indica se o projeto
+// foi de fato carregado (true) ou se o usuário cancelou/ocorreu erro (false).
 BlocklyDuino.openProject = function () {
 	var ipcRenderer = null;
 	try {
@@ -761,18 +763,20 @@ BlocklyDuino.openProject = function () {
 	// Se não estivermos em Electron, cai no fluxo antigo
 	if (!ipcRenderer) {
 		$('#load').click();
-		return;
+		// No modo web não temos como saber o resultado com precisão
+		// aqui, então apenas sinalizamos "false" para o chamador.
+		return Promise.resolve(false);
 	}
 
-	ipcRenderer.invoke('blockly-open-project').then(function (result) {
+	return ipcRenderer.invoke('blockly-open-project').then(function (result) {
 		if (!result || result.canceled) {
 			// usuário apenas cancelou o diálogo nativo
-			return;
+			return false;
 		}
 		if (!result.filePath || !result.content || result.error) {
 			// algo deu errado no handler nativo: volta para o fluxo antigo
 			$('#load').click();
-			return;
+			return false;
 		}
 		// Atualiza nome lógico e caminho real do projeto aberto
 		try {
@@ -803,11 +807,13 @@ BlocklyDuino.openProject = function () {
 		if (typeof BlocklyDuino._markWorkspaceClean === 'function') {
 			BlocklyDuino._markWorkspaceClean();
 		}
+		return true;
 	}).catch(function (e) {
 		// Se o IPC falhar por qualquer motivo, volta para o input file
 		try {
 			$('#load').click();
 		} catch (e2) {}
+		return false;
 	});
 };
 

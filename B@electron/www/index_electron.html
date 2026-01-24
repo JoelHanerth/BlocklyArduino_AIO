@@ -53,15 +53,26 @@
         <link rel="stylesheet" type="text/css" href="css/jquery-ui.css"/>
         <link rel="stylesheet" type="text/css" href="css/prettify.css"/>
 
-        <script type="text/javascript">
-            $(window).load(function () {
-                $(".loading").fadeOut("slow");
-            });
-        </script>
+        <style>
+            /* Evitar barras de rolagem gerais na janela principal */
+            html, body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                overflow: hidden;
+                background-color: #f5f5f5;
+            }
+
+            /* Corpo começa invisível para evitar qualquer frame intermediário
+               durante o carregamento; é exibido via JS após o DOM estar pronto. */
+            body {
+                opacity: 0;
+                transition: opacity 0.15s ease-out;
+            }
+        </style>
     </head>
 
     <body onload="BlocklyDuino.init()">
-        <div class="loading"></div>
         <div id="header">
             <div id="logo_Titre">
                 <div id="app_brand">
@@ -736,6 +747,50 @@
             </iframe>
         </div>
         <div id="arduino_IDE_code"> </div>
+
+        <script type="text/javascript">
+            (function () {
+                function getQueryParam(name) {
+                    var m = window.location.search.match(new RegExp('[?&]' + name + '=([^&]+)'));
+                    return m ? decodeURIComponent(m[1].replace(/\+/g, '%20')) : null;
+                }
+
+                function initAutoOpenProject() {
+                    var auto = getQueryParam('autoOpenProject');
+                    if (!auto) {
+                        return;
+                    }
+                    try {
+                        if (typeof BlocklyDuino !== 'undefined' &&
+                            typeof BlocklyDuino.openProject === 'function') {
+                            BlocklyDuino.openProject();
+                        }
+                    } catch (e) {}
+                }
+
+                function showBody() {
+                    try {
+                        document.body.style.opacity = '1';
+                    } catch (e) {}
+                }
+
+                function init() {
+                    // Pequeno atraso após o carregamento completo da janela
+                    // para garantir que o BlocklyDuino.init() já terminou
+                    // antes de exibirmos o layout ao usuário.
+                    setTimeout(function () {
+                        showBody();
+                        initAutoOpenProject();
+                    }, 200);
+                }
+
+                if (document.readyState === 'complete') {
+                    init();
+                } else {
+                    window.addEventListener('load', init);
+                }
+            })();
+        </script>
     </body>
     <script>
         require('../resources/app.asar/Electron_Blockly@rduino_buttons_electron.js')

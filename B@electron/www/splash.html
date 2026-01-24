@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Blockly@rduino</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f5f5f5;
+            font-family: "Trebuchet MS", Arial, sans-serif;
+        }
+        #splash-root {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #555555;
+        }
+        #splash-logo {
+            font-size: 22px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        #splash-subtitle {
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+        #splash-spinner {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 4px solid #d0d0d0;
+            border-top-color: #4285f4;
+            animation: splash-spin 0.8s linear infinite;
+        }
+        @keyframes splash-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        #splash-text {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+    <div id="splash-root">
+        <div id="splash-logo">Blockly@rduino</div>
+        <div id="splash-subtitle">Iniciando o ambiente...</div>
+        <div id="splash-spinner"></div>
+        <div id="splash-text">Carregando interface...</div>
+    </div>
+</body>
+</html>

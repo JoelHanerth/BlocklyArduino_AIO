@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Blockly@rduino</title>
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.BlocklyArduino.css"/>
+    <link rel="stylesheet" type="text/css" href="css/blockly@rduino.css"/>
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css"/>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #f5f5f5;
+            font-family: "Trebuchet MS", Arial, sans-serif;
+        }
+        #start-root {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #start-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 24px 28px;
+            max-width: 420px;
+            width: 92%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            color: #333333;
+            border: 1px solid #e2e2e2;
+        }
+        #start-logo {
+            font-size: 22px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        #start-logo .fa {
+            margin-right: 6px;
+            color: #4285f4;
+        }
+        #start-subtitle {
+            font-size: 13px;
+            color: #666666;
+            margin-bottom: 20px;
+        }
+        #start-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        @media (min-width: 480px) {
+            #start-buttons {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+        #btn_start_new_project,
+        #btn_start_open_project {
+            min-width: 170px;
+            font-weight: 500;
+            box-shadow: none;
+        }
+        #btn_start_new_project {
+            background-color: #4285f4;
+            border-color: #4285f4;
+        }
+        #btn_start_open_project {
+            background-color: #ffffff;
+            color: #4285f4;
+            border-color: #d0d0d0;
+        }
+    </style>
+</head>
+<body>
+    <div id="start-root">
+        <div id="start-card">
+            <div id="start-logo">
+                <span class="fa fa-microchip"></span>
+                Blockly@rduino
+            </div>
+            <div id="start-subtitle">
+                Escolha como deseja começar seu projeto.
+            </div>
+            <div id="start-buttons">
+                <button id="btn_start_new_project" class="btn btn-primary btn-lg">
+                    Criar novo projeto
+                </button>
+                <button id="btn_start_open_project" class="btn btn-default btn-lg">
+                    Carregar projeto existente
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        (function () {
+            function goToMain(autoOpen) {
+                try {
+                    if (window.sessionStorage) {
+                        window.sessionStorage.blocklyStartScreenDone = '1';
+                    }
+                } catch (e) {}
+
+                var search = window.location.search || '';
+                var extra = autoOpen ? (search ? '&' : '?') + 'autoOpenProject=1' : '';
+                window.location = 'index_electron.html' + search + extra;
+            }
+
+            function init() {
+                try {
+                    if (window.sessionStorage &&
+                        window.sessionStorage.blocklyStartScreenDone === '1') {
+                        // Usuário já escolheu nesta sessão: vai direto para o app
+                        goToMain(false);
+                        return;
+                    }
+                } catch (e) {}
+
+                var btnNew = document.getElementById('btn_start_new_project');
+                var btnOpen = document.getElementById('btn_start_open_project');
+                if (!btnNew || !btnOpen) {
+                    return;
+                }
+                btnNew.addEventListener('click', function () {
+                    goToMain(false);
+                });
+                btnOpen.addEventListener('click', function () {
+                    goToMain(true);
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
+</body>
+</html>
