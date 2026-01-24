@@ -24,6 +24,19 @@ Blockly.Blocks['brick_atualizabrick'] = {
   }
 };
 
+// Inicializa o Brick (garante brick.inicializa() no setup)
+Blockly.Blocks['brick_inicializa'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+        .appendField('Inicializa Brick');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Garante a chamada brick.inicializa(); dentro da função setup.');
+  }
+};
+
 // Imprime um valor no terminal serial (com ou sem quebra de linha)
 Blockly.Blocks['brick_imprimir_terminal'] = {
   init: function() {

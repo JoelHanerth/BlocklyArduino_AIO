@@ -7,6 +7,15 @@ goog.provide('Blockly.Arduino.brick');
 
 goog.require('Blockly.Arduino');
 
+// Bloco que apenas garante a inclusão e a chamada a brick.inicializa() no setup
+Blockly.Arduino['brick_inicializa'] = function(block) {
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+
+  // Nenhum código adicional no loop; a inicialização já foi registrada no setup
+  return '';
+};
+
 Blockly.Arduino['brick_atualizabrick'] = function(block) {
   // Garante include e inicialização, mesmo que só este bloco seja usado
   Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';

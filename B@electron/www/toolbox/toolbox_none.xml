@@ -2,6 +2,7 @@
 <toolbox>
 	<parametre id="defaultCategories">CAT_BRICK,CAT_BRICK_MOTOR,CAT_BRICK_MOTORS,CAT_BRICK_SERVOS,CAT_BRICK_SENSORS,CAT_BRICK_LED,CAT_BRICK_SOUND,CAT_LOGIC,CAT_LOOPS,CAT_MATH,CAT_ARRAY,CAT_TEXT,CAT_VARIABLES,CAT_FUNCTIONS</parametre>
 	<category name="CAT_BRICK" colour="#FF6680">
+		<block type="brick_inicializa"></block>
 		<block type="brick_atualizabrick"></block>
 		<block type="brick_imprimir_terminal"></block>
 		<block type="brick_botao_apertado"></block>
