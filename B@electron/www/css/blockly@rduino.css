@@ -656,6 +656,11 @@ html[dir="RTL"] .colors_category {
     background: url(../media/ajax-loading.gif) center no-repeat #fff;
 }
 
+/* Oculta a foto da placa Arduino na tela inicial */
+#div_miniPicture {
+	display: none;
+}
+
 #div_miniPicture:hover {
 	cursor: pointer;
 }
