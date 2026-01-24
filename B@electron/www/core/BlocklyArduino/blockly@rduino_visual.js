@@ -155,6 +155,13 @@ BlocklyDuino.changeSize = function () {
     // remove url file
     //search = search.replace(/([?&]url=)[^&]*/, '');
 
+    // Esta navegação é interna (apenas muda o layout/tamanho da área),
+    // portanto não deve disparar o aviso de "projeto não salvo".
+    try {
+        if (typeof BlocklyDuino !== 'undefined') {
+            BlocklyDuino._suppressUnloadPrompt = true;
+        }
+    } catch (e) {}
     window.location = window.location.protocol + '//' + window.location.host + window.location.pathname + search;
 };
 

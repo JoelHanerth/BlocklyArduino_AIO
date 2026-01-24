@@ -192,6 +192,14 @@ BlocklyDuino.miniMenuPanel = function() {
 
 	  // remove url file
 	  //search = search.replace(/([?&]url=)[^&]*/, '');
+
+	  // Navegação interna para mudar o modo miniMenu: não deve exibir
+	  // alerta de "projeto não salvo" no beforeunload.
+	  try {
+	  	if (typeof BlocklyDuino !== 'undefined') {
+	  		BlocklyDuino._suppressUnloadPrompt = true;
+	  	}
+	  } catch (e) {}
 	  window.location = window.location.protocol + '//' + window.location.host + window.location.pathname + search;
 };
 
@@ -252,6 +260,12 @@ BlocklyDuino._baseDocumentTitle = document.title || 'Blockly@rduino';
 
 // Flag de alterações pendentes desde o último salvamento/carregamento
 BlocklyDuino._isWorkspaceDirty = false;
+
+// Flag para indicar que o recarregamento da página foi disparado
+// internamente pela aplicação (por exemplo, ao trocar o layout ou
+// o modo de exibição). Quando verdadeiro, não mostramos o alerta
+// de "projeto não salvo" no evento beforeunload.
+BlocklyDuino._suppressUnloadPrompt = false;
 
 BlocklyDuino._markWorkspaceDirty = function () {
 	BlocklyDuino._isWorkspaceDirty = true;
@@ -414,7 +428,10 @@ try {
 // exibe um alerta padrão do navegador/Electron pedindo confirmação.
 try {
 	window.addEventListener('beforeunload', function (e) {
-		if (!BlocklyDuino._isWorkspaceDirty) {
+		// Se não houver alterações, ou se o recarregamento estiver
+		// sendo feito internamente (mudança de layout, por exemplo),
+		// não exibimos nenhum aviso.
+		if (!BlocklyDuino._isWorkspaceDirty || BlocklyDuino._suppressUnloadPrompt) {
 			return;
 		}
 		var msg = (typeof MSG !== 'undefined' && MSG['unsavedProject']) ?
