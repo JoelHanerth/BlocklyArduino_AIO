@@ -353,6 +353,15 @@ html[dir="RTL"] .menuPanel-ver {
     text-align: left;
 }
 
+/* Ocultar botões avançados do modal de configuração global (tutoriais / fórum / wiki / salvar configuração) */
+#div_help_button {
+	display: none;
+}
+
+/* #btn_saveConfigGlobale_id {
+	display: none;
+} */
+
 #div_about {
     width: 200px;
     bottom: 130px;
