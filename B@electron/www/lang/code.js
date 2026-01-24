@@ -235,11 +235,13 @@ Code.initLanguage = function() {
   $('#btn_saveConfigGlobale').text(MSG['btn_saveConfig']);
   $('#btn_validConfigGlobale').text(MSG['btn_valid']);
   $('#toolboxes option[value="toolbox_algo"]').text(MSG['span_toolbox_algo']);
+  $('#toolboxes option[value="toolbox_none"]').text(MSG['span_toolbox_none']);
   $('#toolboxes option[value="toolbox_arduino_1"]').text(MSG['span_toolbox_arduino_1']);
   $('#toolboxes option[value="toolbox_arduino_2"]').text(MSG['span_toolbox_arduino_2']);
   $('#toolboxes option[value="toolbox_arduino_3"]').text(MSG['span_toolbox_arduino_3']);
   $('#toolboxes option[value="toolbox_arduino_4"]').text(MSG['span_toolbox_arduino_4']);
   $('#toolboxes option[value="toolbox_arduino_all"]').text(MSG['span_toolbox_all']);
+  $('#toolboxes option[value="toolbox_pacoca"]').text(MSG['span_toolbox_pacoca']);
   $('#span_languageMenu').text(MSG['span_languageMenu']);
   $('#span_colorToggle').text(MSG['span_colorToggle']);
   $('#span_colorBW').text(MSG['span_colorBW']);

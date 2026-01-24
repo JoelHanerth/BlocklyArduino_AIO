@@ -772,11 +772,12 @@ html[dir="RTL"] #select_all {
 
 .blocklyToolboxDiv .blocklyTreeRoot [role="treeitem"]	.blocklyTreeRow {
 	line-height: normal !important;
-	padding: 6px 50px 6px 12px !important;
+	/* reduz o espaço à direita para deixar mais área para o workspace */
+	padding: 6px 16px 6px 12px !important;
 }
 
 html[dir="RTL"] .blocklyToolboxDiv .blocklyTreeRoot [role="treeitem"]   .blocklyTreeRow {
-    padding: 6px 12px 6px 50px !important;
+    padding: 6px 12px 6px 16px !important;
 }
 
 .blocklyTreeRow {

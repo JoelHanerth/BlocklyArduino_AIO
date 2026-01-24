@@ -83,7 +83,16 @@ BlocklyDuino.validateConfigGlobal = function () {
 				}
 				BlocklyDuino.loadToolboxDefinition($("#board_select").val());
 			} else {
-                    search = search.replace(/([?&]toolbox=)[^&]*/, '$1' + 'toolbox_algo');
+				// Para placas "normais" (não-kit), mantemos o toolbox que o
+				// usuário já havia escolhido em vez de forçar "algoritmo apenas".
+				// Usamos o valor atual do seletor #toolboxes.
+				if (search.length <= 1) {
+					search = '?toolbox=' + $("#toolboxes").val();
+				} else if (search.match(/[?&]toolbox=[^&]*/)) {
+					search = search.replace(/([?&]toolbox=)[^&]*/, '$1' + $("#toolboxes").val());
+				} else {
+					search = search.replace(/\?/, '?toolbox=' + $("#toolboxes").val() + '&');
+				}
 			}
 		} else {
 			$("#board_select").val(BlocklyDuino.selectedCard);

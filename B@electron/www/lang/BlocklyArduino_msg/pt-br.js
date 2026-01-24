@@ -58,6 +58,7 @@ var MSG = {
   span_toolbox_arduino_3: "Arduino nível 3",
   span_toolbox_arduino_4: "Arduino nível 4",
   span_toolbox_all: "Todos os níveis de Arduino!",
+  span_toolbox_pacoca: "Paçoca",
   span_OnLine: "Sim",
   span_OffLine: "Não",
   span_Upload: "Carregar com: ",
