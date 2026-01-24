@@ -825,6 +825,10 @@ BlocklyDuino.openProject = function () {
 		if (typeof BlocklyDuino._markWorkspaceClean === 'function') {
 			BlocklyDuino._markWorkspaceClean();
 		}
+		// Atualiza menu de recentes
+		if (typeof BlocklyDuino._refreshRecentProjectsMenu === 'function') {
+			try { BlocklyDuino._refreshRecentProjectsMenu(); } catch (e) {}
+		}
 		return true;
 	}).catch(function (e) {
 		// Se o IPC falhar por qualquer motivo, volta para o input file
@@ -834,6 +838,127 @@ BlocklyDuino.openProject = function () {
 		return false;
 	});
 };
+
+// Abre um projeto recente a partir de um caminho já conhecido
+BlocklyDuino.openRecentProject = function (filePath) {
+	if (!filePath) {
+		return;
+	}
+	var ipcRenderer = null;
+	try {
+		if (typeof require === 'function') {
+			var electron = require('electron');
+			ipcRenderer = electron && electron.ipcRenderer ? electron.ipcRenderer : null;
+		}
+	} catch (e) {
+		ipcRenderer = null;
+	}
+	if (!ipcRenderer) {
+		// Fora do Electron não há conceito de recentes por caminho
+		return;
+	}
+	ipcRenderer.invoke('blockly-open-recent-project', { filePath: filePath }).then(function (result) {
+		if (!result || result.canceled || !result.filePath || !result.content) {
+			// Se o processo principal indicar que o arquivo sumiu do
+			// disco, avisamos o usuário e atualizamos o menu.
+			try {
+				if (result && result.error === 'NOT_FOUND') {
+					alert('O arquivo deste projeto não foi encontrado.\nEle foi removido da lista de projetos recentes.');
+					if (typeof BlocklyDuino._refreshRecentProjectsMenu === 'function') {
+						try { BlocklyDuino._refreshRecentProjectsMenu(); } catch (e) {}
+					}
+				}
+			} catch (e) {}
+			return;
+		}
+		try {
+			var pathModule = null;
+			try {
+				pathModule = require('path');
+			} catch (e) {}
+			if (pathModule && typeof pathModule.basename === 'function') {
+				BlocklyDuino.currentProjectName = pathModule.basename(result.filePath);
+			} else {
+				BlocklyDuino.currentProjectName = result.filePath;
+			}
+			BlocklyDuino.currentProjectPath = result.filePath;
+			try {
+				window.localStorage.currentProjectName = BlocklyDuino.currentProjectName;
+			} catch (e) {}
+			try {
+				if (window.sessionStorage) {
+					window.sessionStorage.currentProjectName = BlocklyDuino.currentProjectName || '';
+					window.sessionStorage.currentProjectPath = BlocklyDuino.currentProjectPath || '';
+				}
+			} catch (e) {}
+			if (typeof BlocklyDuino._updateWindowTitle === 'function') {
+				BlocklyDuino._updateWindowTitle(BlocklyDuino.currentProjectName);
+			}
+		} catch (e) {}
+		BlocklyDuino._applyProjectXmlText(result.content);
+		if (typeof BlocklyDuino._markWorkspaceClean === 'function') {
+			BlocklyDuino._markWorkspaceClean();
+		}
+		if (typeof BlocklyDuino._refreshRecentProjectsMenu === 'function') {
+			try { BlocklyDuino._refreshRecentProjectsMenu(); } catch (e) {}
+		}
+	}).catch(function (e) {
+		// em caso de erro, apenas não faz nada
+	});
+};
+
+// Atualiza o submenu de projetos recentes (até 5 entradas)
+BlocklyDuino._refreshRecentProjectsMenu = function () {
+	var ipcRenderer = null;
+	try {
+		if (typeof require === 'function') {
+			var electron = require('electron');
+			ipcRenderer = electron && electron.ipcRenderer ? electron.ipcRenderer : null;
+		}
+	} catch (e) {
+		ipcRenderer = null;
+	}
+	if (!ipcRenderer) {
+		return;
+	}
+	ipcRenderer.invoke('blockly-get-recent-projects').then(function (result) {
+		try {
+			var list = (result && Array.isArray(result.paths)) ? result.paths : [];
+			var $menu = $('#menu_recent_list');
+			if (!$menu.length) {
+				return;
+			}
+			$menu.empty();
+			if (!list.length) {
+				$menu.append('<li><span style="opacity:0.6;">(sem projetos recentes)</span></li>');
+				return;
+			}
+			var pathModule = null;
+			try {
+				pathModule = require('path');
+			} catch (e) {}
+			list.slice(0, 5).forEach(function (p) {
+				var name = p;
+				if (pathModule && typeof pathModule.basename === 'function') {
+					name = pathModule.basename(p);
+				}
+				var safeName = name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+				var safePath = p.replace(/"/g, '&quot;');
+				$menu.append('<li><a href="#" class="recent-project-link" data-path="' + safePath + '">' + safeName + '</a></li>');
+			});
+		} catch (e) {}
+	}).catch(function (e) {
+		// silencioso
+	});
+};
+
+// Handler de clique nos links de projetos recentes (delegado)
+$(document).on('click', '.recent-project-link', function (e) {
+	e.preventDefault();
+	var p = $(this).data('path');
+	if (!p) return;
+	BlocklyDuino.openRecentProject(p);
+});
 
 // Ajusta descarte para voltar o projeto ao estado "novo"
 var _origDiscard = BlocklyDuino.discard;

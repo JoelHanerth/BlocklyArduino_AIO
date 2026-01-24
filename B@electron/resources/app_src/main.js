@@ -6,19 +6,70 @@ const {
     globalShortcut,
     dialog
 } = require('electron');
-var path = require('path');
+const path = require('path');
+const fs = require('fs-extra');
 let mainWindow = null;
 let splashWindow = null;
 let termWindow = null;
 let factoryWindow = null;
 //const userDataPath = app.getPath ('userData')
 //read INI file
-const fs = require('fs-extra');
 var fileSettings = "./Blockly@rduino.json";
 var Settings = '';
 
+// Controle de projetos recentes (últimos arquivos abertos)
+const recentMax = 5;
+let recentProjects = [];
+let recentFilePath = null;
+
+function initRecentStorage() {
+    try {
+        // Usa o mesmo diretório onde já salvamos Blockly@rduino.json,
+        // garantindo que seja gravável mesmo em modo portátil.
+        var baseDir = path.dirname(path.resolve(fileSettings));
+        recentFilePath = path.join(baseDir, 'recent-projects.json');
+        if (fs.existsSync(recentFilePath)) {
+            const raw = fs.readFileSync(recentFilePath, 'utf8');
+            const arr = JSON.parse(raw);
+            if (Array.isArray(arr)) {
+                recentProjects = arr.filter(p => typeof p === 'string');
+            }
+        }
+    } catch (e) {
+        recentProjects = [];
+    }
+}
+
+function saveRecentStorage() {
+    try {
+        if (!recentFilePath) {
+            initRecentStorage();
+        }
+        if (!recentFilePath) return;
+        fs.writeFileSync(recentFilePath, JSON.stringify(recentProjects), 'utf8');
+    } catch (e) {
+        // falha silenciosa, não é crítico
+    }
+}
+
+function addRecentProject(filePath) {
+    try {
+        if (!filePath) return;
+        if (!recentFilePath) {
+            initRecentStorage();
+        }
+        recentProjects = recentProjects.filter(p => p !== filePath);
+        recentProjects.unshift(filePath);
+        if (recentProjects.length > recentMax) {
+            recentProjects = recentProjects.slice(0, recentMax);
+        }
+        saveRecentStorage();
+    } catch (e) {}
+}
+
 app.setPath('userData', app.getAppPath());
 
+initRecentStorage();
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin')
         app.quit();
@@ -248,6 +299,9 @@ ipcMain.handle('blockly-open-project', async (event) => {
             return { canceled: true, error: String(e) };
         }
 
+        // Atualiza lista de projetos recentes
+        addRecentProject(filePath);
+
         return { canceled: false, filePath, content };
     } catch (e) {
         console.error('Erro no handler blockly-open-project:', e);
@@ -285,6 +339,9 @@ ipcMain.handle('blockly-save-project-as', async (event, args) => {
         }
 
         fs.writeFileSync(filePath, content, 'utf8');
+        // Primeiro salvamento também deve colocar o projeto na
+        // lista de recentes, assim como o handler de "Salvar".
+        addRecentProject(filePath);
         return { canceled: false, filePath };
     } catch (e) {
         console.error('Erro ao salvar projeto (Salvar como):', e);
@@ -301,9 +358,45 @@ ipcMain.handle('blockly-save-project', async (event, args) => {
             return { canceled: true, error: 'NO_PATH' };
         }
         fs.writeFileSync(filePath, content, 'utf8');
+        // Salvar também mantém o arquivo no topo da lista de recentes
+        addRecentProject(filePath);
         return { canceled: false, filePath };
     } catch (e) {
         console.error('Erro ao salvar projeto (Salvar):', e);
+        return { canceled: true, error: String(e) };
+    }
+});
+
+// Lista de projetos recentes (usada pelo renderer para montar o menu)
+ipcMain.handle('blockly-get-recent-projects', async () => {
+    try {
+        if (!recentFilePath) {
+            initRecentStorage();
+        }
+        return { paths: recentProjects.slice(0, recentMax) };
+    } catch (e) {
+        return { paths: [] };
+    }
+});
+
+// Abertura direta de um projeto recente, dado o caminho completo
+ipcMain.handle('blockly-open-recent-project', async (event, args) => {
+    try {
+        const filePath = args && args.filePath;
+        if (!filePath) {
+            return { canceled: true, error: 'NO_PATH' };
+        }
+        if (!fs.existsSync(filePath)) {
+            // Se o arquivo sumiu, remove da lista de recentes
+            recentProjects = recentProjects.filter(p => p !== filePath);
+            saveRecentStorage();
+            return { canceled: true, error: 'NOT_FOUND' };
+        }
+        const content = fs.readFileSync(filePath, 'utf8');
+        addRecentProject(filePath);
+        return { canceled: false, filePath, content };
+    } catch (e) {
+        console.error('Erro em blockly-open-recent-project:', e);
         return { canceled: true, error: String(e) };
     }
 });

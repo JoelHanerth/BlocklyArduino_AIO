@@ -1039,6 +1039,13 @@ BlocklyDuino.init = function() {
 	BlocklyDuino.OnOffLine();
 	BlocklyDuino.ExampleWiring();
 
+	// Atualiza o menu de projetos recentes (somente em modo Electron)
+	try {
+		if (typeof BlocklyDuino._refreshRecentProjectsMenu === 'function') {
+			BlocklyDuino._refreshRecentProjectsMenu();
+		}
+	} catch (e) {}
+
 	// Atalho de teclado: Ctrl+S para "Salvar projeto".
 	// Garante que funcione tanto no modo Electron (salvamento nativo)
 	// quanto no fallback web (download do arquivo .B@), reutilizando
