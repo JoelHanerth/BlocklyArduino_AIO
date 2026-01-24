@@ -37,6 +37,7 @@ Blockly.Arduino['brick_potencia_motores'] = function(block) {
 };
 
 // Define a direção (normal/invertido) de um motor usando Motor.setInvertido
+// (versão sincronizada com motor.js, usando nomes minúsculos: motor1/motor2)
 Blockly.Arduino['brick_motor_direcao'] = function(block) {
   Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
   Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
@@ -46,10 +47,10 @@ Blockly.Arduino['brick_motor_direcao'] = function(block) {
 
   var nomeVar, portaConst;
   if (motorSel === 'MOTOR1') {
-    nomeVar = 'Motor1';
+    nomeVar = 'motor1';
     portaConst = 'PORTA_MOTOR_1';
   } else {
-    nomeVar = 'Motor2';
+    nomeVar = 'motor2';
     portaConst = 'PORTA_MOTOR_2';
   }
 
@@ -92,7 +93,7 @@ Blockly.Arduino['brick_motores_movimento'] = function(block) {
   var dirEsq = block.getFieldValue('DIR_ESQ') || 'MOTOR_NORMAL';
   var dirDir = block.getFieldValue('DIR_DIR') || 'MOTOR_NORMAL';
 
-  // Define os objetos Motor1 e Motor2 com a direção escolhida para cada um
+  // Define os objetos motor1 e motor2 com a direção escolhida para cada um
   var defKey1 = 'brick_motor_' + 'PORTA_MOTOR_1'.toLowerCase();
   var defKey2 = 'brick_motor_' + 'PORTA_MOTOR_2'.toLowerCase();
 
@@ -102,13 +103,13 @@ Blockly.Arduino['brick_motores_movimento'] = function(block) {
   var direcaoMotor2 = (esq === 'MOTOR2') ? dirEsq : dirDir;
 
   Blockly.Arduino.definitions_[defKey1] =
-    'Motor Motor1 = Motor(PORTA_MOTOR_1, ' + direcaoMotor1 + ');';
+    'Motor motor1 = Motor(PORTA_MOTOR_1, ' + direcaoMotor1 + ');';
   Blockly.Arduino.definitions_[defKey2] =
-    'Motor Motor2 = Motor(PORTA_MOTOR_2, ' + direcaoMotor2 + ');';
+    'Motor motor2 = Motor(PORTA_MOTOR_2, ' + direcaoMotor2 + ');';
 
   // Monta a chamada de adiciona na ordem escolhida
-  var leftRef = (esq === 'MOTOR1') ? 'Motor1' : 'Motor2';
-  var rightRef = (dir === 'MOTOR1') ? 'Motor1' : 'Motor2';
+  var leftRef = (esq === 'MOTOR1') ? 'motor1' : 'motor2';
+  var rightRef = (dir === 'MOTOR1') ? 'motor1' : 'motor2';
 
   Blockly.Arduino.setups_['setup_brick_adiciona_motores'] =
     'brick.adiciona(' + leftRef + ', ' + rightRef + ');';

@@ -7,13 +7,13 @@ goog.provide('Blockly.Arduino.brick');
 
 goog.require('Blockly.Arduino');
 
-// Bloco que apenas garante a inclusão e a chamada a brick.inicializa() no setup
+// Bloco que garante a inclusão e gera a chamada a brick.inicializa()
 Blockly.Arduino['brick_inicializa'] = function(block) {
   Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
 
-  // Nenhum código adicional no loop; a inicialização já foi registrada no setup
-  return '';
+  // Agora a chamada é retornada diretamente como código
+  var code = 'brick.inicializa();\n';
+  return code;
 };
 
 Blockly.Arduino['brick_atualizabrick'] = function(block) {
@@ -27,8 +27,8 @@ Blockly.Arduino['brick_atualizabrick'] = function(block) {
 
 // Imprime um valor no terminal serial
 Blockly.Arduino['brick_imprimir_terminal'] = function(block) {
-  // Garante a inicialização do Serial (caso ainda não exista)
-  // Blockly.Arduino.setups_['setup_serial_115200'] = 'Serial.begin(115200);';
+  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
 
   var valor = Blockly.Arduino.valueToCode(block, 'TEXTO', Blockly.Arduino.ORDER_ATOMIC) || '';
   var modo = block.getFieldValue('MODO') || 'PRINT';
