@@ -75,6 +75,7 @@ window.addEventListener('load', function load(event) {
 		ipcRenderer.send("factory", argLangChoice);
 	}
 	document.getElementById('btn_verify_local').onclick = function(event) {
+		var btnVerify = document.getElementById('btn_verify_local');
 		try {
 			fs.accessSync('.\\arduino\\tmp', fs.constants.W_OK)
 			} catch (err) {
@@ -107,24 +108,57 @@ window.addEventListener('load', function load(event) {
 			if (error) {
 				document.getElementById('local_debug').style.color = '#ff0000'
 				document.getElementById('local_debug').innerHTML = traduzirMensagemArduinoCli(stderr)
+				if (btnVerify) {
+					btnVerify.style.backgroundColor = '#b91c1c';
+					btnVerify.style.borderColor = 'transparent';
+					setTimeout(function() {
+						btnVerify.style.backgroundColor = '';
+						btnVerify.style.borderColor = '';
+					}, 2500);
+				}
 				return
 			}
 			document.getElementById('local_debug').style.color = '#00ff00'
 				document.getElementById('local_debug').innerHTML = traduzirMensagemArduinoCli(stdout) + '\nVerificação: OK'
+				if (btnVerify) {
+					btnVerify.style.backgroundColor = '#16a34a';
+					btnVerify.style.borderColor = 'transparent';
+					setTimeout(function() {
+						btnVerify.style.backgroundColor = '';
+						btnVerify.style.borderColor = '';
+					}, 2500);
+				}
 		})
 	}
 	document.getElementById('btn_flash_local').onclick = function(event) {
+		var btnFlash = document.getElementById('btn_flash_local');
 		var file_path = '.\\tmp'
 		var carte = document.getElementById('board_select').value
 		var com = document.getElementById('serialport_ide').value
 		if (carte=="none"){
 			document.getElementById('local_debug').style.color = '#ff0000'
 			document.getElementById('local_debug').innerHTML = 'Selecione uma placa!'
+			if (btnFlash) {
+				btnFlash.style.backgroundColor = '#b91c1c';
+				btnFlash.style.borderColor = 'transparent';
+				setTimeout(function() {
+					btnFlash.style.backgroundColor = '';
+					btnFlash.style.borderColor = '';
+				}, 2500);
+			}
 			return
 			} else {
 				if (com=="no_com"){
 				document.getElementById('local_debug').style.color = '#ff0000'
 					document.getElementById('local_debug').innerHTML = 'Selecione uma porta!'
+					if (btnFlash) {
+						btnFlash.style.backgroundColor = '#b91c1c';
+						btnFlash.style.borderColor = 'transparent';
+						setTimeout(function() {
+							btnFlash.style.backgroundColor = '';
+							btnFlash.style.borderColor = '';
+						}, 2500);
+					}
 				return
 				} else {
 					document.getElementById('local_debug').style.color = '#ffffff'
@@ -143,10 +177,26 @@ window.addEventListener('load', function load(event) {
 			if (error) {
 				document.getElementById('local_debug').style.color = '#ff0000'
 				document.getElementById('local_debug').innerHTML = traduzirMensagemArduinoCli(stderr)
+				if (btnFlash) {
+					btnFlash.style.backgroundColor = '#b91c1c';
+					btnFlash.style.borderColor = 'transparent';
+					setTimeout(function() {
+						btnFlash.style.backgroundColor = '';
+						btnFlash.style.borderColor = '';
+					}, 2500);
+				}
 				return
 			}
 			document.getElementById('local_debug').style.color = '#00ff00'
 				document.getElementById('local_debug').innerHTML = traduzirMensagemArduinoCli(stdout) + '\nTransferência: OK'
+				if (btnFlash) {
+					btnFlash.style.backgroundColor = '#16a34a';
+					btnFlash.style.borderColor = 'transparent';
+					setTimeout(function() {
+						btnFlash.style.backgroundColor = '';
+						btnFlash.style.borderColor = '';
+					}, 2500);
+				}
 			const path = require('path')
 			fs.readdir('.\\arduino\\tmp', (err, files) => {
 			  if (err) throw err;
