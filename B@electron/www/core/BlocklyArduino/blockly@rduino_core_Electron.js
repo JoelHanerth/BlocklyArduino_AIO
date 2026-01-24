@@ -1014,6 +1014,36 @@ BlocklyDuino.init = function() {
 	
 	BlocklyDuino.OnOffLine();
 	BlocklyDuino.ExampleWiring();
+
+	// Atalho de teclado: Ctrl+S para "Salvar projeto".
+	// Garante que funcione tanto no modo Electron (salvamento nativo)
+	// quanto no fallback web (download do arquivo .B@), reutilizando
+	// exatamente o mesmo fluxo do botão "Salvar projeto" lateral.
+	try {
+		$(document).on('keydown', function (e) {
+			// Ignora quando o foco está em campos de texto ou textarea,
+			// para não interferir com atalhos internos desses campos.
+			var tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+			if (tag === 'input' || tag === 'textarea' || e.target.isContentEditable) {
+				return;
+			}
+			// Verifica Ctrl+S (ou Cmd+S em macOS, se aplicável).
+			if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S' || e.keyCode === 83)) {
+				e.preventDefault();
+				try {
+					// Reutiliza exatamente o MESMO fluxo visual do botão
+					// "Salvar projeto", incluindo a animação de check e
+					// o texto temporário "Salvo".
+					var btn = document.getElementById('btn_saveXML');
+					if (btn) {
+						btn.click();
+					} else if (typeof BlocklyDuino.saveXmlFile === 'function') {
+						BlocklyDuino.saveXmlFile();
+					}
+				} catch (ex) {}
+			}
+		});
+	} catch (e) {}
 };
 
 /**
