@@ -67,11 +67,11 @@ window.addEventListener('load', function load(event) {
 		var carte = document.getElementById('board_select').value
 		if (carte != "none") {
 			document.getElementById('local_debug').style.color = '#ffffff'
-			document.getElementById('local_debug').innerHTML = 'Carte ' + profile.defaultBoard['description']
+			document.getElementById('local_debug').innerHTML = 'Placa ' + profile.defaultBoard['description']
 			var upload_arg = profile.defaultBoard['upload_arg']
 			} else {
 				document.getElementById('local_debug').style.color = '#ff0000'
-				document.getElementById('local_debug').innerHTML = 'Sélectionner une carte !'
+				document.getElementById('local_debug').innerHTML = 'Selecione uma placa!'
 				return
 		}
 		if ($('#detailedCompilation').prop('checked'))
@@ -81,7 +81,7 @@ window.addEventListener('load', function load(event) {
 		fs.writeFile(file, data, (err) => {
 			if (err) return console.log(err)
 		});
-		document.getElementById('local_debug').innerHTML += '\nVérification : en cours...\n' + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
+		document.getElementById('local_debug').innerHTML += '\nVerificação: em andamento...\n' + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
 		exec(cmd , {cwd: './B@electron/arduino'} , (error, stdout, stderr) => {
 			if (error) {
 				document.getElementById('local_debug').style.color = '#ff0000'
@@ -89,7 +89,7 @@ window.addEventListener('load', function load(event) {
 				return
 			}
 			document.getElementById('local_debug').style.color = '#00ff00'
-			document.getElementById('local_debug').innerHTML = stdout + '\nVérification : OK'
+				document.getElementById('local_debug').innerHTML = stdout + '\nVerificação: OK'
 		})
 	}
 	document.getElementById('btn_flash_local').onclick = function(event) {
@@ -99,16 +99,16 @@ window.addEventListener('load', function load(event) {
 		console.log("Asynchronous read2: " + com.toString())
 		if (carte=="none"){
 			document.getElementById('local_debug').style.color = '#ff0000'
-			document.getElementById('local_debug').innerHTML = 'Sélectionner une carte !'
+			document.getElementById('local_debug').innerHTML = 'Selecione uma placa!'
 			return
 			} else {
 				if (com=="no_com"){
 				document.getElementById('local_debug').style.color = '#ff0000'
-				document.getElementById('local_debug').innerHTML = 'Sélectionner un port !'
+					document.getElementById('local_debug').innerHTML = 'Selecione uma porta!'
 				return
 				} else {
 					document.getElementById('local_debug').style.color = '#ffffff'
-					document.getElementById('local_debug').innerHTML = 'Carte ' + profile.defaultBoard['description'] + ' sur port ' + com
+					document.getElementById('local_debug').innerHTML = 'Placa ' + profile.defaultBoard['description'] + ' na porta ' + com
 					var upload_arg = profile.defaultBoard['upload_arg']
 				}
 		}
@@ -116,8 +116,8 @@ window.addEventListener('load', function load(event) {
 				var cmd = 'arduino-cli.exe --debug upload -p ' + com + ' --fqbn ' + upload_arg + ' ' + file_path
 			else
 				var cmd = 'arduino-cli.exe upload -p ' + com + ' --fqbn ' + upload_arg + ' ' + file_path
-		document.getElementById('local_debug').innerHTML = 'Carte ' + profile.defaultBoard['description'] + ' sur port ' + com
-		document.getElementById('local_debug').innerHTML += '\nTéléversement : en cours...\n' + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
+		document.getElementById('local_debug').innerHTML = 'Placa ' + profile.defaultBoard['description'] + ' na porta ' + com
+		document.getElementById('local_debug').innerHTML += '\nTransferência: em andamento...\n' + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
 		console.log(cmd)
 		exec(cmd , {cwd: './B@electron/arduino'} , (error, stdout, stderr) => {
 			if (error) {
@@ -126,7 +126,7 @@ window.addEventListener('load', function load(event) {
 				return
 			}
 			document.getElementById('local_debug').style.color = '#00ff00'
-			document.getElementById('local_debug').innerHTML = stdout + '\nTéléversement : OK'
+				document.getElementById('local_debug').innerHTML = stdout + '\nTransferência: OK'
 			const path = require('path')
 			fs.readdir('.\\B@electron\\arduino\\tmp', (err, files) => {
 			  if (err) throw err;

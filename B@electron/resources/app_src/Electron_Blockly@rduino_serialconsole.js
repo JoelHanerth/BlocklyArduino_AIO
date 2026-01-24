@@ -24,7 +24,7 @@ window.addEventListener('load', function load(event) {
 		document.getElementById('btn_connect').disabled=true
 		document.getElementById('btn_envoi').disabled=false
 		s_p.on('open', function(){
-			moniteur.innerHTML += ' démarrage de la communication série<br />'
+			moniteur.innerHTML += ' Início da comunicação serial<br />'
 		})
 		s_p.on('data', function(data){
 			moniteur.innerHTML += data+"<br />"
