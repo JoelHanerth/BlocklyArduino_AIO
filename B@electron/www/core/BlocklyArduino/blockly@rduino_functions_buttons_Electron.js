@@ -284,11 +284,29 @@ BlocklyDuino._updateDirtyFromWorkspace = function () {
 			typeof BlocklyDuino.workspace.getAllBlocks !== 'function') {
 			return;
 		}
-		var count = BlocklyDuino.workspace.getAllBlocks().length;
+		var allBlocks = BlocklyDuino.workspace.getAllBlocks();
+		var count = allBlocks.length;
+		// Nenhum bloco: sempre limpo.
 		if (count === 0) {
 			BlocklyDuino._isWorkspaceDirty = false;
 		} else {
-			BlocklyDuino._isWorkspaceDirty = true;
+			// Caso especial: apenas o bloco padrão base_setup_loop,
+			// sem nenhum bloco dentro de setup/loop, também é tratado
+			// como "workspace limpo" (estado inicial).
+			var onlyDefaultSetupLoop = false;
+			if (count === 1 && allBlocks[0]) {
+				var b = allBlocks[0];
+				if (b.type === 'base_setup_loop') {
+					var hasDoChild = (typeof b.getInputTargetBlock === 'function') ?
+						b.getInputTargetBlock('DO') : null;
+					var hasLoopChild = (typeof b.getInputTargetBlock === 'function') ?
+						b.getInputTargetBlock('LOOP') : null;
+					if (!hasDoChild && !hasLoopChild) {
+						onlyDefaultSetupLoop = true;
+					}
+				}
+			}
+			BlocklyDuino._isWorkspaceDirty = !onlyDefaultSetupLoop;
 		}
 		if (typeof BlocklyDuino._updateWindowTitle === 'function') {
 			BlocklyDuino._updateWindowTitle(BlocklyDuino.currentProjectName);

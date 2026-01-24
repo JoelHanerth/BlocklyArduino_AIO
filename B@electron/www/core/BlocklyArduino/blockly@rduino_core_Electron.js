@@ -244,6 +244,23 @@ BlocklyDuino.loadBlocks = function(defaultXml) {
 			Blockly.Xml.domToWorkspace(xml, BlocklyDuino.workspace);
 		}
 	}
+
+	// Se após todas as tentativas de carregamento o workspace continuar vazio,
+	// cria automaticamente um bloco base_setup_loop como ponto de partida
+	// (apenas para cartões Arduino, não para Micro:bit).
+	try {
+		if (BlocklyDuino.workspace &&
+			BlocklyDuino.workspace.getAllBlocks().length === 0) {
+			var cardId = BlocklyDuino.getStringParamFromUrl('card', '');
+			if (cardId !== 'kit_microbit') {
+				var defaultStartXml = '<xml xmlns="http://www.w3.org/1999/xhtml">' +
+					'<block type="base_setup_loop" x="38" y="38"></block>' +
+					'</xml>';
+				var defaultDom = Blockly.Xml.textToDom(defaultStartXml);
+				Blockly.Xml.domToWorkspace(defaultDom, BlocklyDuino.workspace);
+			}
+		}
+	} catch (e) {}
 };
 
 /*
