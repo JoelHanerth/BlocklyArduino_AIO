@@ -899,6 +899,7 @@ BlocklyDuino.init = function() {
 			$("#menuPanelConfig").addClass("btn-group-vertical");
 			$("#menuPanelFiles").addClass("btn-group-vertical");
 			$("#menuPanelFiles").css({"margin-bottom" : "10px"});
+			$("#menuPanelBlockly").addClass("miniMenu");
 			$("#div_about").addClass("btn-group-vertical");
 			$("#div_about").css({"width" : "40px", "bottom" : "10px", "position" : "fixed"});
 			$("#span_about").remove();
@@ -920,6 +921,9 @@ BlocklyDuino.init = function() {
 		$('#icon_btn_size').removeClass('glyphicon-resize-small');
 		$("#btn_miniMenuPanel > span").addClass("glyphicon-step-backward");
 		$("#btn_miniMenuPanel > span").removeClass("glyphicon-step-forward");
+		$("#menuPanelConfig").removeClass("btn-group-vertical");
+		$("#menuPanelFiles").removeClass("btn-group-vertical");
+		$("#menuPanelBlockly").removeClass("miniMenu");
 		}
 		
 	BlocklyDuino.setArduinoBoard();

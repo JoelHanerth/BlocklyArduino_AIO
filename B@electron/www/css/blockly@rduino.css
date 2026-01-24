@@ -213,9 +213,62 @@ html,body {
 	margin-top: 10px;
 }
 
-#menuPanel button {
-	border-radius: 10px;
+#menuPanel button,
+#menuPanel a.btn {
+	border-radius: 12px;
 	font-weight: 500;
+	border: none;
+	box-shadow: 0 2px 4px rgba(15, 23, 42, 0.1);
+	transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.2s ease;
+}
+
+#menuPanel button:hover,
+#menuPanel a.btn:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 4px 8px rgba(15, 23, 42, 0.16);
+}
+
+#menuPanel button:active,
+#menuPanel a.btn:active {
+	transform: translateY(0);
+	box-shadow: 0 1px 2px rgba(15, 23, 42, 0.18);
+}
+
+/* Botões principais do menu lateral: deixam o layout mais limpo */
+#btn_configGlobal,
+#btn_config,
+#btn_saveXML,
+#btn_saveXMLAs,
+#btn_fakeload {
+	font-size: 13px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: left;
+}
+
+/* Destaque das ações de salvar/carregar */
+#btn_saveXML,
+#btn_saveXMLAs,
+#btn_fakeload {
+	background: linear-gradient(135deg, #22c55e, #16a34a);
+	color: #ffffff;
+	margin-bottom: 6px;
+}
+
+#btn_saveXML:hover,
+#btn_saveXMLAs:hover,
+#btn_fakeload:hover {
+	background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+/* Quando o painel está recolhido (miniMenu), centraliza o ícone
+   dos botões de salvar/carregar dentro do círculo verde. */
+#menuPanelFiles.btn-group-vertical #btn_saveXML,
+#menuPanelFiles.btn-group-vertical #btn_saveXMLAs,
+#menuPanelFiles.btn-group-vertical #btn_fakeload {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 /* Hide unused buttons and tools in the UI. */
@@ -326,7 +379,8 @@ html[dir="RTL"] .navbar-right {
 
 .btn_ver {
 	text-align : left !important;
-	margin: 5px 0;
+	margin: 6px 0;
+	padding-left: 10px;
 }
 
 .divTabpanel-ver {
@@ -376,6 +430,16 @@ html[dir="RTL"] .menuPanelFiles-hor {
 
 html[dir="RTL"] .divTabpanel-hor {
     margin-left: 0px;
+}
+
+/* Quando o painel está recolhido (miniMenu), centraliza os ícones
+   dos botões "Blocos" e "Código fonte" dentro da coluna estreita. */
+#menuPanelBlockly.miniMenu #ul_nav li a {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-left: 0;
+	padding-right: 0;
 }
 
 .divSwitch-hor {
