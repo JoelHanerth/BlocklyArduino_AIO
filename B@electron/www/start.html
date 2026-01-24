@@ -109,8 +109,95 @@
                 } catch (e) {}
 
                 var search = window.location.search || '';
-                var extra = autoOpen ? (search ? '&' : '?') + 'autoOpenProject=1' : '';
-                window.location = 'index_electron.html' + search + extra;
+                // Mantemos apenas os parâmetros já existentes; o
+                // carregamento de projeto, quando houver, é feito
+                // antes da navegação.
+                window.location = 'index_electron.html' + search;
+            }
+
+            // Fluxo específico para "Carregar projeto existente" na
+            // tela inicial: abre o diálogo nativo aqui mesmo. Só
+            // depois que o usuário escolhe o arquivo é que vamos
+            // para a tela principal do editor.
+            function openExistingProjectFromStart() {
+                var btnNew = document.getElementById('btn_start_new_project');
+                var btnOpen = document.getElementById('btn_start_open_project');
+
+                // Tenta obter ipcRenderer do Electron; se não
+                // estiver disponível (modo web), volta para o
+                // comportamento antigo.
+                var ipcRenderer = null;
+                try {
+                    if (typeof require === 'function') {
+                        var electron = require('electron');
+                        ipcRenderer = electron && electron.ipcRenderer ? electron.ipcRenderer : null;
+                    }
+                } catch (e) {
+                    ipcRenderer = null;
+                }
+
+                if (!ipcRenderer) {
+                    goToMain(true);
+                    return;
+                }
+
+                // Feedback rápido: desabilita botões enquanto o
+                // diálogo de arquivo está aberto.
+                if (btnNew) btnNew.disabled = true;
+                if (btnOpen) btnOpen.disabled = true;
+
+                ipcRenderer.invoke('blockly-open-project').then(function (result) {
+                    if (!result || result.canceled || !result.filePath || !result.content || result.error) {
+                        // Usuário cancelou ou houve erro: permanece
+                        // na tela inicial, apenas reabilita os botões.
+                        if (btnNew) btnNew.disabled = false;
+                        if (btnOpen) btnOpen.disabled = false;
+                        return;
+                    }
+
+                    // Guarda o XML do projeto para ser restaurado
+                    // automaticamente quando o editor abrir.
+                    try {
+                        if (window.localStorage) {
+                            window.localStorage.loadOnceBlocks = result.content;
+                        }
+                    } catch (e) {}
+
+                    // Atualiza nome/caminho lógico do projeto, para
+                    // título da janela e fluxos de salvar.
+                    try {
+                        var projectName = result.filePath;
+                        try {
+                            var pathModule = require('path');
+                            if (pathModule && typeof pathModule.basename === 'function') {
+                                projectName = pathModule.basename(result.filePath);
+                            }
+                        } catch (e) {}
+
+                        if (window.localStorage) {
+                            window.localStorage.currentProjectName = projectName;
+                        }
+                        if (window.sessionStorage) {
+                            window.sessionStorage.currentProjectName = projectName || '';
+                            window.sessionStorage.currentProjectPath = result.filePath || '';
+                        }
+                    } catch (e) {}
+
+                    // Marca que o usuário já passou pela tela
+                    // inicial nesta sessão.
+                    try {
+                        if (window.sessionStorage) {
+                            window.sessionStorage.blocklyStartScreenDone = '1';
+                        }
+                    } catch (e) {}
+
+                    // Agora sim vamos para o editor; ele vai ler o
+                    // conteúdo salvo em localStorage.loadOnceBlocks.
+                    goToMain(false);
+                }).catch(function () {
+                    if (btnNew) btnNew.disabled = false;
+                    if (btnOpen) btnOpen.disabled = false;
+                });
             }
 
             function init() {
@@ -132,7 +219,7 @@
                     goToMain(false);
                 });
                 btnOpen.addEventListener('click', function () {
-                    goToMain(true);
+					openExistingProjectFromStart();
                 });
             }
 
