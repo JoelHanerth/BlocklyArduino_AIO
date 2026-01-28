@@ -37,7 +37,9 @@ Blockly.Arduino['brick_buzzer_beep'] = function(block) {
     Blockly.Arduino.definitions_[defKey] =
       'Buzzer ' + buzzerVar + ' = Buzzer(' + porta + ');';
 
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+      Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    }
     Blockly.Arduino.setups_['setup_brick_buzzer_' + porta.toLowerCase()] =
       'brick.adiciona(' + buzzerVar + ');';
   }
@@ -79,7 +81,9 @@ Blockly.Arduino['brick_buzzer_iniciar_som'] = function(block) {
     Blockly.Arduino.definitions_[defKey] =
       'Buzzer ' + buzzerVar + ' = Buzzer(' + porta + ');';
 
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+      Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    }
     Blockly.Arduino.setups_['setup_brick_buzzer_' + porta.toLowerCase()] =
       'brick.adiciona(' + buzzerVar + ');';
   }
@@ -126,7 +130,9 @@ Blockly.Arduino['brick_buzzer_iniciar_efeito'] = function(block) {
     Blockly.Arduino.definitions_[defKey] =
       'Buzzer ' + buzzerVar + ' = Buzzer(' + porta + ');';
 
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+      Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    }
     Blockly.Arduino.setups_['setup_brick_buzzer_' + porta.toLowerCase()] =
       'brick.adiciona(' + buzzerVar + ');';
   }
@@ -175,7 +181,9 @@ Blockly.Arduino['brick_buzzer_parar'] = function(block) {
     Blockly.Arduino.definitions_[defKey] =
       'Buzzer ' + buzzerVar + ' = Buzzer(' + porta + ');';
 
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+      Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    }
     Blockly.Arduino.setups_['setup_brick_buzzer_' + porta.toLowerCase()] =
       'brick.adiciona(' + buzzerVar + ');';
   }

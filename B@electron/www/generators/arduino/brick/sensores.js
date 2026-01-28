@@ -16,9 +16,11 @@ Blockly.Arduino['brick_sensor_tcs34725_criar'] = function(block) {
     var varName = 'sensorTCS_' + porta.toLowerCase();
 
     Blockly.Arduino.definitions_['tcs34725_' + porta.toLowerCase()] =
-        'TCS34725 ' + varName + ' = TCS34725(' + porta + ');';
+      'TCS34725 ' + varName + ' = TCS34725(' + porta + ');';
 
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+      Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    }
     Blockly.Arduino.setups_['setup_brick_tcs34725_' + porta.toLowerCase()] =
         'brick.adiciona(' + varName + ');';
 
@@ -37,7 +39,9 @@ Blockly.Arduino['brick_sensor_tcs34725_eh_cor'] = function(block) {
   Blockly.Arduino.definitions_['tcs34725_' + porta.toLowerCase()] =
     'TCS34725 ' + varName + ' = TCS34725(' + porta + ');';
 
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
   Blockly.Arduino.setups_['setup_brick_tcs34725_' + porta.toLowerCase()] =
     'brick.adiciona(' + varName + ');';
 
@@ -57,7 +61,9 @@ Blockly.Arduino['brick_sensor_tcs34725_cor'] = function(block) {
   Blockly.Arduino.definitions_['tcs34725_' + porta.toLowerCase()] =
     'TCS34725 ' + varName + ' = TCS34725(' + porta + ');';
 
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
     Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
   Blockly.Arduino.setups_['setup_brick_tcs34725_' + porta.toLowerCase()] =
     'brick.adiciona(' + varName + ');';
 
@@ -77,7 +83,9 @@ Blockly.Arduino['brick_sensor_tcs34725_ler'] = function(block) {
   Blockly.Arduino.definitions_['tcs34725_' + porta.toLowerCase()] =
     'TCS34725 ' + varName + ' = TCS34725(' + porta + ');';
 
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
     Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
   Blockly.Arduino.setups_['setup_brick_tcs34725_' + porta.toLowerCase()] =
     'brick.adiciona(' + varName + ');';
 
@@ -107,7 +115,9 @@ Blockly.Arduino['brick_sensor_tcs34725_calibrar'] = function(block) {
   Blockly.Arduino.definitions_['tcs34725_' + porta.toLowerCase()] =
     'TCS34725 ' + varName + ' = TCS34725(' + porta + ');';
 
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
   Blockly.Arduino.setups_['setup_brick_tcs34725_' + porta.toLowerCase()] =
     'brick.adiciona(' + varName + ');';
 
@@ -129,7 +139,9 @@ Blockly.Arduino['brick_sensor_vl53l0x_distancia'] = function(block) {
     'VL53L0X ' + varName + ' = VL53L0X(' + porta + ');';
 
   // Garante inicialização do Brick e registro do sensor
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
   Blockly.Arduino.setups_['setup_brick_vl53l0x_' + porta.toLowerCase()] =
     'brick.adiciona(' + varName + ');';
 
@@ -159,7 +171,9 @@ Blockly.Arduino['brick_sensor_vl53l0x_compara'] = function(block) {
     'VL53L0X ' + varName + ' = VL53L0X(' + porta + ');';
 
   // Garante inicialização do Brick e registro do sensor
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
   Blockly.Arduino.setups_['setup_brick_vl53l0x_' + porta.toLowerCase()] =
     'brick.adiciona(' + varName + ');';
 
@@ -199,7 +213,9 @@ Blockly.Arduino['brick_sensor_ultrassonico_distancia'] = function(block) {
     'Ultrassonico ' + varName + ' = Ultrassonico(' + porta + ');';
 
   // Garante inicialização do Brick e registro do sensor
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
   Blockly.Arduino.setups_['setup_brick_ultrassonico_' + porta.toLowerCase()] =
     'brick.adiciona(' + varName + ');';
 
@@ -222,7 +238,9 @@ Blockly.Arduino['brick_sensor_ultrassonico_compara'] = function(block) {
     'Ultrassonico ' + varName + ' = Ultrassonico(' + porta + ');';
 
   // Garante inicialização do Brick e registro do sensor
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
   Blockly.Arduino.setups_['setup_brick_ultrassonico_' + porta.toLowerCase()] =
     'brick.adiciona(' + varName + ');';
 
@@ -254,7 +272,9 @@ function brickEnsureGiroscopioForPort(porta) {
   }
 
   // Garante inicialização do Brick e registro do giroscópio
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
   Blockly.Arduino.setups_['setup_brick_giroscopio_' + porta.toLowerCase()] =
     'brick.adiciona(' + varName + ');';
 
@@ -271,7 +291,9 @@ function brickEnsureSensorLinhaForPort(porta) {
     Blockly.Arduino.definitions_['sensor_linha_' + porta.toLowerCase()] =
       'SensorLinha ' + varName + '(' + porta + ');';
 
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+      Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    }
     Blockly.Arduino.setups_['setup_brick_sensor_linha_' + porta.toLowerCase()] =
       'brick.adiciona(' + varName + ');';
   }

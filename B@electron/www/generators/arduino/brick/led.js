@@ -36,10 +36,12 @@ Blockly.Arduino['brick_ledstrip_criar'] = function(block) {
     }
 
     Blockly.Arduino.definitions_['ledstrip_' + porta.toLowerCase()] =
-        'LEDStrip ' + varName + ' = LEDStrip(' + porta + ', ' + qtd + ');';
+      'LEDStrip ' + varName + ' = LEDStrip(' + porta + ', ' + qtd + ');';
 
-    Blockly.Arduino.setups_['setup_brick_simples'] =
-        'brick.inicializa();';
+    if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+      Blockly.Arduino.setups_['setup_brick_simples'] =
+      'brick.inicializa();';
+    }
 
     Blockly.Arduino.setups_['setup_brick_ledstrip_' + porta.toLowerCase()] =
         'brick.adiciona(' + varName + ');';
@@ -77,7 +79,9 @@ Blockly.Arduino['brick_led_cor'] = function(block) {
     Blockly.Arduino.definitions_[defKey] =
       'LEDStrip ' + stripVar + ' = LEDStrip(' + porta + ');';
 
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+      Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    }
     Blockly.Arduino.setups_['setup_brick_ledstrip_' + porta.toLowerCase()] =
       'brick.adiciona(' + stripVar + ');';
   }
@@ -155,7 +159,9 @@ Blockly.Arduino['brick_led_rgb'] = function(block) {
     Blockly.Arduino.definitions_[defKey] =
       'LEDStrip ' + stripVar + ' = LEDStrip(' + porta + ');';
 
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+      Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    }
     Blockly.Arduino.setups_['setup_brick_ledstrip_' + porta.toLowerCase()] =
       'brick.adiciona(' + stripVar + ');';
   }
@@ -215,7 +221,9 @@ Blockly.Arduino['brick_led_apagar'] = function(block) {
     Blockly.Arduino.definitions_[defKey] =
       'LEDStrip ' + stripVar + ' = LEDStrip(' + porta + ');';
 
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+      Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    }
     Blockly.Arduino.setups_['setup_brick_ledstrip_' + porta.toLowerCase()] =
       'brick.adiciona(' + stripVar + ');';
   }
@@ -271,7 +279,9 @@ Blockly.Arduino['brick_led_brilho'] = function(block) {
     Blockly.Arduino.definitions_[defKey] =
       'LEDStrip ' + stripVar + ' = LEDStrip(' + porta + ');';
 
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+      Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+    }
     Blockly.Arduino.setups_['setup_brick_ledstrip_' + porta.toLowerCase()] =
       'brick.adiciona(' + stripVar + ');';
   }

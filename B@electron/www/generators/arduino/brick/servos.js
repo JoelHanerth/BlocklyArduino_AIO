@@ -11,7 +11,9 @@ goog.require('Blockly.Arduino');
 function brickEnsureServoPort(porta) {
   // usamos um setup por porta para chamar servos.iniciaServo(PORTA_SERVO_X);
   Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
 
   // chave de setup específica por porta
   var key = 'setup_brick_servo_' + porta.toLowerCase();

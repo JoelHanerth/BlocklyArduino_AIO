@@ -30,7 +30,9 @@ Blockly.Arduino['brick_potencia_motores'] = function(block) {
   var value_motor1 = Blockly.Arduino.valueToCode(block, 'MOTOR1', Blockly.Arduino.ORDER_ATOMIC) || '0';
   var value_motor2 = Blockly.Arduino.valueToCode(block, 'MOTOR2', Blockly.Arduino.ORDER_ATOMIC) || '0';
 
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
 
   var code = 'brick.potenciaMotores(' + value_motor1 + ', ' + value_motor2 + ');\n';
   return code;
@@ -40,7 +42,9 @@ Blockly.Arduino['brick_potencia_motores'] = function(block) {
 // (versão sincronizada com motor.js, usando nomes minúsculos: motor1/motor2)
 Blockly.Arduino['brick_motor_direcao'] = function(block) {
   Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
 
   var motorSel = block.getFieldValue('MOTOR') || 'MOTOR1';
   var direcao = block.getFieldValue('DIRECAO') || 'MOTOR_NORMAL';
@@ -67,7 +71,9 @@ Blockly.Arduino['brick_motor_direcao'] = function(block) {
 
 Blockly.Arduino['brick_parar_motores'] = function(block) {
   Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
 
   var code = 'brick.pararMotores();\n';
   return code;
@@ -76,7 +82,9 @@ Blockly.Arduino['brick_parar_motores'] = function(block) {
 // Define a potência padrão de movimento do Brick (em %) usando brick.setPotenciaPadrao
 Blockly.Arduino['brick_motores_potencia_padrao'] = function(block) {
   Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
 
   var potencia = Blockly.Arduino.valueToCode(block, 'POTENCIA', Blockly.Arduino.ORDER_ATOMIC) || '0';
   var code = 'brick.setPotenciaPadrao(' + potencia + ');\n';
@@ -86,7 +94,9 @@ Blockly.Arduino['brick_motores_potencia_padrao'] = function(block) {
 // Define quais motores serão usados como motores de movimento (esquerdo/direito)
 Blockly.Arduino['brick_motores_movimento'] = function(block) {
   Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
 
   var esq = block.getFieldValue('ESQ') || 'MOTOR1';
   var dir = block.getFieldValue('DIR') || 'MOTOR2';
@@ -120,7 +130,9 @@ Blockly.Arduino['brick_motores_movimento'] = function(block) {
 // Inicia o movimento dos dois motores na direção escolhida usando a potência padrão do Brick
 Blockly.Arduino['brick_motores_iniciar_movimento'] = function(block) {
   Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
 
   var direcao = block.getFieldValue('DIRECAO') || 'FRENTE';
 
@@ -138,7 +150,9 @@ Blockly.Arduino['brick_motores_iniciar_movimento'] = function(block) {
 // Inicia o movimento dos dois motores na direção escolhida por um tempo usando a potência padrão do Brick
 Blockly.Arduino['brick_motores_iniciar_movimento_tempo'] = function(block) {
   Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
 
   var direcao = block.getFieldValue('DIRECAO') || 'FRENTE';
   var tempo = Blockly.Arduino.valueToCode(block, 'TEMPO', Blockly.Arduino.ORDER_ATOMIC) || '0';
@@ -170,7 +184,9 @@ Blockly.Arduino['brick_motores_iniciar_movimento_tempo'] = function(block) {
 // Inicia o movimento dos dois motores na direção escolhida usando a potência informada
 Blockly.Arduino['brick_motores_iniciar_movimento_potencia'] = function(block) {
   Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
 
   var direcao = block.getFieldValue('DIRECAO') || 'FRENTE';
   var potencia = Blockly.Arduino.valueToCode(block, 'POTENCIA', Blockly.Arduino.ORDER_ATOMIC) || '0';
@@ -188,7 +204,9 @@ Blockly.Arduino['brick_motores_iniciar_movimento_potencia'] = function(block) {
 // Move os dois motores na direção escolhida por um tempo usando a potência informada
 Blockly.Arduino['brick_motores_mover_tempo_potencia'] = function(block) {
   Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
-  Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
 
   var direcao = block.getFieldValue('DIRECAO') || 'FRENTE';
   var tempo = Blockly.Arduino.valueToCode(block, 'TEMPO', Blockly.Arduino.ORDER_ATOMIC) || '0';
