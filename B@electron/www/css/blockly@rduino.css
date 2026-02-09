@@ -941,6 +941,11 @@ html[dir="RTL"] .colors_category {
 	border-radius: 5px;
 	overflow: auto;
 }
+
+/* Oculta o botão de maximizar da barra de ferramentas dos blocos */
+#btn_size {
+	display: none;
+}
 h4{
 	margin-left: 5px;
 }
