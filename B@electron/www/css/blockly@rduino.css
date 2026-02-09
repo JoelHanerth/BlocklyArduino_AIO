@@ -912,7 +912,7 @@ html[dir="RTL"] .colors_category {
 	box-shadow: 0 2px 4px rgba(15, 23, 42, 0.18);
 } 
 .btn-arduino:hover,.btn-arduinoRect:hover,.btn-arduino:focus {
-	background-color: #14b8a6; 
+	background-color: #d2eeeb; 
 	border-color: transparent;
 	box-shadow: 0 3px 6px rgba(15, 23, 42, 0.22);
 } 

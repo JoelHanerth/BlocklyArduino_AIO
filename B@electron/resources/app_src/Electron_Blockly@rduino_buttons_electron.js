@@ -121,7 +121,7 @@ window.addEventListener('load', function load(event) {
 			document.getElementById('local_debug').style.color = '#00ff00'
 				document.getElementById('local_debug').innerHTML = traduzirMensagemArduinoCli(stdout) + '\nVerificação: OK'
 				if (btnVerify) {
-					btnVerify.style.backgroundColor = '#16a34a';
+						btnVerify.style.backgroundColor = '#22c55e';
 					btnVerify.style.borderColor = 'transparent';
 					setTimeout(function() {
 						btnVerify.style.backgroundColor = '';
@@ -237,7 +237,7 @@ window.addEventListener('load', function load(event) {
 				document.getElementById('local_debug').style.color = '#00ff00'
 				document.getElementById('local_debug').innerHTML = traduzirMensagemArduinoCli(stdout2) + '\nTransferência: OK'
 				if (btnFlash) {
-					btnFlash.style.backgroundColor = '#16a34a';
+						btnFlash.style.backgroundColor = '#22c55e';
 					btnFlash.style.borderColor = 'transparent';
 					setTimeout(function() {
 						btnFlash.style.backgroundColor = '';
