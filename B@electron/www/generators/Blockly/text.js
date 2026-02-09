@@ -171,7 +171,7 @@ Blockly.Arduino['text_trim'] = function(block) {
 /**
  * Code generator to print to the serial comm.
  * Serial info: http://arduino.cc/en/Reference/Serial
- * Arduino code: setup { Serial.begin(9600);     }
+ * Arduino code: setup { Serial.begin(115200);     }
  *               loop  { Serial.print(String(X)) }
  * @param {!Blockly.Block} block Block to generate the code from.
  * @return {string} Completed code.
@@ -179,7 +179,7 @@ Blockly.Arduino['text_trim'] = function(block) {
 Blockly.Arduino['text_print'] = function(block) {
   // var serialId = profile.defaultBoard.serial[0][1];
   var serialId = profile.defaultBoard.cpu;
-  var setupCode = serialId + '.begin(9600);';
+  var setupCode = serialId + '.begin(115200);';
   Blockly.Arduino.addSetup('serial_' + serialId, setupCode, false);
   var argument0 = Blockly.Arduino.valueToCode(block, 'TEXT',
       Blockly.Arduino.ORDER_NONE);
@@ -243,7 +243,7 @@ Blockly.Arduino['text_prompt_ext'] = function(block) {
       'getUserInputPrompt' + returnType, func.join('\n'));
 
   // Only overwrite the serial set up if not present already
-  var setupCode = serialId + '.begin(9600);';
+  var setupCode = serialId + '.begin(115200);';
   Blockly.Arduino.addSetup('serial_' + serialId, setupCode, false);
 
   var msg = Blockly.Arduino.valueToCode(block, 'TEXT',
