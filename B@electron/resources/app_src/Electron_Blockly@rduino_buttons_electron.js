@@ -133,6 +133,8 @@ window.addEventListener('load', function load(event) {
 	document.getElementById('btn_flash_local').onclick = function(event) {
 		var btnFlash = document.getElementById('btn_flash_local');
 		var file_path = '.\\tmp'
+		var file = '.\\arduino\\tmp\\tmp.ino'
+		var data = $('#pre_arduino').text()
 		var carte = document.getElementById('board_select').value
 		var com = document.getElementById('serialport_ide').value
 		if (carte=="none"){
@@ -149,7 +151,7 @@ window.addEventListener('load', function load(event) {
 			return
 			} else {
 				if (com=="no_com"){
-				document.getElementById('local_debug').style.color = '#ff0000'
+					document.getElementById('local_debug').style.color = '#ff0000'
 					document.getElementById('local_debug').innerHTML = 'Selecione uma porta!'
 					if (btnFlash) {
 						btnFlash.style.backgroundColor = '#b91c1c';
@@ -159,21 +161,39 @@ window.addEventListener('load', function load(event) {
 							btnFlash.style.borderColor = '';
 						}, 2500);
 					}
-				return
+					return
 				} else {
 					document.getElementById('local_debug').style.color = '#ffffff'
 					document.getElementById('local_debug').innerHTML = 'Placa ' + profile.defaultBoard['description'] + ' na porta ' + com
 					var upload_arg = profile.defaultBoard['upload_arg']
 				}
 		}
+
+		// garante pasta temporária
+		try {
+			fs.accessSync('.\\arduino\\tmp', fs.constants.W_OK)
+		} catch (err) {
+			fs.mkdirSync('.\\arduino\\tmp', { recursive: false }, (err) => {
+				if (err) throw err
+			})
+		}
+
+		// comando de compilação
+		var cmdCompile
 		if ($('#detailedCompilation').prop('checked'))
-				var cmd = 'arduino-cli.exe --debug upload -p ' + com + ' --fqbn ' + upload_arg + ' ' + file_path
-			else
-				var cmd = 'arduino-cli.exe upload -p ' + com + ' --fqbn ' + upload_arg + ' ' + file_path
+			cmdCompile = 'arduino-cli.exe --debug compile --fqbn ' + upload_arg + ' ' + file_path
+		else
+			cmdCompile = 'arduino-cli.exe compile --fqbn ' + upload_arg + ' ' + file_path
+
+		fs.writeFile(file, data, (err) => {
+			if (err) return console.log(err)
+		})
+
 		document.getElementById('local_debug').innerHTML = 'Placa ' + profile.defaultBoard['description'] + ' na porta ' + com
-		document.getElementById('local_debug').innerHTML += '\nTransferência: em andamento...\n' + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
-		console.log(cmd)
-		exec(cmd , {cwd: './arduino'} , (error, stdout, stderr) => {
+		document.getElementById('local_debug').innerHTML += '\nVerificação: em andamento...\n' + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
+
+		// primeiro compila
+		exec(cmdCompile , {cwd: './arduino'} , (error, stdout, stderr) => {
 			if (error) {
 				document.getElementById('local_debug').style.color = '#ff0000'
 				document.getElementById('local_debug').innerHTML = traduzirMensagemArduinoCli(stderr)
@@ -187,8 +207,35 @@ window.addEventListener('load', function load(event) {
 				}
 				return
 			}
+
+			// compilação OK, agora faz upload
 			document.getElementById('local_debug').style.color = '#00ff00'
-				document.getElementById('local_debug').innerHTML = traduzirMensagemArduinoCli(stdout) + '\nTransferência: OK'
+			document.getElementById('local_debug').innerHTML = traduzirMensagemArduinoCli(stdout) + '\nVerificação: OK'
+			document.getElementById('local_debug').innerHTML += '\nTransferência: em andamento...\n' + '<i class="fa fa-spinner fa-pulse fa-1_5x fa-fw"></i>'
+
+			var cmdUpload
+			if ($('#detailedCompilation').prop('checked'))
+				cmdUpload = 'arduino-cli.exe --debug upload -p ' + com + ' --fqbn ' + upload_arg + ' ' + file_path
+			else
+				cmdUpload = 'arduino-cli.exe upload -p ' + com + ' --fqbn ' + upload_arg + ' ' + file_path
+
+			console.log(cmdUpload)
+			exec(cmdUpload , {cwd: './arduino'} , (error2, stdout2, stderr2) => {
+				if (error2) {
+					document.getElementById('local_debug').style.color = '#ff0000'
+					document.getElementById('local_debug').innerHTML = traduzirMensagemArduinoCli(stderr2)
+					if (btnFlash) {
+						btnFlash.style.backgroundColor = '#b91c1c';
+						btnFlash.style.borderColor = 'transparent';
+						setTimeout(function() {
+							btnFlash.style.backgroundColor = '';
+							btnFlash.style.borderColor = '';
+						}, 2500);
+					}
+					return
+				}
+				document.getElementById('local_debug').style.color = '#00ff00'
+				document.getElementById('local_debug').innerHTML = traduzirMensagemArduinoCli(stdout2) + '\nTransferência: OK'
 				if (btnFlash) {
 					btnFlash.style.backgroundColor = '#16a34a';
 					btnFlash.style.borderColor = 'transparent';
@@ -197,14 +244,15 @@ window.addEventListener('load', function load(event) {
 						btnFlash.style.borderColor = '';
 					}, 2500);
 				}
-			const path = require('path')
-			fs.readdir('.\\arduino\\tmp', (err, files) => {
-			  if (err) throw err;
-			  for (const file of files) {
-				fs.unlink(path.join('.\\arduino\\tmp', file), err => {
-				  if (err) throw err
+				const path = require('path')
+				fs.readdir('.\\arduino\\tmp', (err, files) => {
+				  if (err) throw err;
+				  for (const file of files) {
+					fs.unlink(path.join('.\\arduino\\tmp', file), err => {
+					  if (err) throw err
+					})
+				  }
 				})
-			  }
 			})
 		})
 	}
