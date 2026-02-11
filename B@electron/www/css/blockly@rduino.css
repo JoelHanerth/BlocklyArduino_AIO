@@ -735,7 +735,6 @@ html[dir="RTL"] #select_all {
 .blocklyToolboxDiv {
 	background-color: #ffffff !important;
 	box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12) !important;
-	border-radius: 10px;
 }
 
 .blocklyFlyoutBackground {
