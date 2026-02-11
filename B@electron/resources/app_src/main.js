@@ -12,9 +12,21 @@ let mainWindow = null;
 let splashWindow = null;
 let termWindow = null;
 let factoryWindow = null;
-//const userDataPath = app.getPath ('userData')
+// Caminho de dados do usuário (configurações, recent-projects etc.)
+function getUserDataBaseDir() {
+    // No Windows, prioriza %LOCALAPPDATA%\Blocklyrduino
+    if (process.platform === 'win32' && process.env.LOCALAPPDATA) {
+        return path.join(process.env.LOCALAPPDATA, 'Blocklyrduino');
+    }
+    // Fallback: diretório padrão de dados do usuário do Electron
+    return app.getPath('userData');
+}
+
+const userDataBaseDir = getUserDataBaseDir();
+fs.ensureDirSync(userDataBaseDir);
+
 //read INI file
-var fileSettings = "./Blockly@rduino.json";
+let fileSettings = path.join(userDataBaseDir, 'Blockly@rduino.json');
 var Settings = '';
 
 // Controle de projetos recentes (últimos arquivos abertos)
@@ -24,9 +36,9 @@ let recentFilePath = null;
 
 function initRecentStorage() {
     try {
-        // Usa o mesmo diretório onde já salvamos Blockly@rduino.json,
-        // garantindo que seja gravável mesmo em modo portátil.
-        var baseDir = path.dirname(path.resolve(fileSettings));
+        // Usa diretório de dados do usuário (LOCALAPPDATA ou equivalente)
+        var baseDir = userDataBaseDir;
+        fs.ensureDirSync(baseDir);
         recentFilePath = path.join(baseDir, 'recent-projects.json');
         if (fs.existsSync(recentFilePath)) {
             const raw = fs.readFileSync(recentFilePath, 'utf8');
@@ -67,7 +79,10 @@ function addRecentProject(filePath) {
     } catch (e) {}
 }
 
-app.setPath('userData', app.getAppPath());
+// Exporta o diretório de dados do usuário para os processos renderer
+ipcMain.handle('blockly-get-user-data-dir', async () => {
+    return userDataBaseDir;
+});
 
 initRecentStorage();
 app.on('window-all-closed', () => {
@@ -89,6 +104,9 @@ function createMainWindow() {
 			},
             icon: './www/favicon.ico'
         });
+    // Garante que a variável Settings sempre tenha um valor definido
+    Settings = "";
+
     if (!fs.existsSync(fileSettings)) {
         console.log("File not found");
         fs.writeFileSync(fileSettings, '', (err) => {
@@ -98,7 +116,7 @@ function createMainWindow() {
             console.log("The file has been succesfully saved");
             })
         } else {
-            var Settings = fs.readFileSync(fileSettings, 'utf8', (err, Settings) => {
+			Settings = fs.readFileSync(fileSettings, 'utf8', (err, Settings) => {
                     if (err) {
                         console.log("An error occured reading the file :" + err.message);
                         Settings = "";
@@ -320,20 +338,14 @@ ipcMain.handle('blockly-save-project-as', async (event, args) => {
     try {
         const content = (args && args.content) || '';
         const suggestedName = (args && args.suggestedName) || 'blockly_arduino.B@';
-        const baseDir = path.join(app.getPath('userData'), 'projects');
-        try {
-            fs.ensureDirSync(baseDir);
-        } catch (e) {
-            // se não conseguir criar, ainda deixamos o usuário escolher outra pasta
-        }
-
         const { filePath, canceled } = await dialog.showSaveDialog({
             title: 'Salvar projeto Blockly@rduino',
-            defaultPath: path.join(baseDir, suggestedName),
+            // Sem defaultPath fixo: o Windows lembra o último diretório usado
             filters: [
                 { name: 'Projetos Blockly@rduino', extensions: ['B@', 'xml'] },
                 { name: 'Todos os arquivos', extensions: ['*'] }
-            ]
+            ],
+            defaultPath: suggestedName
         });
 
         if (canceled || !filePath) {

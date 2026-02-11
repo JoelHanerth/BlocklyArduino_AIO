@@ -1,7 +1,36 @@
 const {ipcRenderer} = require('electron');
 const {exec} = require('child_process');
 const fs = require('fs-extra');
+const path = require('path');
 const SerialPort = require('serialport');
+
+// Diretório de dados do usuário compartilhado com o processo principal
+let userDataBaseDir = null;
+ipcRenderer.invoke('blockly-get-user-data-dir').then(function (dir) {
+	if (dir) {
+		userDataBaseDir = dir;
+		try {
+			fs.ensureDirSync(userDataBaseDir);
+		} catch (e) {}
+	}
+}).catch(function () {
+	// se falhar, continua usando diretórios relativos como fallback
+});
+
+function getUserDataBaseDirFallback() {
+	if (userDataBaseDir) return userDataBaseDir;
+	// Fallback: diretório atual (comportamento antigo)
+	return process.cwd();
+}
+
+function getTempSketchDir() {
+	const baseDir = getUserDataBaseDirFallback();
+	const tmpDir = path.join(baseDir, 'arduino', 'tmp');
+	try {
+		fs.ensureDirSync(tmpDir);
+	} catch (e) {}
+	return tmpDir;
+}
 
 function traduzirMensagemArduinoCli(texto) {
 	if (!texto) return texto;
@@ -45,7 +74,11 @@ menu_com.addEventListener('mouseover', function(event) {
 
 window.addEventListener('load', function load(event) {
 	document.getElementById('btn_saveConfigGlobale').onclick = function(event) {
-		var fileSettings = "./Blockly@rduino.json"
+		var baseDir = getUserDataBaseDirFallback();
+		try {
+			fs.ensureDirSync(baseDir);
+		} catch (e) {}
+		var fileSettings = path.join(baseDir, 'Blockly@rduino.json');
 		var Settings = window.location.search
 		fs.writeFileSync(fileSettings, JSON.stringify(window.location.search), (err) => {
 			if(err){
@@ -76,15 +109,9 @@ window.addEventListener('load', function load(event) {
 	}
 	document.getElementById('btn_verify_local').onclick = function(event) {
 		var btnVerify = document.getElementById('btn_verify_local');
-		try {
-			fs.accessSync('.\\arduino\\tmp', fs.constants.W_OK)
-			} catch (err) {
-				fs.mkdirSync('.\\arduino\\tmp', { recursive: false }, (err) => {
-					if (err) throw err
-					})
-		}
-		var file_path = '.\\tmp'
-		var file = '.\\arduino\\tmp\\tmp.ino'
+		const tmpDir = getTempSketchDir();
+		var file_path = tmpDir;
+		var file = path.join(tmpDir, 'tmp.ino');
 		var data = $('#pre_arduino').text()
 		var carte = document.getElementById('board_select').value
 		if (carte != "none") {
@@ -96,10 +123,11 @@ window.addEventListener('load', function load(event) {
 				document.getElementById('local_debug').innerHTML = 'Selecione uma placa!'
 				return
 		}
+		var sketchArg = '"' + file_path + '"';
 		if ($('#detailedCompilation').prop('checked'))
-				var cmd = 'arduino-cli.exe --debug compile --fqbn ' + upload_arg + ' ' + file_path
+				var cmd = 'arduino-cli.exe --debug compile --fqbn ' + upload_arg + ' ' + sketchArg
 			else
-				var cmd = 'arduino-cli.exe compile --fqbn ' + upload_arg + ' ' + file_path
+				var cmd = 'arduino-cli.exe compile --fqbn ' + upload_arg + ' ' + sketchArg
 		fs.writeFile(file, data, (err) => {
 			if (err) return console.log(err)
 		});
@@ -132,8 +160,9 @@ window.addEventListener('load', function load(event) {
 	}
 	document.getElementById('btn_flash_local').onclick = function(event) {
 		var btnFlash = document.getElementById('btn_flash_local');
-		var file_path = '.\\tmp'
-		var file = '.\\arduino\\tmp\\tmp.ino'
+		const tmpDir = getTempSketchDir();
+		var file_path = tmpDir
+		var file = path.join(tmpDir, 'tmp.ino')
 		var data = $('#pre_arduino').text()
 		var carte = document.getElementById('board_select').value
 		var com = document.getElementById('serialport_ide').value
@@ -169,21 +198,13 @@ window.addEventListener('load', function load(event) {
 				}
 		}
 
-		// garante pasta temporária
-		try {
-			fs.accessSync('.\\arduino\\tmp', fs.constants.W_OK)
-		} catch (err) {
-			fs.mkdirSync('.\\arduino\\tmp', { recursive: false }, (err) => {
-				if (err) throw err
-			})
-		}
-
 		// comando de compilação
 		var cmdCompile
+		var sketchArg2 = '"' + file_path + '"'
 		if ($('#detailedCompilation').prop('checked'))
-			cmdCompile = 'arduino-cli.exe --debug compile --fqbn ' + upload_arg + ' ' + file_path
+			cmdCompile = 'arduino-cli.exe --debug compile --fqbn ' + upload_arg + ' ' + sketchArg2
 		else
-			cmdCompile = 'arduino-cli.exe compile --fqbn ' + upload_arg + ' ' + file_path
+			cmdCompile = 'arduino-cli.exe compile --fqbn ' + upload_arg + ' ' + sketchArg2
 
 		fs.writeFile(file, data, (err) => {
 			if (err) return console.log(err)
@@ -215,12 +236,12 @@ window.addEventListener('load', function load(event) {
 
 			var cmdUpload
 			if ($('#detailedCompilation').prop('checked'))
-				cmdUpload = 'arduino-cli.exe --debug upload -p ' + com + ' --fqbn ' + upload_arg + ' ' + file_path
+				cmdUpload = 'arduino-cli.exe --debug upload -p ' + com + ' --fqbn ' + upload_arg + ' ' + sketchArg2
 			else
-				cmdUpload = 'arduino-cli.exe upload -p ' + com + ' --fqbn ' + upload_arg + ' ' + file_path
+				cmdUpload = 'arduino-cli.exe upload -p ' + com + ' --fqbn ' + upload_arg + ' ' + sketchArg2
 
 			console.log(cmdUpload)
-			exec(cmdUpload , {cwd: './arduino'} , (error2, stdout2, stderr2) => {
+				exec(cmdUpload , {cwd: './arduino'} , (error2, stdout2, stderr2) => {
 				if (error2) {
 					document.getElementById('local_debug').style.color = '#ff0000'
 					document.getElementById('local_debug').innerHTML = traduzirMensagemArduinoCli(stderr2)
@@ -244,11 +265,10 @@ window.addEventListener('load', function load(event) {
 						btnFlash.style.borderColor = '';
 					}, 2500);
 				}
-				const path = require('path')
-				fs.readdir('.\\arduino\\tmp', (err, files) => {
+				fs.readdir(tmpDir, (err, files) => {
 				  if (err) throw err;
 				  for (const file of files) {
-					fs.unlink(path.join('.\\arduino\\tmp', file), err => {
+					fs.unlink(path.join(tmpDir, file), err => {
 					  if (err) throw err
 					})
 				  }
