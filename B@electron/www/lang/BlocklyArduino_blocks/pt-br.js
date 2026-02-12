@@ -133,6 +133,7 @@ Blockly.Msg.CAT_BRICK_SENSORS_LINE = "Sensores de linha";
 Blockly.Msg.CAT_BRICK_LED = "LED";
 Blockly.Msg.CAT_BRICK_SOUND = "Som";
 Blockly.Msg.CAT_BRICK_SERVOS = "Servo Motores";
+Blockly.Msg.CAT_BRICK_KEYBOARD = "Teclado";
 
 
 Blockly.Msg.CAT_ANEMOROTATION = "Anemometer with cups"; //added september 16th 2017

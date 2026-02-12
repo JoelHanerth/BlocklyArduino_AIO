@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <toolbox>
-	<parametre id="defaultCategories">CAT_BRICK,CAT_BRICK_MOTOR,CAT_BRICK_MOTORS,CAT_BRICK_SERVOS,CAT_BRICK_SENSORS,CAT_BRICK_LED,CAT_BRICK_SOUND,CAT_LOGIC,CAT_LOOPS,CAT_MATH,CAT_ARRAY,CAT_TEXT,CAT_VARIABLES,CAT_FUNCTIONS</parametre>
+	<parametre id="defaultCategories">CAT_BRICK,CAT_BRICK_MOTOR,CAT_BRICK_MOTORS,CAT_BRICK_SERVOS,CAT_BRICK_SENSORS,CAT_BRICK_LED,CAT_BRICK_SOUND,CAT_BRICK_KEYBOARD,CAT_LOGIC,CAT_LOOPS,CAT_MATH,CAT_ARRAY,CAT_TEXT,CAT_VARIABLES,CAT_FUNCTIONS</parametre>
 	<category name="CAT_BRICK" colour="#FF6680">
 		<block type="brick_inicializa"></block>
 		<block type="brick_atualizabrick"></block>
@@ -205,6 +205,11 @@
 		<block type="brick_buzzer_iniciar_som"></block>
 		<block type="brick_buzzer_iniciar_efeito"></block>
 		<block type="brick_buzzer_parar"></block>
+	</category>
+
+	<category name="CAT_BRICK_KEYBOARD" colour="#4CAF50">
+		<block type="brick_teclado_le_botao"></block>
+		<block type="brick_teclado_altera_led"></block>
 	</category>
 
 	<category name="CAT_LOGIC" colour="#FFAB19">
