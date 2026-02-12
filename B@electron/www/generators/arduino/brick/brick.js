@@ -10,11 +10,11 @@ goog.require('Blockly.Arduino');
 // Bloco que registra uma inicialização manual do Brick.
 // A chamada brick.inicializa() será gerada no início do setup().
 Blockly.Arduino['brick_inicializa'] = function(block) {
-  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
-
   // Marca que há inicialização manual e remove qualquer inicialização automática registrada.
   Blockly.Arduino.definitions_['brick_manual_init'] = '// inicialização do Brick feita manualmente pelo usuário';
   delete Blockly.Arduino.setups_['setup_brick_simples'];
+  
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   // Usa uma chave numérica para garantir que esta linha seja
   // emitida antes das demais entradas de setup.

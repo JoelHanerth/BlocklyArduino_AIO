@@ -9,7 +9,8 @@ goog.require('Blockly.Arduino');
 
 // TCS34725 em uma porta I2C escolhida, registrado no Brick
 Blockly.Arduino['brick_sensor_tcs34725_criar'] = function(block) {
-    Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.includes_['define_suporte_sensor_tcs34725'] = '#define SUPORTE_SENSOR_TCS34725 1';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
     var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_1';
 
@@ -29,6 +30,7 @@ Blockly.Arduino['brick_sensor_tcs34725_criar'] = function(block) {
 
 // Verifica se o sensor de cor está vendo a cor escolhida (retorna booleano)
 Blockly.Arduino['brick_sensor_tcs34725_eh_cor'] = function(block) {
+  Blockly.Arduino.includes_['define_suporte_sensor_tcs34725'] = '#define SUPORTE_SENSOR_TCS34725 1';
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_1';
@@ -51,7 +53,7 @@ Blockly.Arduino['brick_sensor_tcs34725_eh_cor'] = function(block) {
 
 // Retorna a cor detectada pelo sensor (enum CorBasica convertido em número)
 Blockly.Arduino['brick_sensor_tcs34725_cor'] = function(block) {
-
+  Blockly.Arduino.includes_['define_suporte_sensor_tcs34725'] = '#define SUPORTE_SENSOR_TCS34725 1';
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_1';
@@ -73,6 +75,7 @@ Blockly.Arduino['brick_sensor_tcs34725_cor'] = function(block) {
 
 // Lê um valor único (R, G, B ou C) de um sensor de cor em uma porta escolhida
 Blockly.Arduino['brick_sensor_tcs34725_ler'] = function(block) {
+  Blockly.Arduino.includes_['define_suporte_sensor_tcs34725'] = '#define SUPORTE_SENSOR_TCS34725 1';
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_1';
@@ -106,6 +109,7 @@ Blockly.Arduino['brick_sensor_tcs34725_ler'] = function(block) {
 
 // Calibra o sensor de cor na porta escolhida
 Blockly.Arduino['brick_sensor_tcs34725_calibrar'] = function(block) {
+  Blockly.Arduino.includes_['define_suporte_sensor_tcs34725'] = '#define SUPORTE_SENSOR_TCS34725 1';
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_1';
@@ -127,6 +131,7 @@ Blockly.Arduino['brick_sensor_tcs34725_calibrar'] = function(block) {
 
 // Lê a distância do sensor VL53L0X em uma porta I2C escolhida (cm ou mm)
 Blockly.Arduino['brick_sensor_vl53l0x_distancia'] = function(block) {
+  Blockly.Arduino.includes_['define_suporte_sensor_vl53l0x'] = '#define SUPORTE_SENSOR_VL53L0X 1';
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_1';
@@ -158,6 +163,7 @@ Blockly.Arduino['brick_sensor_vl53l0x_distancia'] = function(block) {
 
 // Compara a distância do VL53L0X com um valor em cm ou mm
 Blockly.Arduino['brick_sensor_vl53l0x_compara'] = function(block) {
+  Blockly.Arduino.includes_['define_suporte_sensor_vl53l0x'] = '#define SUPORTE_SENSOR_VL53L0X 1';
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_1';
@@ -202,6 +208,7 @@ Blockly.Arduino['brick_sensor_vl53l0x_compara'] = function(block) {
 
 // Lê a distância do sensor ultrassônico HC-SR04 em uma porta (cm)
 Blockly.Arduino['brick_sensor_ultrassonico_distancia'] = function(block) {
+  Blockly.Arduino.includes_['define_suporte_sensor_ultrassonico'] = '#define SUPORTE_SENSOR_ULTRASSONICO 1';
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_ULTRASSONICO_1';
@@ -226,6 +233,7 @@ Blockly.Arduino['brick_sensor_ultrassonico_distancia'] = function(block) {
 
 // Compara a distância do ultrassônico com um valor em cm
 Blockly.Arduino['brick_sensor_ultrassonico_compara'] = function(block) {
+  Blockly.Arduino.includes_['define_suporte_sensor_ultrassonico'] = '#define SUPORTE_SENSOR_ULTRASSONICO 1';
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_ULTRASSONICO_1';
@@ -328,6 +336,7 @@ function brickEnsureSensorLinhaForPort(porta) {
 
 // Lê eixo X (pitch)
 Blockly.Arduino['brick_sensor_giroscopio_x'] = function(block) {
+  Blockly.Arduino.includes_['define_suporte_sensor_giroscopio'] = '#define SUPORTE_SENSOR_GIROSCOPIO 1';
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_3';
@@ -339,6 +348,7 @@ Blockly.Arduino['brick_sensor_giroscopio_x'] = function(block) {
 
 // Lê eixo Y (roll)
 Blockly.Arduino['brick_sensor_giroscopio_y'] = function(block) {
+  Blockly.Arduino.includes_['define_suporte_sensor_giroscopio'] = '#define SUPORTE_SENSOR_GIROSCOPIO 1';
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_3';
@@ -350,6 +360,7 @@ Blockly.Arduino['brick_sensor_giroscopio_y'] = function(block) {
 
 // Lê eixo Z (yaw)
 Blockly.Arduino['brick_sensor_giroscopio_z'] = function(block) {
+  Blockly.Arduino.includes_['define_suporte_sensor_giroscopio'] = '#define SUPORTE_SENSOR_GIROSCOPIO 1';
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_3';
@@ -361,6 +372,7 @@ Blockly.Arduino['brick_sensor_giroscopio_z'] = function(block) {
 
 // Zera eixo Z
 Blockly.Arduino['brick_sensor_giroscopio_zerar_z'] = function(block) {
+  Blockly.Arduino.includes_['define_suporte_sensor_giroscopio'] = '#define SUPORTE_SENSOR_GIROSCOPIO 1';
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_3';
@@ -418,7 +430,7 @@ Blockly.Arduino['brick_sensor_bmi160_eixo_z'] = function(block) {
 
 // Reseta eixo Z
 Blockly.Arduino['brick_sensor_bmi160_reseta_z'] = function(block) {
-  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_5';
   var varName = brickEnsureBMI160ForPort(porta);
@@ -429,7 +441,8 @@ Blockly.Arduino['brick_sensor_bmi160_reseta_z'] = function(block) {
 
 // Lê um dos 4 sensores de linha (0 = branco, 100 = preto)
 Blockly.Arduino['brick_sensor_linha_valor'] = function(block) {
-  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.includes_['define_suporte_sensor_linha'] = '#define SUPORTE_SENSOR_LINHA 1';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_4';
   var indice = block.getFieldValue('SENSOR') || '0';
@@ -442,7 +455,8 @@ Blockly.Arduino['brick_sensor_linha_valor'] = function(block) {
 
 // Lê um componente de cor (R, G, B ou C) de um dos sensores de cor (esquerda, meio ou direita)
 Blockly.Arduino['brick_sensor_linha_cor'] = function(block) {
-  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.includes_['define_suporte_sensor_linha'] = '#define SUPORTE_SENSOR_LINHA 1';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_4';
   var pos = block.getFieldValue('POS') || 'ESQ';
@@ -476,7 +490,8 @@ Blockly.Arduino['brick_sensor_linha_cor'] = function(block) {
 
 // Lê a cor básica detectada (enum Cor) em um dos sensores (esquerda, meio ou direita)
 Blockly.Arduino['brick_sensor_linha_cor_basica'] = function(block) {
-  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.includes_['define_suporte_sensor_linha'] = '#define SUPORTE_SENSOR_LINHA 1';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_4';
   var pos = block.getFieldValue('POS') || 'ESQ';
