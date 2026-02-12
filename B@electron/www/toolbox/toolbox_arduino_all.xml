@@ -156,6 +156,11 @@
 			</block>
 		</category>
 		<category name="CAT_BRICK_SENSORS_ORIENTATION" colour="#00A8C9">
+			<block type="brick_sensor_bmi160_calibrar"></block>
+			<block type="brick_sensor_bmi160_plano_x"></block>
+			<block type="brick_sensor_bmi160_plano_y"></block>
+			<block type="brick_sensor_bmi160_eixo_z"></block>
+			<block type="brick_sensor_bmi160_reseta_z"></block>
 			<block type="brick_sensor_giroscopio_x"></block>
 			<block type="brick_sensor_giroscopio_y"></block>
 			<block type="brick_sensor_giroscopio_z"></block>

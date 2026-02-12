@@ -9,7 +9,7 @@ goog.require('Blockly.Arduino');
 
 // Toca um beep no buzzer da porta escolhida
 Blockly.Arduino['brick_buzzer_beep'] = function(block) {
-  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_BUZZER_1';
   var buzzerVar;
@@ -53,7 +53,7 @@ Blockly.Arduino['brick_buzzer_beep'] = function(block) {
 
 // Toca uma melodia pronta (Jingle Bells ou Power Rangers) no buzzer da porta escolhida
 Blockly.Arduino['brick_buzzer_iniciar_som'] = function(block) {
-  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_BUZZER_1';
   var buzzerVar;
@@ -102,7 +102,7 @@ Blockly.Arduino['brick_buzzer_iniciar_som'] = function(block) {
 
 // Toca um efeito sonoro curto (alerta, sucesso ou erro) no buzzer da porta escolhida
 Blockly.Arduino['brick_buzzer_iniciar_efeito'] = function(block) {
-  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_BUZZER_1';
   var buzzerVar;
@@ -153,7 +153,7 @@ Blockly.Arduino['brick_buzzer_iniciar_efeito'] = function(block) {
 
 // Para o som no buzzer da porta escolhida
 Blockly.Arduino['brick_buzzer_parar'] = function(block) {
-  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_BUZZER_1';
   var buzzerVar;

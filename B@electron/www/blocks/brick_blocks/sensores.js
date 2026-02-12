@@ -377,7 +377,136 @@ Blockly.Blocks['brick_sensor_linha_cor_basica'] = {
   }
 };
 
-// --- Giroscópio BMI160 (via Brick) ---
+// --- Sensor de orientação BMI160 interno (via Brick) ---
+
+// Calibra o sensor BMI160 interno do Brick em uma porta I2C escolhida
+Blockly.Blocks['brick_sensor_bmi160_calibrar'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick_sensores.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldImage(
+              Blockly.pathToBlockly + 'blocks/brick_blocks/assets/giroscopio bmi160.png',
+              45,
+              18
+          ))
+        .appendField('porta')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'PORTA_I2C_1'],
+          ['2', 'PORTA_I2C_2'],
+          ['3', 'PORTA_I2C_3'],
+          ['4', 'PORTA_I2C_4'],
+          ['5', 'PORTA_I2C_5']
+        ]), 'PORTA')
+        .appendField('calibrar BMI160');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Calibra o sensor de orientação BMI160 interno do Brick. Deixe o robô parado durante a calibração.');
+  }
+};
+
+// Lê o plano X (inclinação em relação ao eixo X) do BMI160 interno em uma porta I2C escolhida
+Blockly.Blocks['brick_sensor_bmi160_plano_x'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick_sensores.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldImage(
+              Blockly.pathToBlockly + 'blocks/brick_blocks/assets/giroscopio bmi160.png',
+              45,
+              18
+          ))
+        .appendField('porta')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'PORTA_I2C_1'],
+          ['2', 'PORTA_I2C_2'],
+          ['3', 'PORTA_I2C_3'],
+          ['4', 'PORTA_I2C_4'],
+          ['5', 'PORTA_I2C_5']
+        ]), 'PORTA')
+        .appendField('plano X (°)');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Retorna o plano X (inclinação em graus) medido pelo sensor BMI160 interno do Brick.');
+  }
+};
+
+// Lê o plano Y (inclinação em relação ao eixo Y) do BMI160 interno em uma porta I2C escolhida
+Blockly.Blocks['brick_sensor_bmi160_plano_y'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick_sensores.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldImage(
+              Blockly.pathToBlockly + 'blocks/brick_blocks/assets/giroscopio bmi160.png',
+              45,
+              18
+          ))
+        .appendField('porta')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'PORTA_I2C_1'],
+          ['2', 'PORTA_I2C_2'],
+          ['3', 'PORTA_I2C_3'],
+          ['4', 'PORTA_I2C_4'],
+          ['5', 'PORTA_I2C_5']
+        ]), 'PORTA')
+        .appendField('plano Y (°)');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Retorna o plano Y (inclinação em graus) medido pelo sensor BMI160 interno do Brick.');
+  }
+};
+
+// Lê o eixo Z (ângulo acumulado de giro) do BMI160 interno em uma porta I2C escolhida
+Blockly.Blocks['brick_sensor_bmi160_eixo_z'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick_sensores.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldImage(
+              Blockly.pathToBlockly + 'blocks/brick_blocks/assets/giroscopio bmi160.png',
+              45,
+              18
+          ))
+        .appendField('porta')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'PORTA_I2C_1'],
+          ['2', 'PORTA_I2C_2'],
+          ['3', 'PORTA_I2C_3'],
+          ['4', 'PORTA_I2C_4'],
+          ['5', 'PORTA_I2C_5']
+        ]), 'PORTA')
+        .appendField('eixo Z (°)');
+    this.setOutput(true, 'Number');
+    this.setTooltip('Retorna o ângulo em torno do eixo Z (giro em graus) medido pelo sensor BMI160 interno do Brick.');
+  }
+};
+
+// Reseta o ângulo Z do BMI160 interno em uma porta I2C escolhida
+Blockly.Blocks['brick_sensor_bmi160_reseta_z'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick_sensores.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldImage(
+              Blockly.pathToBlockly + 'blocks/brick_blocks/assets/giroscopio bmi160.png',
+              45,
+              18
+          ))
+        .appendField('porta')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'PORTA_I2C_1'],
+          ['2', 'PORTA_I2C_2'],
+          ['3', 'PORTA_I2C_3'],
+          ['4', 'PORTA_I2C_4'],
+          ['5', 'PORTA_I2C_5']
+        ]), 'PORTA')
+        .appendField('zerar eixo Z');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Zera o ângulo em torno do eixo Z do sensor BMI160 interno do Brick.');
+  }
+};
+
+// --- Giroscópio serial (classe Giroscopio) ---
 
 // Lê eixo X (pitch) do giroscópio em uma porta serial escolhida
 Blockly.Blocks['brick_sensor_giroscopio_x'] = {
@@ -532,6 +661,23 @@ if (Blockly.Types) {
     return Blockly.Types.NUMBER;
   };
   Blockly.Blocks['brick_sensor_giroscopio_zerar_z'].getBlockType = function() {
+    return Blockly.Types.NULL;
+  };
+
+  // BMI160 interno
+  Blockly.Blocks['brick_sensor_bmi160_calibrar'].getBlockType = function() {
+    return Blockly.Types.NULL;
+  };
+  Blockly.Blocks['brick_sensor_bmi160_plano_x'].getBlockType = function() {
+    return Blockly.Types.NUMBER;
+  };
+  Blockly.Blocks['brick_sensor_bmi160_plano_y'].getBlockType = function() {
+    return Blockly.Types.NUMBER;
+  };
+  Blockly.Blocks['brick_sensor_bmi160_eixo_z'].getBlockType = function() {
+    return Blockly.Types.NUMBER;
+  };
+  Blockly.Blocks['brick_sensor_bmi160_reseta_z'].getBlockType = function() {
     return Blockly.Types.NULL;
   };
 }

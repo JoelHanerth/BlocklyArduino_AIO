@@ -9,7 +9,7 @@ goog.require('Blockly.Arduino');
 
 // LEDStrip em uma porta LED escolhida, registrado no Brick
 Blockly.Arduino['brick_ledstrip_criar'] = function(block) {
-    Blockly.Arduino.includes_['include_brick_simples'] =
+    Blockly.Arduino.definitions_['include_brick_simples'] =
         '#include <brickSimples.h>';
 
     var porta = block.getFieldValue('PORTA') || 'PORTA_LED_1';
@@ -51,7 +51,7 @@ Blockly.Arduino['brick_ledstrip_criar'] = function(block) {
 
 // Controla a cor de um LED da fita (ou todos)
 Blockly.Arduino['brick_led_cor'] = function(block) {
-  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_LED_1';
   var stripVar;
@@ -131,7 +131,7 @@ Blockly.Arduino['brick_led_cor'] = function(block) {
 
 // Define a cor RGB de um LED da fita (ou todos)
 Blockly.Arduino['brick_led_rgb'] = function(block) {
-  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_LED_1';
   var stripVar;
@@ -193,7 +193,7 @@ Blockly.Arduino['brick_led_rgb'] = function(block) {
 
 // Apaga um LED da fita (ou todos)
 Blockly.Arduino['brick_led_apagar'] = function(block) {
-  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_LED_1';
   var stripVar;
@@ -251,7 +251,7 @@ Blockly.Arduino['brick_led_apagar'] = function(block) {
 
 // Diminui o brilho de todos os LEDs da fita de uma porta
 Blockly.Arduino['brick_led_brilho'] = function(block) {
-  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_LED_1';
   var stripVar;
@@ -296,7 +296,7 @@ Blockly.Arduino['brick_led_brilho'] = function(block) {
 
 // Roda efeitos especiais de luz na fita de LED
 Blockly.Arduino['brick_led_efeitos'] = function(block) {
-  Blockly.Arduino.includes_['include_brick_simples'] = '#include <brickSimples.h>';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   var porta = block.getFieldValue('PORTA') || 'PORTA_LED_1';
   var stripVar;
