@@ -22,9 +22,7 @@ Change Log
 
 DATE      VER   WHO   WHAT
 06/20/15  1.6.0 NEM   Code cleanup and compatibility with Arduino 1.6.*
-2024-11-30  - Simplificação por Julio Vendramini
-2024-12-28  - Remoção de funções não utilizadas
-            - Padronização do tamanho fonte de 10 colunas e 4 linhas
+2026-02-10  - Simplificação por Julio Vendramini
             - Remoção do código que utiliza EEPROM para salvar as letras da fonte
             - Agora aceita apenas o formato 128x64
 -------------------------------------------------------------------------------
@@ -149,14 +147,18 @@ SSD1306::SSD1306(PortaI2C porta, uint8_t vccstate)
 
 void SSD1306::init()
 {
-  begin(SSD1306_LCDWIDTH / SSD1306_FONT_WIDTH, SSD1306_LCDHEIGHT / SSD1306_FONT_HEIGHT);
+  begin();
 }
 
 
-void SSD1306::begin(uint8_t cols, uint8_t rows)
+void SSD1306::begin() //a quantidade de colunas e linhas é definida pelo tamanho da fonte, que é definida por setFontePequena, setFonteMedia ou setFonteGrande
 {
-  _cols = cols;
-  _rows = rows;
+  //inicia como fonte pequena, (padrao)
+  multiplicadorTamanhoFonte = 1;
+  SSD1306_FONT_WIDTH = 5;
+  SSD1306_FONT_HEIGHT = 8; 
+  _cols = 21;
+  _rows = 8;
   bus = new SoftWire(sda, scl);
   bus->setTimeout_ms(10);
   bus->begin();
@@ -295,7 +297,14 @@ void SSD1306::clear(bool inverted)
       bytesRestantes -= chunkSize;
     }
   }
+  limpaBuffer();
   setCursor(0, 0);
+}
+
+void SSD1306::limpaBuffer(){
+  for(int8_t i = 0; i < TAMANHO_MAXIMO_COLUNAS; i++){
+    bufferLinha[i] = ' ';
+  }
 }
 
 void SSD1306::home()
@@ -309,6 +318,9 @@ void SSD1306::setCursor(uint8_t col, uint8_t row)
 {
   if ((col < _cols) && (row < _rows)){
     _c = col;
+    if(_r != row){
+      limpaBuffer();
+    }
     _r = row;
     _x = _c * (SSD1306_FONT_WIDTH + 1); // +1 for space between characters
     _y = _r * SSD1306_FONT_HEIGHT;  
@@ -334,6 +346,7 @@ void SSD1306::noDisplay()
 {
   ssd1306_command(SSD1306_DISPLAYOFF);
 }
+
 void SSD1306::display()
 {
   ssd1306_command(SSD1306_DISPLAYON);
@@ -342,19 +355,27 @@ void SSD1306::display()
 
 inline size_t SSD1306::write(uint8_t value)
 {
-  
   if (value == '\n')
   {
     _y += SSD1306_FONT_HEIGHT;
     //_r++;
     _r += multiplicadorTamanhoFonte; //o _r sempre tem q olhar a linha como 8 pixels, devido a estrutura do display
-    _x = _c = 0;
+    _x = DESLOCAMENTO_ESQUERDA;
+    _c = 0;
+    limpaBuffer();
   }
   else if (value == '\r'){
-    _x = _c = 0;
+    for(uint8_t col = _c; col < this->_cols;col++){
+        drawChar(' ');
+        bufferLinha[col] = ' ';
+    }
+    _x = DESLOCAMENTO_ESQUERDA;
+    _c = 0;
   }
   else{
-    drawChar(value);
+      drawChar(value);
+      //_c++; //passou pra funcao drawChar
+    
   }
   return 1; // assume success
 }
@@ -388,6 +409,7 @@ void SSD1306::dim(boolean dim)
 }
 
 
+//2026-02-12 - Joguei a analise do buffer aqui dentro, pois preciso alterar outras variaveis
 void SSD1306::drawChar(unsigned char c, bool inverted){
   //cada fonte ocupa o multiplicadorTamanho de altura
 	int8_t multiplicadorTamanho = multiplicadorTamanhoFonte; 
@@ -401,46 +423,69 @@ void SSD1306::drawChar(unsigned char c, bool inverted){
         return;
       }
  
+  // Buffer para acumular dados de uma linha (página) - máximo: 5 colunas * 4 multiplicador + espaçamento = ~24 bytes
+  uint8_t buffer[32]; 
+  uint8_t bufferIndex;
+  
   // top half
   uint8_t x_inicio = _x;
   uint8_t paginaInicial = 0;
   // mas cada gravação, vai em 8 linhas
   uint8_t linhaTela = _r;
-	for(int8_t parte = multiplicadorTamanho-1; parte >= 0; parte--){
+  //este for abaixo desenha o caractere de acordo com o multiplicador, ou seja, se for 2, ele desenha a letra em 2 partes, se for 4, ele desenha em 4 partes
+  for(int8_t parte = multiplicadorTamanho-1; parte >= 0; parte--){
 		_x = x_inicio;
     if(_x == 0){
       _x = DESLOCAMENTO_ESQUERDA; //caso a primeira coluna seja 0, eu coloco DESLOCAMENTO_ESQUERDA para nao cortar
     }
-		ssd1306_command(SSD1306_SETPAGESTART | linhaTela);
-		//ssd1306_command(SSD1306_SETSTARTLINE | (_y / SSD1306_FONT_HEIGHT));
-		ssd1306_command(SSD1306_SETLOWCOLUMN | (_x & 0x0F));
-		ssd1306_command(SSD1306_SETHIGHCOLUMN | ((_x & 0xF0) >> 4));
-		for (uint8_t i = 0; i < 5; ++i){
-			uint8_t b = pgm_read_byte(&flash_font[((c - 0x20) * 5) + i]);
-			if (inverted)
-			{
-			  b ^= 0xFF;
-			}
-			uint8_t temp=0; 
-			int8_t inicioFor = (7-(parte*(8/multiplicadorTamanho)));
-			int8_t fimFor = inicioFor - 8/multiplicadorTamanho + 1;
-			for(int8_t k = inicioFor ; k >= fimFor; k--){
-				for(uint8_t i = 0; i < multiplicadorTamanho; ++i){
-					temp = (temp << 1);
-					temp = temp | ((b >> k) & 0x01);
-				}
-			}
-			b = temp;
-			for(uint8_t i = 0; i < multiplicadorTamanho; ++i){
-				ssd1306_data(b);
-			}
-		}
-    for(int8_t parte = multiplicadorTamanho-1; parte >= 0; parte--){
-		  ssd1306_data(0x00);
-    }
     
-		linhaTela++;
+    if(bufferLinha[_c] != c){ //só redesenha a letra se for diferente da que já está no buffer
+      ssd1306_command(SSD1306_SETPAGESTART | linhaTela);
+      //ssd1306_command(SSD1306_SETSTARTLINE | (_y / SSD1306_FONT_HEIGHT));
+      ssd1306_command(SSD1306_SETLOWCOLUMN | (_x & 0x0F));
+      ssd1306_command(SSD1306_SETHIGHCOLUMN | ((_x & 0xF0) >> 4));
+      
+      // Acumular dados no buffer
+      bufferIndex = 0;
+      
+      for (uint8_t i = 0; i < 5; ++i){
+        uint8_t b = pgm_read_byte(&flash_font[((c - 0x20) * 5) + i]);
+        if (inverted)
+        {
+          b ^= 0xFF;
+        }
+        uint8_t temp=0; 
+        int8_t inicioFor = (7-(parte*(8/multiplicadorTamanho)));
+        int8_t fimFor = inicioFor - 8/multiplicadorTamanho + 1;
+        for(int8_t k = inicioFor ; k >= fimFor; k--){
+          for(uint8_t i = 0; i < multiplicadorTamanho; ++i){
+            temp = (temp << 1);
+            temp = temp | ((b >> k) & 0x01);
+          }
+        }
+        b = temp;
+        for(uint8_t i = 0; i < multiplicadorTamanho; ++i){
+          buffer[bufferIndex++] = b;
+        }
+      }
+      // Adicionar espaçamento
+      for(int8_t espacamento = multiplicadorTamanho-1; espacamento >= 0; espacamento--){
+        buffer[bufferIndex++] = 0x00;
+      }
+      
+    
+        // Enviar todos os dados de uma vez
+        bus->beginTransmission(_i2caddr);
+        bus->write(0x40); // Co = 0, D/C = 1
+        for(uint8_t i = 0; i < bufferIndex; i++){
+          bus->write(buffer[i]);
+        }
+        bus->endTransmission();
+    }
+    linhaTela++;
 	}
+  this->bufferLinha[this->_c] = c;
+  this->_c++;
 	_x += tamanhoXLetra + multiplicadorTamanho;
 }
 
@@ -464,17 +509,57 @@ void SSD1306::ssd1306_data(uint8_t d)
   bus->endTransmission();
 }
 
-
-void SSD1306::setFonteGrande(){
-  multiplicadorTamanhoFonte = 2;
-  SSD1306_FONT_WIDTH = 10;
-  SSD1306_FONT_HEIGHT = 16;
+void SSD1306::setFonte(uint8_t tamanhoFonte){
+  if(tamanhoFonte > 3){ //nao existe esse valor
+    return;
+  }
+  if(tamanhoFonte == FONTE_PEQUENA){
+    multiplicadorTamanhoFonte = 1;
+    SSD1306_FONT_WIDTH = 5;
+    SSD1306_FONT_HEIGHT = 8; 
+    _cols = 21;
+    _rows = 8;
+  }
+  if(tamanhoFonte == FONTE_MEDIA){
+    multiplicadorTamanhoFonte = 2;
+    SSD1306_FONT_WIDTH = 10;
+    SSD1306_FONT_HEIGHT = 16;
+    _cols = 10;
+    _rows = 4;
+  }
+  if(tamanhoFonte == FONTE_GRANDE){
+    multiplicadorTamanhoFonte = 4;
+    SSD1306_FONT_WIDTH = 20;
+    SSD1306_FONT_HEIGHT = 32;
+    _cols = 5;
+    _rows = 2;
+  }
   this->clear();
 }
 
-void SSD1306::setFontePequena(){
-  multiplicadorTamanhoFonte = 1;
-  SSD1306_FONT_WIDTH = 5;
-  SSD1306_FONT_HEIGHT = 8; 
-  this->clear();
+
+
+void SSD1306::limpaLinha(uint8_t linha){
+  if(multiplicadorTamanhoFonte == 1){
+    if(linha > 7){
+      return;
+    }
+    this->setCursor(0, linha);
+    this->print(F("                     ")); // 21 espaços para limpar a linha
+  }
+  if(multiplicadorTamanhoFonte == 2){
+    if(linha > 3){
+      return;
+    }
+    this->setCursor(0, linha);
+    this->print(F("          ")); // 10 espaços para limpar a linha
+  }
+  if(multiplicadorTamanhoFonte == 4){
+    if(linha > 1){
+      return;
+    }
+    this->setCursor(0, linha);
+    this->print(F("     ")); // 5 espaços para limpar a linha
+  }
+  this->setCursor(0, linha);
 }
