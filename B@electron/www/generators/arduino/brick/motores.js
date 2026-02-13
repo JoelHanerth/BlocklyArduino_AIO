@@ -23,6 +23,30 @@ goog.provide('Blockly.Arduino.motores');
 
 goog.require('Blockly.Arduino');
 
+// Função auxiliar: garante definição, include e registro de um Motor para a porta escolhida
+function brickEnsureMotorForPort(portaConst, direcaoOpt) {
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
+
+  var sufixo = portaConst.charAt(portaConst.length - 1);
+  var varName = 'motor_porta_' + sufixo;
+  var defKey = 'brick_motor_' + portaConst.toLowerCase();
+
+  if (direcaoOpt) {
+    // Quando uma direção é passada, sempre força a definição com essa direção
+    Blockly.Arduino.definitions_[defKey] =
+      'Motor ' + varName + ' = Motor(' + portaConst + ', ' + direcaoOpt + ');';
+  } else if (!Blockly.Arduino.definitions_[defKey]) {
+    // Caso contrário, garante uma definição padrão se ainda não existir
+    Blockly.Arduino.definitions_[defKey] =
+      'Motor ' + varName + ' = Motor(' + portaConst + ', MOTOR_NORMAL);';
+  }
+
+  return varName;
+}
+
 Blockly.Arduino['brick_potencia_motores'] = function(block) {
 
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
@@ -41,28 +65,18 @@ Blockly.Arduino['brick_potencia_motores'] = function(block) {
 // Define a direção (normal/invertido) de um motor usando Motor.setInvertido
 // (versão sincronizada com motor.js, usando nomes minúsculos: motor1/motor2)
 Blockly.Arduino['brick_motor_direcao'] = function(block) {
-  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
-  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
-  }
-
   var motorSel = block.getFieldValue('MOTOR') || 'MOTOR1';
   var direcao = block.getFieldValue('DIRECAO') || 'MOTOR_NORMAL';
 
   var nomeVar, portaConst;
   if (motorSel === 'MOTOR1') {
-    nomeVar = 'motor1';
     portaConst = 'PORTA_MOTOR_1';
   } else {
-    nomeVar = 'motor2';
     portaConst = 'PORTA_MOTOR_2';
   }
 
-  // Garante que o objeto Motor exista (padrão MOTOR_NORMAL)
-  var defKey = 'brick_motor_' + portaConst.toLowerCase();
-  if (!Blockly.Arduino.definitions_[defKey]) {
-    Blockly.Arduino.definitions_[defKey] = 'Motor ' + nomeVar + ' = Motor(' + portaConst + ', MOTOR_NORMAL);';
-  }
+  // Garante que o objeto Motor exista (padrão MOTOR_NORMAL) para a porta escolhida
+  nomeVar = brickEnsureMotorForPort(portaConst, null);
 
   var invertidoFlag = (direcao === 'MOTOR_INVERTIDO') ? 'MOTOR_INVERTIDO' : 'MOTOR_NORMAL';
   var code = nomeVar + '.setInvertido(' + invertidoFlag + ');\n';
@@ -93,33 +107,23 @@ Blockly.Arduino['brick_motores_potencia_padrao'] = function(block) {
 
 // Define quais motores serão usados como motores de movimento (esquerdo/direito)
 Blockly.Arduino['brick_motores_movimento'] = function(block) {
-  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
-  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
-  }
-
   var esq = block.getFieldValue('ESQ') || 'MOTOR1';
   var dir = block.getFieldValue('DIR') || 'MOTOR2';
   var dirEsq = block.getFieldValue('DIR_ESQ') || 'MOTOR_NORMAL';
   var dirDir = block.getFieldValue('DIR_DIR') || 'MOTOR_NORMAL';
 
   // Define os objetos motor1 e motor2 com a direção escolhida para cada um
-  var defKey1 = 'brick_motor_' + 'PORTA_MOTOR_1'.toLowerCase();
-  var defKey2 = 'brick_motor_' + 'PORTA_MOTOR_2'.toLowerCase();
-
   // Se MOTOR1 está como esquerdo, usa dirEsq, senão usa dirDir
   var direcaoMotor1 = (esq === 'MOTOR1') ? dirEsq : dirDir;
   // Se MOTOR2 está como esquerdo, usa dirEsq, senão usa dirDir
   var direcaoMotor2 = (esq === 'MOTOR2') ? dirEsq : dirDir;
-
-  Blockly.Arduino.definitions_[defKey1] =
-    'Motor motor1 = Motor(PORTA_MOTOR_1, ' + direcaoMotor1 + ');';
-  Blockly.Arduino.definitions_[defKey2] =
-    'Motor motor2 = Motor(PORTA_MOTOR_2, ' + direcaoMotor2 + ');';
+  // Garante os motores para cada porta com a direção selecionada
+  var motorPorta1 = brickEnsureMotorForPort('PORTA_MOTOR_1', direcaoMotor1);
+  var motorPorta2 = brickEnsureMotorForPort('PORTA_MOTOR_2', direcaoMotor2);
 
   // Monta a chamada de adiciona na ordem escolhida
-  var leftRef = (esq === 'MOTOR1') ? 'motor1' : 'motor2';
-  var rightRef = (dir === 'MOTOR1') ? 'motor1' : 'motor2';
+  var leftRef = (esq === 'MOTOR1') ? motorPorta1 : motorPorta2;
+  var rightRef = (dir === 'MOTOR1') ? motorPorta1 : motorPorta2;
 
   Blockly.Arduino.setups_['setup_brick_adiciona_motores'] =
     'brick.adiciona(' + leftRef + ', ' + rightRef + ');';

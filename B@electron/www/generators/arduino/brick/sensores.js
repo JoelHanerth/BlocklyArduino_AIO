@@ -7,45 +7,88 @@ goog.provide('Blockly.Arduino.brick_sensores');
 
 goog.require('Blockly.Arduino');
 
-// TCS34725 em uma porta I2C escolhida, registrado no Brick
-Blockly.Arduino['brick_sensor_tcs34725_criar'] = function(block) {
+// Função auxiliar: garante definição, include e registro do sensor de cor TCS34725 na porta escolhida
+function brickEnsureTCSForPort(porta) {
   Blockly.Arduino.includes_['define_suporte_sensor_tcs34725'] = '#define SUPORTE_SENSOR_TCS34725 1';
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
-    var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_1';
+  var sufixo = porta.charAt(porta.length - 1);
+  var varName = 'sensorTCS_porta_' + sufixo;
+  var defKey = 'tcs34725_' + porta.toLowerCase();
 
-    var varName = 'sensorTCS_' + porta.toLowerCase();
-
-    Blockly.Arduino.definitions_['tcs34725_' + porta.toLowerCase()] =
+  if (!Blockly.Arduino.definitions_[defKey]) {
+    Blockly.Arduino.definitions_[defKey] =
       'TCS34725 ' + varName + ' = TCS34725(' + porta + ');';
-
-    if (!Blockly.Arduino.definitions_['brick_manual_init']) {
-      Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
-    }
-    Blockly.Arduino.setups_['setup_brick_tcs34725_' + porta.toLowerCase()] =
-        'brick.adiciona(' + varName + ');';
-
-    return '';
-};
-
-// Verifica se o sensor de cor está vendo a cor escolhida (retorna booleano)
-Blockly.Arduino['brick_sensor_tcs34725_eh_cor'] = function(block) {
-  Blockly.Arduino.includes_['define_suporte_sensor_tcs34725'] = '#define SUPORTE_SENSOR_TCS34725 1';
-  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
-
-  var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_1';
-  var cor = block.getFieldValue('COR') || 'COR_VERMELHO';
-
-  var varName = 'sensorTCS_' + porta.toLowerCase();
-
-  Blockly.Arduino.definitions_['tcs34725_' + porta.toLowerCase()] =
-    'TCS34725 ' + varName + ' = TCS34725(' + porta + ');';
+  }
 
   if (!Blockly.Arduino.definitions_['brick_manual_init']) {
     Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
   }
   Blockly.Arduino.setups_['setup_brick_tcs34725_' + porta.toLowerCase()] =
     'brick.adiciona(' + varName + ');';
+
+  return varName;
+}
+
+// Função auxiliar: garante definição, include e registro do sensor de distância VL53L0X na porta escolhida
+function brickEnsureVL53ForPort(porta) {
+  Blockly.Arduino.includes_['define_suporte_sensor_vl53l0x'] = '#define SUPORTE_SENSOR_VL53L0X 1';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
+
+  var sufixo = porta.charAt(porta.length - 1);
+  var varName = 'sensorVL53_porta_' + sufixo;
+  var defKey = 'vl53l0x_' + porta.toLowerCase();
+
+  if (!Blockly.Arduino.definitions_[defKey]) {
+    Blockly.Arduino.definitions_[defKey] =
+      'VL53L0X ' + varName + ' = VL53L0X(' + porta + ');';
+  }
+
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
+  Blockly.Arduino.setups_['setup_brick_vl53l0x_' + porta.toLowerCase()] =
+    'brick.adiciona(' + varName + ');';
+
+  return varName;
+}
+
+// Função auxiliar: garante definição, include e registro do sensor ultrassônico na porta escolhida
+function brickEnsureUltrassonicoForPort(porta) {
+  Blockly.Arduino.includes_['define_suporte_sensor_ultrassonico'] = '#define SUPORTE_SENSOR_ULTRASSONICO 1';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
+
+  var sufixo = porta.charAt(porta.length - 1);
+  var varName = 'sensorUS_porta_' + sufixo;
+  var defKey = 'ultrassonico_' + porta.toLowerCase();
+
+  if (!Blockly.Arduino.definitions_[defKey]) {
+    Blockly.Arduino.definitions_[defKey] =
+      'Ultrassonico ' + varName + ' = Ultrassonico(' + porta + ');';
+  }
+
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
+  Blockly.Arduino.setups_['setup_brick_ultrassonico_' + porta.toLowerCase()] =
+    'brick.adiciona(' + varName + ');';
+
+  return varName;
+}
+
+// TCS34725 em uma porta I2C escolhida, registrado no Brick
+Blockly.Arduino['brick_sensor_tcs34725_criar'] = function(block) {
+  var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_1';
+  brickEnsureTCSForPort(porta);
+  return '';
+};
+
+// Verifica se o sensor de cor está vendo a cor escolhida (retorna booleano)
+Blockly.Arduino['brick_sensor_tcs34725_eh_cor'] = function(block) {
+  var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_1';
+  var cor = block.getFieldValue('COR') || 'COR_VERMELHO';
+
+  var varName = brickEnsureTCSForPort(porta);
 
   var code = varName + '.ehCor(TCS34725::' + cor + ')';
   return [code, Blockly.Arduino.ORDER_ATOMIC];
@@ -53,21 +96,9 @@ Blockly.Arduino['brick_sensor_tcs34725_eh_cor'] = function(block) {
 
 // Retorna a cor detectada pelo sensor (enum CorBasica convertido em número)
 Blockly.Arduino['brick_sensor_tcs34725_cor'] = function(block) {
-  Blockly.Arduino.includes_['define_suporte_sensor_tcs34725'] = '#define SUPORTE_SENSOR_TCS34725 1';
-  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
-
   var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_1';
 
-  var varName = 'sensorTCS_' + porta.toLowerCase();
-
-  Blockly.Arduino.definitions_['tcs34725_' + porta.toLowerCase()] =
-    'TCS34725 ' + varName + ' = TCS34725(' + porta + ');';
-
-  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
-  }
-  Blockly.Arduino.setups_['setup_brick_tcs34725_' + porta.toLowerCase()] =
-    'brick.adiciona(' + varName + ');';
+  var varName = brickEnsureTCSForPort(porta);
 
   var code = varName + '.detectaCorBasica()';
   return [code, Blockly.Arduino.ORDER_ATOMIC];
@@ -75,22 +106,10 @@ Blockly.Arduino['brick_sensor_tcs34725_cor'] = function(block) {
 
 // Lê um valor único (R, G, B ou C) de um sensor de cor em uma porta escolhida
 Blockly.Arduino['brick_sensor_tcs34725_ler'] = function(block) {
-  Blockly.Arduino.includes_['define_suporte_sensor_tcs34725'] = '#define SUPORTE_SENSOR_TCS34725 1';
-  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
-
   var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_1';
   var componente = block.getFieldValue('COMP') || 'R';
 
-  var varName = 'sensorTCS_' + porta.toLowerCase();
-
-  Blockly.Arduino.definitions_['tcs34725_' + porta.toLowerCase()] =
-    'TCS34725 ' + varName + ' = TCS34725(' + porta + ');';
-
-  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
-  }
-  Blockly.Arduino.setups_['setup_brick_tcs34725_' + porta.toLowerCase()] =
-    'brick.adiciona(' + varName + ');';
+  var varName = brickEnsureTCSForPort(porta);
 
   var metodo;
   if (componente === 'R') {
@@ -109,21 +128,9 @@ Blockly.Arduino['brick_sensor_tcs34725_ler'] = function(block) {
 
 // Calibra o sensor de cor na porta escolhida
 Blockly.Arduino['brick_sensor_tcs34725_calibrar'] = function(block) {
-  Blockly.Arduino.includes_['define_suporte_sensor_tcs34725'] = '#define SUPORTE_SENSOR_TCS34725 1';
-  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
-
   var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_1';
 
-  var varName = 'sensorTCS_' + porta.toLowerCase();
-
-  Blockly.Arduino.definitions_['tcs34725_' + porta.toLowerCase()] =
-    'TCS34725 ' + varName + ' = TCS34725(' + porta + ');';
-
-  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
-  }
-  Blockly.Arduino.setups_['setup_brick_tcs34725_' + porta.toLowerCase()] =
-    'brick.adiciona(' + varName + ');';
+  var varName = brickEnsureTCSForPort(porta);
 
   var code = varName + '.calibrar();\n';
   return code;
@@ -131,24 +138,10 @@ Blockly.Arduino['brick_sensor_tcs34725_calibrar'] = function(block) {
 
 // Lê a distância do sensor VL53L0X em uma porta I2C escolhida (cm ou mm)
 Blockly.Arduino['brick_sensor_vl53l0x_distancia'] = function(block) {
-  Blockly.Arduino.includes_['define_suporte_sensor_vl53l0x'] = '#define SUPORTE_SENSOR_VL53L0X 1';
-  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
-
   var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_1';
   var unid = block.getFieldValue('UNID') || 'MM';
 
-  var varName = 'sensorVL53_' + porta.toLowerCase();
-
-  // Cria o objeto VL53L0X para essa porta
-  Blockly.Arduino.definitions_['vl53l0x_' + porta.toLowerCase()] =
-    'VL53L0X ' + varName + ' = VL53L0X(' + porta + ');';
-
-  // Garante inicialização do Brick e registro do sensor
-  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
-  }
-  Blockly.Arduino.setups_['setup_brick_vl53l0x_' + porta.toLowerCase()] =
-    'brick.adiciona(' + varName + ');';
+  var varName = brickEnsureVL53ForPort(porta);
 
   var code;
   if (unid === 'CM') {
@@ -163,25 +156,11 @@ Blockly.Arduino['brick_sensor_vl53l0x_distancia'] = function(block) {
 
 // Compara a distância do VL53L0X com um valor em cm ou mm
 Blockly.Arduino['brick_sensor_vl53l0x_compara'] = function(block) {
-  Blockly.Arduino.includes_['define_suporte_sensor_vl53l0x'] = '#define SUPORTE_SENSOR_VL53L0X 1';
-  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
-
   var porta = block.getFieldValue('PORTA') || 'PORTA_I2C_1';
   var cond = block.getFieldValue('COND') || 'MENOR';
   var unid = block.getFieldValue('UNID') || 'CM';
 
-  var varName = 'sensorVL53_' + porta.toLowerCase();
-
-  // Garante que o objeto VL53L0X para essa porta exista
-  Blockly.Arduino.definitions_['vl53l0x_' + porta.toLowerCase()] =
-    'VL53L0X ' + varName + ' = VL53L0X(' + porta + ');';
-
-  // Garante inicialização do Brick e registro do sensor
-  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
-  }
-  Blockly.Arduino.setups_['setup_brick_vl53l0x_' + porta.toLowerCase()] =
-    'brick.adiciona(' + varName + ');';
+  var varName = brickEnsureVL53ForPort(porta);
 
   var valor = Blockly.Arduino.valueToCode(block, 'VALOR', Blockly.Arduino.ORDER_MULTIPLICATIVE) || '0';
   var valorMm;
@@ -208,23 +187,9 @@ Blockly.Arduino['brick_sensor_vl53l0x_compara'] = function(block) {
 
 // Lê a distância do sensor ultrassônico HC-SR04 em uma porta (cm)
 Blockly.Arduino['brick_sensor_ultrassonico_distancia'] = function(block) {
-  Blockly.Arduino.includes_['define_suporte_sensor_ultrassonico'] = '#define SUPORTE_SENSOR_ULTRASSONICO 1';
-  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
-
   var porta = block.getFieldValue('PORTA') || 'PORTA_ULTRASSONICO_1';
 
-  var varName = 'sensorUS_' + porta.toLowerCase();
-
-  // Cria o objeto Ultrassonico para essa porta
-  Blockly.Arduino.definitions_['ultrassonico_' + porta.toLowerCase()] =
-    'Ultrassonico ' + varName + ' = Ultrassonico(' + porta + ');';
-
-  // Garante inicialização do Brick e registro do sensor
-  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
-  }
-  Blockly.Arduino.setups_['setup_brick_ultrassonico_' + porta.toLowerCase()] =
-    'brick.adiciona(' + varName + ');';
+  var varName = brickEnsureUltrassonicoForPort(porta);
 
   // getDistancia() já retorna a distância em centímetros
   var code = varName + '.getDistancia()';
@@ -233,24 +198,10 @@ Blockly.Arduino['brick_sensor_ultrassonico_distancia'] = function(block) {
 
 // Compara a distância do ultrassônico com um valor em cm
 Blockly.Arduino['brick_sensor_ultrassonico_compara'] = function(block) {
-  Blockly.Arduino.includes_['define_suporte_sensor_ultrassonico'] = '#define SUPORTE_SENSOR_ULTRASSONICO 1';
-  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
-
   var porta = block.getFieldValue('PORTA') || 'PORTA_ULTRASSONICO_1';
   var cond = block.getFieldValue('COND') || 'MENOR';
 
-  var varName = 'sensorUS_' + porta.toLowerCase();
-
-  // Garante que o objeto Ultrassonico para essa porta exista
-  Blockly.Arduino.definitions_['ultrassonico_' + porta.toLowerCase()] =
-    'Ultrassonico ' + varName + ' = Ultrassonico(' + porta + ');';
-
-  // Garante inicialização do Brick e registro do sensor
-  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
-    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
-  }
-  Blockly.Arduino.setups_['setup_brick_ultrassonico_' + porta.toLowerCase()] =
-    'brick.adiciona(' + varName + ');';
+  var varName = brickEnsureUltrassonicoForPort(porta);
 
   var valor = Blockly.Arduino.valueToCode(block, 'VALOR', Blockly.Arduino.ORDER_MULTIPLICATIVE) || '0';
 
@@ -296,7 +247,8 @@ function brickEnsureBMI160ForPort(porta) {
 
 // Função auxiliar para garantir definição e registro do giroscópio serial na porta escolhida
 function brickEnsureGiroscopioForPort(porta) {
-  var varName = 'giroscopio_' + porta.toLowerCase();
+  var sufixo = porta.charAt(porta.length - 1);
+  var varName = 'giroscopio_porta_' + sufixo;
 
   // Define objeto Giroscopio se ainda não existir
   if (!Blockly.Arduino.definitions_['giroscopio_' + porta.toLowerCase()]) {
@@ -318,7 +270,8 @@ function brickEnsureGiroscopioForPort(porta) {
 
 // Função auxiliar para garantir definição e registro do sensor de linha na porta escolhida
 function brickEnsureSensorLinhaForPort(porta) {
-  var varName = 'sensorLinha_' + porta.toLowerCase();
+  var sufixo = porta.charAt(porta.length - 1);
+  var varName = 'sensorLinha_porta_' + sufixo;
 
   if (!Blockly.Arduino.definitions_['sensor_linha_' + porta.toLowerCase()]) {
     Blockly.Arduino.definitions_['sensor_linha_' + porta.toLowerCase()] =

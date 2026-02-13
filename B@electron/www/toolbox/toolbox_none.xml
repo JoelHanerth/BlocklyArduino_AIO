@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <toolbox>
-	<parametre id="defaultCategories">CAT_BRICK,CAT_BRICK_MOTOR,CAT_BRICK_MOTORS,CAT_BRICK_SERVOS,CAT_BRICK_SENSORS,CAT_BRICK_LED,CAT_BRICK_SOUND,CAT_BRICK_KEYBOARD,CAT_LOGIC,CAT_LOOPS,CAT_MATH,CAT_ARRAY,CAT_TEXT,CAT_VARIABLES,CAT_FUNCTIONS</parametre>
+	<parametre id="defaultCategories">CAT_BRICK,CAT_BRICK_MOTOR,CAT_BRICK_MOTORS,CAT_BRICK_SERVOS,CAT_BRICK_SENSORS,CAT_BRICK_LED,CAT_BRICK_SOUND,CAT_BRICK_KEYBOARD,CAT_BRICK_TELA,CAT_LOGIC,CAT_LOOPS,CAT_MATH,CAT_ARRAY,CAT_TEXT,CAT_VARIABLES,CAT_FUNCTIONS</parametre>
 	<category name="CAT_BRICK" colour="#FF6680">
 		<block type="brick_inicializa"></block>
 		<block type="brick_atualizabrick"></block>
@@ -177,7 +177,23 @@
 	<category name="CAT_BRICK_LED" colour="#9B6AF6">
 		<block type="brick_ledstrip_criar"></block>
 		<block type="brick_led_cor"></block>
-		<block type="brick_led_rgb"></block>
+		<block type="brick_led_rgb">
+			<value name="R">
+				<shadow type="math_number">
+					<field name="NUM">255</field>
+				</shadow>
+			</value>
+			<value name="G">
+				<shadow type="math_number">
+					<field name="NUM">255</field>
+				</shadow>
+			</value>
+			<value name="B">
+				<shadow type="math_number">
+					<field name="NUM">255</field>
+				</shadow>
+			</value>
+		</block>
 		<block type="brick_led_apagar"></block>
 		<block type="brick_led_brilho">
 			<value name="PCT">
@@ -210,6 +226,31 @@
 	<category name="CAT_BRICK_KEYBOARD" colour="#4CAF50">
 		<block type="brick_teclado_le_botao"></block>
 		<block type="brick_teclado_altera_led"></block>
+	</category>
+
+	<category name="CAT_BRICK_TELA" colour="#00897B">
+		<block type="brick_tela_print">
+			<value name="TEXTO">
+				<shadow type="text">
+					<field name="TEXT">Ola, Mundo!</field>
+				</shadow>
+			</value>
+		</block>
+		<block type="brick_tela_clear"></block>
+		<block type="brick_tela_set_fonte"></block>
+		<block type="brick_tela_set_cursor">
+			<value name="COLUNA">
+				<shadow type="math_number">
+					<field name="NUM">0</field>
+				</shadow>
+			</value>
+			<value name="LINHA">
+				<shadow type="math_number">
+					<field name="NUM">0</field>
+				</shadow>
+			</value>
+		</block>
+		<block type="brick_tela_ret_carro"></block>
 	</category>
 
 	<category name="CAT_LOGIC" colour="#FFAB19">

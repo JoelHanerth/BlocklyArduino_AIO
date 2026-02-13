@@ -8,11 +8,11 @@ goog.provide('Blockly.Arduino.teclado');
 goog.require('Blockly.Arduino');
 
 // Garante que exista um objeto Teclado para a porta I2C escolhida
-// Nomes gerados: teclado_porta_i2c_1, teclado_porta_i2c_2, ...
+// Nomes gerados: teclado_porta_1, teclado_porta_2, ...
 function brickEnsureTecladoForPort(porta) {
   // sufixo numérico da porta (1..5)
   var sufixo = porta.charAt(porta.length - 1);
-  var varName = 'teclado_porta_i2c_' + sufixo;
+  var varName = 'teclado_porta_' + sufixo;
 
   var defKey = 'teclado_' + porta.toLowerCase();
   if (!Blockly.Arduino.definitions_[defKey]) {

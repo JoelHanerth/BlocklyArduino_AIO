@@ -23,6 +23,27 @@ goog.provide('Blockly.Arduino.motor');
 
 goog.require('Blockly.Arduino');
 
+// Função auxiliar: garante definição de um Motor para a porta escolhida
+function brickEnsureMotorForPort(portaConst, direcaoOpt) {
+  // Este gerador não cuida de includes nem de brick.inicializa(); isso é feito em motores.js
+
+  var sufixo = portaConst.charAt(portaConst.length - 1);
+  var varName = 'motor_porta_' + sufixo;
+  var defKey = 'brick_motor_' + portaConst.toLowerCase();
+
+  if (direcaoOpt) {
+    // Quando uma direção é passada, sempre força a definição com essa direção
+    Blockly.Arduino.definitions_[defKey] =
+      'Motor ' + varName + ' = Motor(' + portaConst + ', ' + direcaoOpt + ');';
+  } else if (!Blockly.Arduino.definitions_[defKey]) {
+    // Caso contrário, garante uma definição padrão se ainda não existir
+    Blockly.Arduino.definitions_[defKey] =
+      'Motor ' + varName + ' = Motor(' + portaConst + ', MOTOR_NORMAL);';
+  }
+
+  return varName;
+}
+
 
 // Define a direção (normal/invertido) de um motor usando Motor.setInvertido
 Blockly.Arduino['brick_motor_direcao'] = function(block) {
@@ -32,18 +53,13 @@ Blockly.Arduino['brick_motor_direcao'] = function(block) {
 
   var nomeVar, portaConst;
   if (motorSel === 'MOTOR1') {
-    nomeVar = 'motor1';
     portaConst = 'PORTA_MOTOR_1';
   } else {
-    nomeVar = 'motor2';
     portaConst = 'PORTA_MOTOR_2';
   }
 
-  // Garante que o objeto Motor exista (padrão MOTOR_NORMAL)
-  var defKey = 'brick_motor_' + portaConst.toLowerCase();
-  if (!Blockly.Arduino.definitions_[defKey]) {
-    Blockly.Arduino.definitions_[defKey] = 'Motor ' + nomeVar + ' = Motor(' + portaConst + ', MOTOR_NORMAL);';
-  }
+  // Garante que o objeto Motor exista (padrão MOTOR_NORMAL) para a porta escolhida
+  nomeVar = brickEnsureMotorForPort(portaConst, null);
 
   var invertidoFlag = (direcao === 'MOTOR_INVERTIDO') ? 'MOTOR_INVERTIDO' : 'MOTOR_NORMAL';
   var code = nomeVar + '.setInvertido(' + invertidoFlag + ');\n';
@@ -56,15 +72,8 @@ Blockly.Arduino['brick_motor_criar'] = function(block) {
   var porta = block.getFieldValue('PORTA') || 'PORTA_MOTOR_1';
   var direcao = block.getFieldValue('DIRECAO') || 'MOTOR_NORMAL';
 
-  var nomeVar;
-  if (porta === 'PORTA_MOTOR_1') {
-    nomeVar = 'motor1';
-  } else {
-    nomeVar = 'motor2';
-  }
-
-  Blockly.Arduino.definitions_['brick_motor_' + porta.toLowerCase()] =
-    'Motor ' + nomeVar + ' = Motor(' + porta + ', ' + direcao + ');';
+  // Força a definição do motor da porta com a direção escolhida
+  brickEnsureMotorForPort(porta, direcao);
 
   return '';
 };
@@ -77,18 +86,13 @@ Blockly.Arduino['brick_motor_potencia'] = function(block) {
 
   var nomeVar, portaConst;
   if (motorSel === 'MOTOR1') {
-    nomeVar = 'motor1';
     portaConst = 'PORTA_MOTOR_1';
   } else {
-    nomeVar = 'motor2';
     portaConst = 'PORTA_MOTOR_2';
   }
 
-  // Se ainda não existir definição explícita para esse motor, cria com MOTOR_NORMAL
-  var defKey = 'brick_motor_' + portaConst.toLowerCase();
-  if (!Blockly.Arduino.definitions_[defKey]) {
-    Blockly.Arduino.definitions_[defKey] = 'Motor ' + nomeVar + ' = Motor(' + portaConst + ', MOTOR_NORMAL);';
-  }
+  // Garante que o objeto Motor exista
+  nomeVar = brickEnsureMotorForPort(portaConst, null);
 
   var code = nomeVar + '.potencia(' + potencia + ');\n';
   return code;
@@ -98,7 +102,9 @@ Blockly.Arduino['brick_motor_potencia'] = function(block) {
 Blockly.Arduino['brick_motor_frear'] = function(block) {
 
   var motorSel = block.getFieldValue('MOTOR') || 'MOTOR1';
-  var nomeVar = (motorSel === 'MOTOR1') ? 'motor1' : 'motor2';
+  var portaConst = (motorSel === 'MOTOR1') ? 'PORTA_MOTOR_1' : 'PORTA_MOTOR_2';
+
+  var nomeVar = brickEnsureMotorForPort(portaConst, null);
 
   var code = nomeVar + '.frear();\n';
   return code;
@@ -112,18 +118,13 @@ Blockly.Arduino['brick_motor_potencia_padrao'] = function(block) {
 
   var nomeVar, portaConst;
   if (motorSel === 'MOTOR1') {
-    nomeVar = 'motor1';
     portaConst = 'PORTA_MOTOR_1';
   } else {
-    nomeVar = 'motor2';
     portaConst = 'PORTA_MOTOR_2';
   }
 
-  // Se ainda não existir definição explícita para esse motor, cria com MOTOR_NORMAL
-  var defKey = 'brick_motor_' + portaConst.toLowerCase();
-  if (!Blockly.Arduino.definitions_[defKey]) {
-    Blockly.Arduino.definitions_[defKey] = 'Motor ' + nomeVar + ' = Motor(' + portaConst + ', MOTOR_NORMAL);';
-  }
+  // Garante que o objeto Motor exista
+  nomeVar = brickEnsureMotorForPort(portaConst, null);
 
   var code = nomeVar + '.setPotenciaPadrao(' + potencia + ');\n';
   return code;
@@ -136,18 +137,13 @@ Blockly.Arduino['brick_motor_iniciar'] = function(block) {
 
   var nomeVar, portaConst;
   if (motorSel === 'MOTOR1') {
-    nomeVar = 'motor1';
     portaConst = 'PORTA_MOTOR_1';
   } else {
-    nomeVar = 'motor2';
     portaConst = 'PORTA_MOTOR_2';
   }
 
-  // Se ainda não existir definição explícita para esse motor, cria com MOTOR_NORMAL
-  var defKey = 'brick_motor_' + portaConst.toLowerCase();
-  if (!Blockly.Arduino.definitions_[defKey]) {
-    Blockly.Arduino.definitions_[defKey] = 'Motor ' + nomeVar + ' = Motor(' + portaConst + ', MOTOR_NORMAL);';
-  }
+  // Garante que o objeto Motor exista
+  nomeVar = brickEnsureMotorForPort(portaConst, null);
 
   var code = nomeVar + '.potencia();\n';
   return code;
@@ -163,18 +159,13 @@ Blockly.Arduino['brick_motor_acionar_pot_tempo'] = function(block) {
 
   var nomeVar, portaConst;
   if (motorSel === 'MOTOR1') {
-    nomeVar = 'motor1';
     portaConst = 'PORTA_MOTOR_1';
   } else {
-    nomeVar = 'motor2';
     portaConst = 'PORTA_MOTOR_2';
   }
 
-  // Se ainda não existir definição explícita para esse motor, cria com MOTOR_NORMAL
-  var defKey = 'brick_motor_' + portaConst.toLowerCase();
-  if (!Blockly.Arduino.definitions_[defKey]) {
-    Blockly.Arduino.definitions_[defKey] = 'Motor ' + nomeVar + ' = Motor(' + portaConst + ', MOTOR_NORMAL);';
-  }
+  // Garante que o objeto Motor exista
+  nomeVar = brickEnsureMotorForPort(portaConst, null);
 
   var tempoMs;
   if (unidade === 'S') {
@@ -201,18 +192,13 @@ Blockly.Arduino['brick_motor_acionar_tempo'] = function(block) {
 
   var nomeVar, portaConst;
   if (motorSel === 'MOTOR1') {
-    nomeVar = 'Motor1';
     portaConst = 'PORTA_MOTOR_1';
   } else {
-    nomeVar = 'Motor2';
     portaConst = 'PORTA_MOTOR_2';
   }
 
-  // Se ainda não existir definição explícita para esse motor, cria com MOTOR_NORMAL
-  var defKey = 'brick_motor_' + portaConst.toLowerCase();
-  if (!Blockly.Arduino.definitions_[defKey]) {
-    Blockly.Arduino.definitions_[defKey] = 'Motor ' + nomeVar + ' = Motor(' + portaConst + ', MOTOR_NORMAL);';
-  }
+  // Garante que o objeto Motor exista
+  nomeVar = brickEnsureMotorForPort(portaConst, null);
 
   var tempoMs;
   if (unidade === 'S') {

@@ -17,7 +17,7 @@ Blockly.Blocks['brick_teclado_le_botao'] = {
     this.setColour(Blockly.Blocks.teclado.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-        .appendField('⌨️ Teclado')
+        .appendField('⌨️')
         .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_I2C_1'],
@@ -45,7 +45,7 @@ Blockly.Blocks['brick_teclado_altera_led'] = {
     this.setColour(Blockly.Blocks.teclado.HUE);
     this.setHelpUrl('');
     this.appendDummyInput()
-        .appendField('⌨️ Teclado')
+        .appendField('⌨️')
         .appendField('porta')
         .appendField(new Blockly.FieldDropdown([
           ['1', 'PORTA_I2C_1'],
