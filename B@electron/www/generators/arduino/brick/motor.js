@@ -34,11 +34,11 @@ function brickEnsureMotorForPort(portaConst, direcaoOpt) {
   if (direcaoOpt) {
     // Quando uma direção é passada, sempre força a definição com essa direção
     Blockly.Arduino.definitions_[defKey] =
-      'Motor ' + varName + ' = Motor(' + portaConst + ', ' + direcaoOpt + ');';
+      'Motor ' + varName + '(' + portaConst + ', ' + direcaoOpt + ');';
   } else if (!Blockly.Arduino.definitions_[defKey]) {
     // Caso contrário, garante uma definição padrão se ainda não existir
     Blockly.Arduino.definitions_[defKey] =
-      'Motor ' + varName + ' = Motor(' + portaConst + ', MOTOR_NORMAL);';
+      'Motor ' + varName + '(' + portaConst + ', MOTOR_NORMAL);';
   }
 
   return varName;

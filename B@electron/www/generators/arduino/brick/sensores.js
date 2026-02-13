@@ -18,7 +18,7 @@ function brickEnsureTCSForPort(porta) {
 
   if (!Blockly.Arduino.definitions_[defKey]) {
     Blockly.Arduino.definitions_[defKey] =
-      'TCS34725 ' + varName + ' = TCS34725(' + porta + ');';
+      'TCS34725 ' + varName + '(' + porta + ');';
   }
 
   if (!Blockly.Arduino.definitions_['brick_manual_init']) {
@@ -41,7 +41,7 @@ function brickEnsureVL53ForPort(porta) {
 
   if (!Blockly.Arduino.definitions_[defKey]) {
     Blockly.Arduino.definitions_[defKey] =
-      'VL53L0X ' + varName + ' = VL53L0X(' + porta + ');';
+      'VL53L0X ' + varName + '(' + porta + ');';
   }
 
   if (!Blockly.Arduino.definitions_['brick_manual_init']) {
@@ -64,7 +64,7 @@ function brickEnsureUltrassonicoForPort(porta) {
 
   if (!Blockly.Arduino.definitions_[defKey]) {
     Blockly.Arduino.definitions_[defKey] =
-      'Ultrassonico ' + varName + ' = Ultrassonico(' + porta + ');';
+      'Ultrassonico ' + varName + '(' + porta + ');';
   }
 
   if (!Blockly.Arduino.definitions_['brick_manual_init']) {
@@ -232,7 +232,7 @@ function brickEnsureBMI160ForPort(porta) {
 
     // Cria o objeto correspondente à porta escolhida
     Blockly.Arduino.definitions_['bmi160_' + porta] =
-      'BMI160 ' + varName + ' = BMI160(' + porta + ');';
+      'BMI160 ' + varName + '(' + porta + ');';
   }
 
   // Garante inicialização do Brick e registro do BMI160 naquela porta
@@ -253,7 +253,7 @@ function brickEnsureGiroscopioForPort(porta) {
   // Define objeto Giroscopio se ainda não existir
   if (!Blockly.Arduino.definitions_['giroscopio_' + porta.toLowerCase()]) {
     Blockly.Arduino.definitions_['giroscopio_' + porta.toLowerCase()] =
-      'Giroscopio ' + varName + ' = Giroscopio(' + porta + ');';
+      'Giroscopio ' + varName + '(' + porta + ');';
   }
 
   // Garante inicialização do Brick e registro do giroscópio

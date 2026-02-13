@@ -22,7 +22,7 @@ function brickEnsureBuzzerForPort(porta) {
   var defKey = 'buzzer_' + porta.toLowerCase();
   if (!Blockly.Arduino.definitions_[defKey]) {
     Blockly.Arduino.definitions_[defKey] =
-      'Buzzer ' + varName + ' = Buzzer(' + porta + ');';
+      'Buzzer ' + varName + '(' + porta + ');';
   }
 
   Blockly.Arduino.setups_['setup_brick_buzzer_' + porta.toLowerCase()] =

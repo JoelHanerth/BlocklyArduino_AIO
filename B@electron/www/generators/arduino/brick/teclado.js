@@ -21,7 +21,7 @@ function brickEnsureTecladoForPort(porta) {
 
     // Cria o objeto Teclado para essa porta
     Blockly.Arduino.definitions_[defKey] =
-      'Teclado ' + varName + ' = Teclado(' + porta + ');';
+      'Teclado ' + varName + '(' + porta + ');';
 
     // Garante inicialização do Brick, se não houver init manual
     if (!Blockly.Arduino.definitions_['brick_manual_init']) {

@@ -22,9 +22,9 @@ function brickEnsureLedStripForPort(porta, qtdOpt) {
   if (!Blockly.Arduino.definitions_[defKey]) {
     var ctor;
     if (qtdOpt && qtdOpt !== '') {
-      ctor = 'LEDStrip ' + varName + ' = LEDStrip(' + porta + ', ' + qtdOpt + ');';
+      ctor = 'LEDStrip ' + varName + '(' + porta + ', ' + qtdOpt + ');';
     } else {
-      ctor = 'LEDStrip ' + varName + ' = LEDStrip(' + porta + ');';
+      ctor = 'LEDStrip ' + varName + '(' + porta + ');';
     }
     Blockly.Arduino.definitions_[defKey] = ctor;
   }
