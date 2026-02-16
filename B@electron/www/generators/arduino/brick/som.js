@@ -9,6 +9,7 @@ goog.require('Blockly.Arduino');
 
 // Função auxiliar: garante definição, include e registro do Buzzer na porta escolhida
 function brickEnsureBuzzerForPort(porta) {
+  Blockly.Arduino.includes_['define_suporte_buzzer'] = '#define SUPORTE_BUZZER 1';
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   if (!Blockly.Arduino.definitions_['brick_manual_init']) {

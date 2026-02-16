@@ -9,6 +9,7 @@ goog.require('Blockly.Arduino');
 
 // Função auxiliar: garante definição, include e registro da LEDStrip na porta escolhida
 function brickEnsureLedStripForPort(porta, qtdOpt) {
+  Blockly.Arduino.includes_['define_suporte_led'] = '#define SUPORTE_LED 1';
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
 
   if (!Blockly.Arduino.definitions_['brick_manual_init']) {

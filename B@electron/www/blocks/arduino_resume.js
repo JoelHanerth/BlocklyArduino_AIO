@@ -131,6 +131,7 @@ head.load(
 "blocks/brick_blocks/som.js",
 "blocks/brick_blocks/teclado.js",
 "blocks/brick_blocks/tela.js",
+"blocks/brick_blocks/bluetooth.js",
 function() {
     // Call a function when done
     console.log("Done loading Various Blocks");

@@ -122,6 +122,7 @@ head.load(
 "generators/arduino/brick/som.js",
 "generators/arduino/brick/teclado.js",
 "generators/arduino/brick/tela.js",
+"generators/arduino/brick/bluetooth.js",
 
 function() {
     // Call a function when done

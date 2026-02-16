@@ -10,6 +10,7 @@ goog.require('Blockly.Arduino');
 // Garante que exista um objeto Teclado para a porta I2C escolhida
 // Nomes gerados: teclado_porta_1, teclado_porta_2, ...
 function brickEnsureTecladoForPort(porta) {
+  Blockly.Arduino.includes_['define_suporte_teclado'] = '#define SUPORTE_TECLADO 1';
   // sufixo numérico da porta (1..5)
   var sufixo = porta.charAt(porta.length - 1);
   var varName = 'teclado_porta_' + sufixo;

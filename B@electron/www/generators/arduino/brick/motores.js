@@ -25,6 +25,7 @@ goog.require('Blockly.Arduino');
 
 // Função auxiliar: garante definição, include e registro de um Motor para a porta escolhida
 function brickEnsureMotorForPort(portaConst, direcaoOpt) {
+  Blockly.Arduino.includes_['define_suporte_motor'] = '#define SUPORTE_MOTOR 1';
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
   if (!Blockly.Arduino.definitions_['brick_manual_init']) {
     Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';

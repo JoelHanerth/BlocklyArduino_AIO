@@ -9,6 +9,7 @@ goog.require('Blockly.Arduino');
 
 // Função auxiliar: garante que a porta de servo foi iniciada
 function brickEnsureServoPort(porta) {
+  Blockly.Arduino.includes_['define_suporte_servo'] = '#define SUPORTE_SERVO 1';
   // usamos um setup por porta para chamar servos.iniciaServo(PORTA_SERVO_X);
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
   if (!Blockly.Arduino.definitions_['brick_manual_init']) {

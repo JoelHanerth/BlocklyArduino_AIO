@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <toolbox>
-	<parametre id="defaultCategories">CAT_BRICK,CAT_BRICK_MOTOR,CAT_BRICK_MOTORS,CAT_BRICK_SERVOS,CAT_BRICK_SENSORS,CAT_BRICK_LED,CAT_BRICK_SOUND,CAT_BRICK_KEYBOARD,CAT_BRICK_TELA,CAT_LOGIC,CAT_LOOPS,CAT_VARIABLES,CAT_FUNCTIONS,CAT_MATH,CAT_ARDUINO</parametre>
+	<parametre id="defaultCategories">CAT_BRICK,CAT_BRICK_MOTOR,CAT_BRICK_MOTORS,CAT_BRICK_SERVOS,CAT_BRICK_SENSORS,CAT_BRICK_LED,CAT_BRICK_SOUND,CAT_BRICK_KEYBOARD,CAT_BRICK_TELA,CAT_BRICK_BLUETOOTH,CAT_LOGIC,CAT_LOOPS,CAT_VARIABLES,CAT_FUNCTIONS,CAT_MATH,CAT_ARDUINO</parametre>
 	<category name="CAT_BRICK" colour="#FF6680">
 		<block type="brick_inicializa"></block>
 		<block type="brick_atualizabrick"></block>
@@ -226,6 +226,18 @@
 	<category name="CAT_BRICK_KEYBOARD" colour="#4CAF50">
 		<block type="brick_teclado_le_botao"></block>
 		<block type="brick_teclado_altera_led"></block>
+	</category>
+
+	<category name="CAT_BRICK_BLUETOOTH" colour="#1976D2">
+		<block type="brick_bluetooth_enviar">
+			<value name="TEXTO">
+				<shadow type="text">
+					<field name="TEXT">Hello via Bluetooth</field>
+				</shadow>
+			</value>
+		</block>
+		<block type="brick_bluetooth_disponivel"></block>
+		<block type="brick_bluetooth_ler_char"></block>
 	</category>
 
 	<category name="CAT_BRICK_TELA" colour="#00897B">
