@@ -222,3 +222,22 @@ Blockly.Blocks['brick_motores_potencia_padrao'] = {
     this.setTooltip('Define a potência padrão de movimento para os dois motores (usa brick.setPotenciaPadrao, -100 a 100).');
   }
 };
+
+// Inicia o movimento reto com giroscópio
+Blockly.Blocks['brick_motores_iniciar_movimento_reto_gyro'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.motores.HUE);
+    this.setHelpUrl('');
+    this.setInputsInline(true);
+    this.appendDummyInput()
+      .appendField('Iniciar movimento reto com giroscópio')
+      .appendField('com potência');
+    this.appendValueInput('POTENCIA')
+      .setCheck('Number');
+    this.appendDummyInput()
+      .appendField('%');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip('Inicia o movimento reto usando o giroscópio para correção, com a potência informada. Usa brick.andarPraFrente.');
+  }
+};

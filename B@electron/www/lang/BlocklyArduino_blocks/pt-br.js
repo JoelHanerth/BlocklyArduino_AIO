@@ -137,7 +137,6 @@ Blockly.Msg.CAT_BRICK_KEYBOARD = "Teclado";
 Blockly.Msg.CAT_BRICK_TELA = "Tela";
 Blockly.Msg.CAT_BRICK_BLUETOOTH = "Bluetooth";
 
-
 Blockly.Msg.CAT_ANEMOROTATION = "Anemometer with cups"; //added september 16th 2017
 
 Blockly.Msg.CAT_ADAFRUIT_MOTORSHIELD = "Adafruit Motorshield";

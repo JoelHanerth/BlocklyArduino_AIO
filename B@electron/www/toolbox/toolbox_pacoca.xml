@@ -105,6 +105,13 @@
 			</value>
 		</block>	
 		<block type="brick_parar_motores"></block>
+		<block type="brick_motores_iniciar_movimento_reto_gyro">
+			<value name="POTENCIA">
+				<shadow type="math_number">
+					<field name="NUM">60</field>
+				</shadow>
+			</value>
+		</block>
 	</category>
 
 		<category name="CAT_BRICK_SERVOS" colour="#FFB347">

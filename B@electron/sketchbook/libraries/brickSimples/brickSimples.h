@@ -1,6 +1,9 @@
 #include "portas.h"
 #include "SoftWire.h"
+
+#ifdef SUPORTE_SERVO
 #include "Servo.h"
+#endif
 
 #ifdef SUPORTE_SENSOR_TCS34725
 #include "TCS34725.h"
@@ -14,13 +17,18 @@
 #include "BMI160.h"
 #endif
 
+#ifdef SUPORTE_LED
 #include "led.h"
+#endif
 
 #ifdef SUPORTE_SENSOR_ULTRASSONICO
 #include "ultrassonico.h"
 #endif
 
+
+#ifdef SUPORTE_BUZZER
 #include "buzzer.h"
+#endif
 
 #ifdef SUPORTE_SENSOR_GIROSCOPIO
 #include "giroscopio.h"
@@ -49,6 +57,7 @@
 #define MAXIMO_MOTORES 2
 #define MAXIMO_SERVOS 4
 
+#ifdef SUPORTE_MOTOR
 class Motor{ //nao vou usar a struct PortaMotor porque não quero usar alocação dinamica
 private:
     uint8_t pwm;
@@ -129,7 +138,7 @@ public:
         potencia(this->potenciaAtual);
     }
 };
-
+#endif
 
 class BrickSimples{
 public:
@@ -137,6 +146,8 @@ public:
     bool motor1Invertido = false;
     bool motor2Invertido = false;
     int potenciaPadraoBrick = 60;
+    int16_t posicaoGiroscopioZInicioMovimento = 0;
+    bool usandoGiroscopioNoMovimento = false;
     int delta = 0;
     
     #ifdef SUPORTE_SENSOR_TCS34725
@@ -151,10 +162,18 @@ public:
     Ultrassonico *listaUltrassonico[MAXIMO_SENSORES]={NULL, NULL, NULL, NULL, NULL};
     #endif
     
+    #ifdef SUPORTE_MOTOR
     Motor *listaMotor[MAXIMO_MOTORES]={NULL, NULL};
+    #endif
+
+    #ifdef SUPORTE_LED
     LEDStrip *ledStrip[MAXIMO_SERVOS] = {NULL, NULL, NULL, NULL};
-    Buzzer *buzzer[MAXIMO_SERVOS] = {NULL, NULL, NULL, NULL};
+    #endif
     
+    #ifdef SUPORTE_BUZZER
+    Buzzer *buzzer[MAXIMO_SERVOS] = {NULL, NULL, NULL, NULL};
+    #endif
+
     #ifdef SUPORTE_SENSOR_GIROSCOPIO
     Giroscopio *giroscopio = NULL;
     #endif
@@ -249,6 +268,7 @@ public:
         return ::millis();
     }
 
+    #ifdef SUPORTE_MOTOR
     void setPotenciaPadrao(int potencia){
         potencia = constrain(potencia, -100, 100);
         this->potenciaPadraoBrick = potencia;
@@ -274,6 +294,23 @@ public:
         listaMotor[1]->potencia();
     }
 
+    void andarPraFrente(int potencia, bool giroscopioInvertido=false){
+        if(listaMotor[0] == NULL || listaMotor[1] == NULL){
+            erroMotorNaoInicializado();
+            return;
+        }
+        int16_t posicaoAtualZ = 0;
+        if(usandoGiroscopioNoMovimento && bmi160 != NULL){
+            posicaoAtualZ = bmi160->getEixoZ()/10;
+        }else{
+            posicaoGiroscopioZInicioMovimento = bmi160->getEixoZ()/10;
+            usandoGiroscopioNoMovimento = true;
+        }
+        int16_t delta = posicaoGiroscopioZInicioMovimento - posicaoAtualZ;
+        if(giroscopioInvertido) delta = -delta;
+        listaMotor[0]->potencia(potencia-delta);
+        listaMotor[1]->potencia(potencia+delta);
+    }
     
     // Controla ambos os motores com a mesma potência
     // potencia: -100 a 100 (negativo = reverso, positivo = frente)
@@ -282,6 +319,7 @@ public:
             erroMotorNaoInicializado();
             return;
         }
+        usandoGiroscopioNoMovimento = false;
         listaMotor[0]->potencia(potencia);
         listaMotor[1]->potencia(potencia);
     }
@@ -293,6 +331,7 @@ public:
             erroMotorNaoInicializado();
             return;
         }
+        usandoGiroscopioNoMovimento = false;
         listaMotor[0]->potencia(pot1);
         listaMotor[1]->potencia(pot2);
     }
@@ -304,6 +343,7 @@ public:
             return;
         }
         // Liga os dois motores praticamente ao mesmo tempo
+        usandoGiroscopioNoMovimento = false;
         listaMotor[0]->potencia();
         listaMotor[1]->potencia();
         delay(tempoMs);
@@ -318,6 +358,7 @@ public:
             erroMotorNaoInicializado();
             return;
         }
+        usandoGiroscopioNoMovimento = false;
         // Liga os dois com a mesma potencia praticamente ao mesmo tempo
         listaMotor[0]->potencia(potencia);
         listaMotor[1]->potencia(potencia);
@@ -334,6 +375,7 @@ public:
             erroMotorNaoInicializado();
             return;
         }
+        usandoGiroscopioNoMovimento = false;
         listaMotor[0]->parar();
         listaMotor[1]->parar();
     }
@@ -343,6 +385,7 @@ public:
             erroMotorNaoInicializado();
             return;
         }
+        usandoGiroscopioNoMovimento = false;
         listaMotor[0]->frear();
         listaMotor[1]->frear();
     }
@@ -350,6 +393,8 @@ public:
     void erroMotorNaoInicializado(){
         Serial.println(F("Erro: Motor nao inicializado! Use inicializaMotores() antes de controlar os motores."));
     }
+    #endif //SUPORTE_MOTOR
+
 
     bool botaoApertado(){
         uint16_t valor = analogRead(A6);
@@ -600,6 +645,7 @@ public:
     }
     #endif
 
+    #ifdef SUPORTE_LED
     void adiciona(LEDStrip &leds){
         for(int i=0; i<MAXIMO_SERVOS; i++){ // quantidade de portas de servo/led
             if(ledStrip[i] == NULL){
@@ -609,7 +655,9 @@ public:
         }
         leds.inicializa();
     }
+    #endif
 
+    #ifdef SUPORTE_BUZZER
     void adiciona(Buzzer &buzzer){
         for(int i=0; i<MAXIMO_SERVOS; i++){ // quantidade de portas de servo/led/buzzer
             if(this->buzzer[i] == NULL){
@@ -619,6 +667,7 @@ public:
         }
         buzzer.inicializa();
     }
+    #endif
 
     #ifdef SUPORTE_SENSOR_GIROSCOPIO
     void adiciona(Giroscopio &giro){
@@ -705,6 +754,7 @@ public:
 
 BrickSimples brick;
 
+#ifdef SUPORTE_SERVO
 class Servos{
     private:
     Servo *servos;
@@ -808,3 +858,4 @@ class Servos{
 
 Servos servos;
 
+#endif

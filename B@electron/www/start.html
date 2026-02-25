@@ -428,6 +428,16 @@
                     return;
                 }
                 btnNew.addEventListener('click', function () {
+                    try {
+                        if (window.localStorage) {
+                            delete window.localStorage.loadOnceBlocks;
+                            window.localStorage.removeItem('currentProjectName');
+                        }
+                        if (window.sessionStorage) {
+                            window.sessionStorage.removeItem('currentProjectName');
+                            window.sessionStorage.removeItem('currentProjectPath');
+                        }
+                    } catch (e) {}
                     goToMain(false);
                 });
                 btnOpen.addEventListener('click', function () {

@@ -239,3 +239,15 @@ Blockly.Arduino['brick_motores_mover_tempo_potencia'] = function(block) {
   }
   return code;
 };
+
+// Inicia o movimento reto com giroscópio
+Blockly.Arduino['brick_motores_iniciar_movimento_reto_gyro'] = function(block) {
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
+  if (!Blockly.Arduino.definitions_['brick_manual_init']) {
+    Blockly.Arduino.setups_['setup_brick_simples'] = 'brick.inicializa();';
+  }
+
+  var potencia = Blockly.Arduino.valueToCode(block, 'POTENCIA', Blockly.Arduino.ORDER_ATOMIC) || '0';
+  var code = 'brick.andarPraFrente(' + potencia + ');\n';
+  return code;
+};
