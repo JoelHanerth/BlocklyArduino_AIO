@@ -170,6 +170,8 @@
 			<block type="brick_sensor_linha_valor"></block>
 			<block type="brick_sensor_linha_cor"></block>
 			<block type="brick_sensor_linha_cor_basica"></block>
+			<block type="brick_sensor_linha_calibrar_preto"></block>
+			<block type="brick_sensor_linha_calibrar_branco"></block>
 		</category>
 	</category>
 

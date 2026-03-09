@@ -377,6 +377,58 @@ Blockly.Blocks['brick_sensor_linha_cor_basica'] = {
   }
 };
 
+// Calibra o sensor de linha para a cor preta
+Blockly.Blocks['brick_sensor_linha_calibrar_preto'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick_sensores.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldImage(
+                Blockly.pathToBlockly + 'blocks/brick_blocks/assets/sensor_linha.png',
+                45,
+                18
+            ))
+        .appendField('calibrar preto')
+        .appendField('porta')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'PORTA_SERIAL_1'],
+          ['2', 'PORTA_SERIAL_2'],
+          ['3', 'PORTA_SERIAL_3'],
+          ['4', 'PORTA_SERIAL_4'],
+          ['5', 'PORTA_SERIAL_5']
+        ]), 'PORTA');
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('Calibra o sensor de linha para a cor preta.');
+  }
+};
+
+// Calibra o sensor de linha para a cor branca
+Blockly.Blocks['brick_sensor_linha_calibrar_branco'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.brick_sensores.HUE);
+    this.setHelpUrl('');
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldImage(
+                Blockly.pathToBlockly + 'blocks/brick_blocks/assets/sensor_linha.png',
+                45,
+                18
+            ))
+        .appendField('calibrar branco')
+        .appendField('porta')
+        .appendField(new Blockly.FieldDropdown([
+          ['1', 'PORTA_SERIAL_1'],
+          ['2', 'PORTA_SERIAL_2'],
+          ['3', 'PORTA_SERIAL_3'],
+          ['4', 'PORTA_SERIAL_4'],
+          ['5', 'PORTA_SERIAL_5']
+        ]), 'PORTA');
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('Calibra o sensor de linha para a cor branca.');
+  }
+};
+
 // --- Sensor de orientação BMI160 interno (via Brick) ---
 
 // Calibra o sensor BMI160 interno do Brick em uma porta I2C escolhida
@@ -648,6 +700,12 @@ if (Blockly.Types) {
   };
   Blockly.Blocks['brick_sensor_linha_cor_basica'].getBlockType = function() {
     return Blockly.Types.NUMBER;
+  };
+  Blockly.Blocks['brick_sensor_linha_calibrar_preto'].getBlockType = function() {
+    return Blockly.Types.NULL;
+  };
+  Blockly.Blocks['brick_sensor_linha_calibrar_branco'].getBlockType = function() {
+    return Blockly.Types.NULL;
   };
 
   // Giroscópio

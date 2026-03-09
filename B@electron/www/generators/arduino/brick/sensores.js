@@ -463,3 +463,27 @@ Blockly.Arduino['brick_sensor_linha_cor_basica'] = function(block) {
   var code = varName + '.' + metodo;
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 };
+
+// Calibra o sensor de linha para a cor preta
+Blockly.Arduino['brick_sensor_linha_calibrar_preto'] = function(block) {
+  Blockly.Arduino.includes_['define_suporte_sensor_linha'] = '#define SUPORTE_SENSOR_LINHA 1';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
+
+  var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_4';
+  var varName = brickEnsureSensorLinhaForPort(porta);
+
+  var code = varName + '.calibrarPreto();\n';
+  return code;
+};
+
+// Calibra o sensor de linha para a cor branca
+Blockly.Arduino['brick_sensor_linha_calibrar_branco'] = function(block) {
+  Blockly.Arduino.includes_['define_suporte_sensor_linha'] = '#define SUPORTE_SENSOR_LINHA 1';
+  Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
+
+  var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_4';
+  var varName = brickEnsureSensorLinhaForPort(porta);
+
+  var code = varName + '.calibrarBranco();\n';
+  return code;
+};
