@@ -107,7 +107,7 @@ Blockly.Blocks['brick_motores_movimento'] = {
   }
 };
 
-// Inicia o movimento dos dois motores na direção escolhida (frente ou ré)
+// Inicia o movimento dos dois motores na direção escolhida (frente, ré, direita ou esquerda)
 Blockly.Blocks['brick_motores_iniciar_movimento'] = {
   init: function() {
     this.setColour(Blockly.Blocks.motores.HUE);
@@ -117,15 +117,17 @@ Blockly.Blocks['brick_motores_iniciar_movimento'] = {
       .appendField('Iniciar movimento')
       .appendField(new Blockly.FieldDropdown([
         ['⬆️', 'FRENTE'],
-        ['⬇️', 'RE']
+        ['⬇️', 'RE'],
+        ['↪️', 'DIREITA'],
+        ['↩️', 'ESQUERDA']
       ]), 'DIRECAO');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setTooltip('Inicia o movimento usando a potência padrão configurada: seta para cima = frente, seta para baixo = ré.');
+    this.setTooltip('Inicia o movimento usando a potência padrão: ⬆️ = frente, ⬇️ = ré, ↻ = girar direita, ↺ = girar esquerda.');
   }
 };
 
-// Inicia o movimento por um tempo (segundos/ms) usando a potência padrão, na direção escolhida
+// Move por um tempo (segundos/ms) usando a potência padrão, na direção escolhida
 Blockly.Blocks['brick_motores_iniciar_movimento_tempo'] = {
   init: function() {
     this.setColour(Blockly.Blocks.motores.HUE);
@@ -135,7 +137,9 @@ Blockly.Blocks['brick_motores_iniciar_movimento_tempo'] = {
       .appendField('Mover')
       .appendField(new Blockly.FieldDropdown([
         ['⬆️', 'FRENTE'],
-        ['⬇️', 'RE']
+        ['⬇️', 'RE'],
+        ['↪️', 'DIREITA'],
+        ['↩️', 'ESQUERDA']
       ]), 'DIRECAO')
       .appendField('por');
     this.appendValueInput('TEMPO')
@@ -147,11 +151,11 @@ Blockly.Blocks['brick_motores_iniciar_movimento_tempo'] = {
       ]), 'UNIDADE');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setTooltip('Inicia o movimento na direção escolhida por um tempo em segundos ou milissegundos, usando a potência padrão.');
+    this.setTooltip('Move na direção escolhida por um tempo em segundos ou milissegundos, usando a potência padrão: ⬆️ = frente, ⬇️ = ré, ↻ = girar direita, ↺ = girar esquerda.');
   }
 };
 
-// Inicia o movimento na direção escolhida com a potência informada (sem usar a potência padrão)
+// Inicia o movimento na direção escolhida com a potência informada
 Blockly.Blocks['brick_motores_iniciar_movimento_potencia'] = {
   init: function() {
     this.setColour(Blockly.Blocks.motores.HUE);
@@ -161,7 +165,9 @@ Blockly.Blocks['brick_motores_iniciar_movimento_potencia'] = {
       .appendField('Iniciar movimento')
       .appendField(new Blockly.FieldDropdown([
         ['⬆️', 'FRENTE'],
-        ['⬇️', 'RE']
+        ['⬇️', 'RE'],
+        ['↪️', 'DIREITA'],
+        ['↩️', 'ESQUERDA']
       ]), 'DIRECAO')
       .appendField('com potência');
     this.appendValueInput('POTENCIA')
@@ -170,7 +176,7 @@ Blockly.Blocks['brick_motores_iniciar_movimento_potencia'] = {
       .appendField('%');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setTooltip('Inicia o movimento na direção escolhida usando a potência informada (valores de -100 a 100).');
+    this.setTooltip('Inicia o movimento na direção escolhida usando a potência informada: ⬆️ = frente, ⬇️ = ré, ↻ = girar direita, ↺ = girar esquerda.');
   }
 };
 
@@ -184,7 +190,9 @@ Blockly.Blocks['brick_motores_mover_tempo_potencia'] = {
       .appendField('Mover')
       .appendField(new Blockly.FieldDropdown([
         ['⬆️', 'FRENTE'],
-        ['⬇️', 'RE']
+        ['⬇️', 'RE'],
+        ['↪️', 'DIREITA'],
+        ['↩️', 'ESQUERDA']
       ]), 'DIRECAO')
       .appendField('por');
     this.appendValueInput('TEMPO')
@@ -201,7 +209,7 @@ Blockly.Blocks['brick_motores_mover_tempo_potencia'] = {
       .appendField('%');
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setTooltip('Move na direção escolhida por um tempo em segundos ou milissegundos, usando a potência informada.');
+    this.setTooltip('Move na direção escolhida por um tempo em segundos ou milissegundos, usando a potência informada: ⬆️ = frente, ⬇️ = ré, ↻ = girar direita, ↺ = girar esquerda.');
   }
 };
 

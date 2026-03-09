@@ -140,19 +140,22 @@ Blockly.Arduino['brick_motores_iniciar_movimento'] = function(block) {
   }
 
   var direcao = block.getFieldValue('DIRECAO') || 'FRENTE';
+  var pot = 'brick.getPotenciaPadrao()';
 
   var code;
   if (direcao === 'FRENTE') {
-    // Usa a potência padrão positiva
-    code = 'brick.potenciaMotores(brick.getPotenciaPadrao());\n';
-  } else {
-    // Usa a potência padrão negativa para ré
-    code = 'brick.potenciaMotores(-brick.getPotenciaPadrao());\n';
+    code = 'brick.potenciaMotores(' + pot + ', ' + pot + ');\n';
+  } else if (direcao === 'RE') {
+    code = 'brick.potenciaMotores(-' + pot + ', -' + pot + ');\n';
+  } else if (direcao === 'DIREITA') {
+    code = 'brick.potenciaMotores(' + pot + ', -' + pot + ');\n';
+  } else { // ESQUERDA
+    code = 'brick.potenciaMotores(-' + pot + ', ' + pot + ');\n';
   }
   return code;
 };
 
-// Inicia o movimento dos dois motores na direção escolhida por um tempo usando a potência padrão do Brick
+// Move os dois motores na direção escolhida por um tempo usando a potência padrão do Brick
 Blockly.Arduino['brick_motores_iniciar_movimento_tempo'] = function(block) {
   Blockly.Arduino.definitions_['include_brick_simples'] = '#include <brickSimples.h>';
   if (!Blockly.Arduino.definitions_['brick_manual_init']) {
@@ -175,13 +178,16 @@ Blockly.Arduino['brick_motores_iniciar_movimento_tempo'] = function(block) {
     tempoMs = tempo;
   }
 
+  var pot = 'brick.getPotenciaPadrao()';
   var code;
   if (direcao === 'FRENTE') {
-    // Usa a potência padrão positiva por tempo
-    code = 'brick.acionaMotoresPorTempo(brick.getPotenciaPadrao(), ' + tempoMs + ');\n';
-  } else {
-    // Usa a potência padrão negativa (ré) por tempo
-    code = 'brick.acionaMotoresPorTempo(-brick.getPotenciaPadrao(), ' + tempoMs + ');\n';
+    code = 'brick.gireMotoresPorTempo(' + pot + ', ' + pot + ', ' + tempoMs + ');\n';
+  } else if (direcao === 'RE') {
+    code = 'brick.gireMotoresPorTempo(-' + pot + ', -' + pot + ', ' + tempoMs + ');\n';
+  } else if (direcao === 'DIREITA') {
+    code = 'brick.gireMotoresPorTempo(' + pot + ', -' + pot + ', ' + tempoMs + ');\n';
+  } else { // ESQUERDA
+    code = 'brick.gireMotoresPorTempo(-' + pot + ', ' + pot + ', ' + tempoMs + ');\n';
   }
   return code;
 };
@@ -194,14 +200,17 @@ Blockly.Arduino['brick_motores_iniciar_movimento_potencia'] = function(block) {
   }
 
   var direcao = block.getFieldValue('DIRECAO') || 'FRENTE';
-  var potencia = Blockly.Arduino.valueToCode(block, 'POTENCIA', Blockly.Arduino.ORDER_ATOMIC) || '0';
-  var potenciaExpr = potencia;
+  var pot = Blockly.Arduino.valueToCode(block, 'POTENCIA', Blockly.Arduino.ORDER_ATOMIC) || '0';
 
   var code;
   if (direcao === 'FRENTE') {
-    code = 'brick.potenciaMotores(' + potenciaExpr + ');\n';
-  } else {
-    code = 'brick.potenciaMotores(-' + potenciaExpr + ');\n';
+    code = 'brick.potenciaMotores(' + pot + ', ' + pot + ');\n';
+  } else if (direcao === 'RE') {
+    code = 'brick.potenciaMotores(-' + pot + ', -' + pot + ');\n';
+  } else if (direcao === 'DIREITA') {
+    code = 'brick.potenciaMotores(' + pot + ', -' + pot + ');\n';
+  } else { // ESQUERDA
+    code = 'brick.potenciaMotores(-' + pot + ', ' + pot + ');\n';
   }
   return code;
 };
@@ -216,8 +225,7 @@ Blockly.Arduino['brick_motores_mover_tempo_potencia'] = function(block) {
   var direcao = block.getFieldValue('DIRECAO') || 'FRENTE';
   var tempo = Blockly.Arduino.valueToCode(block, 'TEMPO', Blockly.Arduino.ORDER_ATOMIC) || '0';
   var unidade = block.getFieldValue('UNIDADE') || 'S';
-  var potencia = Blockly.Arduino.valueToCode(block, 'POTENCIA', Blockly.Arduino.ORDER_ATOMIC) || '0';
-  var potenciaExpr = potencia;
+  var pot = Blockly.Arduino.valueToCode(block, 'POTENCIA', Blockly.Arduino.ORDER_ATOMIC) || '0';
 
   var tempoMs;
   if (unidade === 'S') {
@@ -233,9 +241,13 @@ Blockly.Arduino['brick_motores_mover_tempo_potencia'] = function(block) {
 
   var code;
   if (direcao === 'FRENTE') {
-    code = 'brick.acionaMotoresPorTempo(' + potenciaExpr + ', ' + tempoMs + ');\n';
-  } else {
-    code = 'brick.acionaMotoresPorTempo(-' + potenciaExpr + ', ' + tempoMs + ');\n';
+    code = 'brick.gireMotoresPorTempo(' + pot + ', ' + pot + ', ' + tempoMs + ');\n';
+  } else if (direcao === 'RE') {
+    code = 'brick.gireMotoresPorTempo(-' + pot + ', -' + pot + ', ' + tempoMs + ');\n';
+  } else if (direcao === 'DIREITA') {
+    code = 'brick.gireMotoresPorTempo(' + pot + ', -' + pot + ', ' + tempoMs + ');\n';
+  } else { // ESQUERDA
+    code = 'brick.gireMotoresPorTempo(-' + pot + ', ' + pot + ', ' + tempoMs + ');\n';
   }
   return code;
 };
