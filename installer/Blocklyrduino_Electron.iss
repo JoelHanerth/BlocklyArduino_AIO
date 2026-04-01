@@ -4,7 +4,7 @@
 [Setup]
 AppId={{771C21F0-20F2-4A4A-9E7B-BlocklyRduinoElectron}
 AppName=Blockly@rduino
-AppVersion=1.0.0
+AppVersion=1.0.1
 AppPublisher=JV
 AppPublisherURL=https://
 ; Instalar em Program Files
