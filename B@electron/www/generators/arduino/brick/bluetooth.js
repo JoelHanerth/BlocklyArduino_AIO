@@ -55,6 +55,6 @@ Blockly.Arduino['brick_bluetooth_ler_char'] = function(block) {
   var porta = block.getFieldValue('PORTA') || 'PORTA_SERIAL_3';
   var btVar = brickEnsureBluetoothForPort(porta);
 
-  var code = btVar + '.read()';
+  var code = '(char)(' + btVar + '.read())';
   return [code, Blockly.Arduino.ORDER_ATOMIC];
 };

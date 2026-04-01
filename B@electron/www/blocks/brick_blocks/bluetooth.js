@@ -78,8 +78,8 @@ Blockly.Blocks['brick_bluetooth_ler_char'] = {
           ['5', 'PORTA_SERIAL_5']
         ]), 'PORTA')
         .appendField('ler caractere');
-    this.setOutput(true, 'Number');
-    this.setTooltip('Lê um caractere recebido via Bluetooth (retorna o código do caractere).');
+    this.setOutput(true, 'Character');
+    this.setTooltip('Lê um caractere recebido via Bluetooth.');
   }
 };
 
@@ -89,5 +89,5 @@ Blockly.Blocks['brick_bluetooth_disponivel'].getBlockType = function() {
 };
 
 Blockly.Blocks['brick_bluetooth_ler_char'].getBlockType = function() {
-  return Blockly.Types.NUMBER;
+  return Blockly.Types.CHARACTER;
 };
