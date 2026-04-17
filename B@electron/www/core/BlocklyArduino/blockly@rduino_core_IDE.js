@@ -30,6 +30,74 @@ BlocklyDuino.toolboxInIndexHtml = false;
 BlocklyDuino.workspace = null;
 var BlocklyLevel = 'none';
 
+/**
+ * Ajusta o comportamento do scroll do mouse no workspace:
+ * sem modificador = pan vertical, Ctrl/Cmd = zoom, Shift = pan horizontal.
+ */
+BlocklyDuino.configureWheelNavigation = function(workspace) {
+	if (!workspace || !workspace.scrollbar || !workspace.getParentSvg) {
+		return;
+	}
+
+	var svg = workspace.getParentSvg();
+	if (!svg) {
+		return;
+	}
+
+	svg.addEventListener('wheel', function(e) {
+		var target = e.target;
+		if (target && typeof target.closest === 'function') {
+			if (target.closest('.blocklyToolboxDiv') || target.closest('.blocklyFlyout') || target.closest('.blocklyScrollbar')) {
+				return;
+			}
+		}
+
+		var deltaX = e.deltaX || 0;
+		var deltaY = e.deltaY || 0;
+		if (!deltaX && !deltaY) {
+			return;
+		}
+
+		var factor = 1;
+		if (e.deltaMode === 1) {
+			factor = 16;
+		} else if (e.deltaMode === 2) {
+			factor = 120;
+		}
+		deltaX *= factor;
+		deltaY *= factor;
+
+		if (e.ctrlKey || e.metaKey) {
+			Blockly.terminateDrag_();
+			var direction = deltaY > 0 ? -1 : 1;
+			var point = Blockly.mouseToSvg(e, workspace.getParentSvg(), workspace.getInverseScreenCTM());
+			workspace.zoom(point.x, point.y, direction);
+			e.preventDefault();
+			e.stopPropagation();
+			return;
+		}
+
+		var metrics = workspace.getMetrics ? workspace.getMetrics() : null;
+		if (!metrics) {
+			return;
+		}
+
+		var nextX = metrics.viewLeft - metrics.contentLeft;
+		var nextY = metrics.viewTop - metrics.contentTop;
+
+		if (e.shiftKey) {
+			var horizontalDelta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
+			nextX += horizontalDelta;
+		} else {
+			nextY += deltaY;
+		}
+
+		workspace.scrollbar.set(nextX, nextY);
+		e.preventDefault();
+		e.stopPropagation();
+	}, { passive: false });
+};
+
 
 /**
  * Populate the currently selected pane with content generated from the blocks.
@@ -881,8 +949,9 @@ BlocklyDuino.init = function() {
 			toolbox: BlocklyDuino.buildToolbox(),
 			zoom:
 				{controls: true,
-				wheel: true}
+				wheel: false}
 		      });
+	BlocklyDuino.configureWheelNavigation(BlocklyDuino.workspace);
 	// bind events to html elements
 	BlocklyDuino.bindFunctions();
 
